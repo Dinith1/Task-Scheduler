@@ -12,18 +12,50 @@ public class InputReader {
     public void readInput(File file) throws IOException {
 
         BufferedReader bufRead = new BufferedReader(new FileReader(file));
-        bufRead.readLine();
-        String start;
-        while((start = bufRead.readLine()) != null){
 
+        //Skip first line of file
+        bufRead.readLine();
+
+        String line;
+        while((line = bufRead.readLine()) != null){
+            String end = line.substring(0,1);
+            if(end.equalsIgnoreCase("}")){
+                break;
+            }
+            int currentWeight = parseNodeWeight(line);
+            String nodeIdentifier = parseNodeIdentifier(line);
+            System.out.println(currentWeight);
+
+            makeNode(currentWeight,nodeIdentifier);
         }
     }
 
     private void makeNode(int weight, String nodeIdentifier){
         //TODO
+        for(Node node: listOfNodes){
+            if(!node.getNodeIdentifier().equals(nodeIdentifier)){
+                Node currentNode = new Node(weight,nodeIdentifier);
+                listOfNodes.add(currentNode);
+            }else{
+                System.out.println("Node Already in List");
+            }
+        }
     }
 
     private void makeEdge(Node nodeStart, Node nodeEnd, int edgeWeight){
         //TODO
+    }
+
+    private int parseNodeWeight(String line){
+        String parts[] = line.split("Weight=");
+        String weight = parts[1];
+        weight = weight.replaceAll("\\D+","");
+        return Integer.parseInt(weight);
+    }
+
+    private String parseNodeIdentifier(String line){
+        line = line.replaceAll("\\s","");
+        String nodeIdentifier = line.substring(0,1);
+        return nodeIdentifier;
     }
 }
