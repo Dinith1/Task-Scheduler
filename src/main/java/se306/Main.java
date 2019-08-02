@@ -1,5 +1,7 @@
-package Input;
+package se306;
 
+
+import se306.Input.InputReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +11,10 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("src/Input/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
+        File file = new File("./src/resources/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
         InputReader inputReader = new InputReader();
         inputReader.readInput(file);
     }
+
 }
+
