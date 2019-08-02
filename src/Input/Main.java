@@ -9,7 +9,7 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("src/Input/Nodes_10_Random.dot").getAbsoluteFile();
+        File file = new File("src/Input/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
         InputReader inputReader = new InputReader();
         inputReader.readInput(file);
     }
