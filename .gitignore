@@ -3,3 +3,6 @@
 .vscode/
 target
 out/
+.classpath
+.settings/
+.project
