@@ -1,4 +1,4 @@
-package Input;
+package se306.Input;
 
 public class Edge {
 
