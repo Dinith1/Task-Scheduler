@@ -1,4 +1,4 @@
-package se306;
+package test.java.se306;
 
 import static org.junit.Assert.assertTrue;
 
