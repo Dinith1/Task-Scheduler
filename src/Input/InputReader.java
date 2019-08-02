@@ -19,14 +19,23 @@ public class InputReader {
         String line;
         while((line = bufRead.readLine()) != null){
             String end = line.substring(0,1);
-            if(end.equalsIgnoreCase("}")){
-                break;
-            }
-            int currentWeight = parseNodeWeight(line);
-            String nodeIdentifier = parseNodeIdentifier(line);
-            System.out.println(currentWeight);
 
-            makeNode(currentWeight,nodeIdentifier);
+            if(end.equalsIgnoreCase("}")) {
+                break;
+
+            } else if (line.length() != 1) {
+                String firstDigit = line.substring(1,2);
+
+                // Parse only if the first digit of the line is a number to ignore unexpected text in the input
+                if (firstDigit.matches("\\d")) {
+
+                    int currentWeight = parseNodeWeight(line);
+                    String nodeIdentifier = parseNodeIdentifier(line);
+                    System.out.println(currentWeight);
+
+                    makeNode(currentWeight, nodeIdentifier);
+                }
+            }
         }
     }
 
