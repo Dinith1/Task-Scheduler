@@ -17,14 +17,13 @@ public class InputReader {
         bufRead.readLine();
 
         String line;
-        while((line = bufRead.readLine()) != null) {
-            String end = line.substring(0, 1);
 
-            //stop reading when we reach end of file
-            if (end.equalsIgnoreCase("}")) {
+        while((line = bufRead.readLine()) != null){
+            String end = line.substring(0,1);
+
+            if(end.equalsIgnoreCase("}")) {
                 break;
             }
-
             //only start reading if first seen character of a line is an number
             line = line.replaceAll("\\s", "");
             String firstDigit = line.substring(0, 1);
