@@ -36,11 +36,23 @@ public class InputReader {
                     makeNode(currentWeight, nodeIdentifier);
                 }
             }
+
+            //if -> appears, it means it is an edge, otherwise it is a node
+            if(line.indexOf("->") == -1){
+                int currentWeight = parseNodeWeight(line);
+                String nodeIdentifier = parseNodeIdentifier(line);
+                System.out.println(currentWeight);
+                System.out.println(nodeIdentifier);
+                makeNode(currentWeight,nodeIdentifier);
+            }else{
+
+            }
+
         }
     }
 
     private void makeNode(int weight, String nodeIdentifier){
-        //TODO
+
         for(Node node: listOfNodes){
             if(!node.getNodeIdentifier().equals(nodeIdentifier)){
                 Node currentNode = new Node(weight,nodeIdentifier);
@@ -53,6 +65,7 @@ public class InputReader {
 
     private void makeEdge(Node nodeStart, Node nodeEnd, int edgeWeight){
         //TODO
+
     }
 
     private int parseNodeWeight(String line){
@@ -64,7 +77,8 @@ public class InputReader {
 
     private String parseNodeIdentifier(String line){
         line = line.replaceAll("\\s","");
-        String nodeIdentifier = line.substring(0,1);
+        int iend = line.indexOf("[");
+        String nodeIdentifier = line.substring(0,iend);
         return nodeIdentifier;
     }
 }
