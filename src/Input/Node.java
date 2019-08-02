@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Node {
 
-    private List<Edge> outgoingEdges;
-    private List<Edge> incomingEdges;
+    private List<Edge> ListOfOutgoingEdges;
+    private List<Edge> ListOfIncomingEdges;
     private int nodeWeight;
     private String nodeIdentifier;
 
@@ -14,8 +14,8 @@ public class Node {
 
     public Node(int weight, String nodeIdentifier) {
         this.nodeWeight = weight;
-        this.incomingEdges = new ArrayList<>();
-        this.outgoingEdges = new ArrayList<>();
+        this.ListOfIncomingEdges = new ArrayList<>();
+        this.ListOfOutgoingEdges = new ArrayList<>();
         this.nodeIdentifier = nodeIdentifier;
     }
 
@@ -24,11 +24,18 @@ public class Node {
     }
 
     public int getNumberOfOutGoingEdges(){
-        return outgoingEdges.size();
+        return ListOfOutgoingEdges.size();
     }
 
     public int getNumberOfIncomingEdges(){
-        return incomingEdges.size();
+        return ListOfIncomingEdges.size();
+    }
+
+    public void addOutGoingEdges(Edge edge){
+        ListOfOutgoingEdges.add(edge);
+    }
+    public void addIncomingEdges(Edge edge){
+        ListOfIncomingEdges.add(edge);
     }
 
     public String getNodeIdentifier(){

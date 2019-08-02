@@ -12,7 +12,7 @@ public class Edge {
         this.edgeWeight = edgeWeight;
     }
 
-    public Node getnodeStart(){
+    public Node getNodeStart(){
         return nodeStart;
     }
     public Node getNodeEnd(){
