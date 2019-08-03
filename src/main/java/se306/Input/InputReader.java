@@ -11,12 +11,12 @@ public class InputReader {
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
-     * @param file
+     * @param isr
      * @throws IOException
      */
-    public void readInput(File file) throws IOException {
+    public void readInput(InputStreamReader isr) throws IOException {
 
-        BufferedReader bufRead = new BufferedReader(new FileReader(file));
+        BufferedReader bufRead = new BufferedReader(isr);
 
         //Skip first line of file
         bufRead.readLine();
