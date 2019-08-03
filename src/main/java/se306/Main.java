@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputStream in = Main.class.getResourceAsStream("/Nodes_8_Random.dot");
+        InputStream in = Main.class.getResourceAsStream("/Nodes_9_SeriesParallel.dot");
         InputStreamReader isr = new InputStreamReader(in);
         InputReader inputReader = new InputReader();
         inputReader.parseCommandLineProcessorCount(args);
