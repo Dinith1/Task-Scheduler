@@ -8,6 +8,7 @@ public class InputReader {
 
     private List<Node> listOfNodes= new ArrayList<>();
     private List<Edge> listOfEdges = new ArrayList<>();
+    private int numberOfProcesses;
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
@@ -64,6 +65,29 @@ public class InputReader {
 
             }
         }
+    }
+
+    /**
+     * Takes in the command line arguments and produces number
+     * of processors to be used in algorithm
+     * @param input
+     */
+    public void parseCommandLineProcessorCount(String[] input) {
+        if (input.length == 0) {
+            System.out.println("No processors specified, defaulted to 1.");
+        } else if (input.length == 1 ) {
+            try {
+                int i = Integer.parseInt(input[0]);
+                numberOfProcesses = i;
+                System.out.println("Number of processors: " + i);
+                return;
+            } catch(NumberFormatException e) {
+                System.out.println("Unrecognised option, defaulted to 1 processor");
+            }
+        } else {
+            System.out.println("Too many arguments provided, defaulted to 1 processor");
+        }
+        numberOfProcesses = 1;
     }
 
     /**
@@ -132,4 +156,5 @@ public class InputReader {
         String nodeIdentifier = line.substring(0,iEnd);
         return nodeIdentifier;
     }
+
 }
