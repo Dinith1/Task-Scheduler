@@ -11,7 +11,8 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        File file = new File("./src/resources/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
+
+        File file = new File("src/resources/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
         InputReader inputReader = new InputReader();
         inputReader.readInput(file);
     }
