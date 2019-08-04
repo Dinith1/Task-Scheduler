@@ -12,7 +12,6 @@ public class ProcessorTests {
 
     private Processor proc1;
     private Node A, B, C;
-    private Edge aToB;
 
 
     @Before
@@ -23,7 +22,6 @@ public class ProcessorTests {
         B = new Node(2, "2");
         C = new Node(10, "3");
 
-        aToB = new Edge(A, B, 5);
     }
 
     @Test
@@ -34,6 +32,7 @@ public class ProcessorTests {
 
         // Check that the current cost of the processor increases with node
         assertEquals(3, proc1.getCurrentCost());
+        assertEquals(proc1, A.getProcessor());
 
     }
 
@@ -44,13 +43,23 @@ public class ProcessorTests {
         proc1.addToSchedule(C);
 
         assertEquals(13, proc1.getCurrentCost());
+        assertEquals(proc1, A.getProcessor());
+        assertEquals(proc1, C.getProcessor());
 
     }
 
     @Test
     public void testDependentSchedule() {
+
+        proc1.addToSchedule(A);
+
+        Edge aToB = new Edge(A, B, 5);
+        B.addParent(A);
+        B.addIncomingEdges(aToB);
+        A.addOutGoingEdges(aToB);
+
         Processor proc2 = new Processor();
         proc2.addToSchedule(B);
-        assertEquals(8, proc2.getCurrentCost());
+        assertEquals(10, proc2.getCurrentCost());
     }
 }

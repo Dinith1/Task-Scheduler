@@ -1,5 +1,7 @@
 package se306.Input;
 
+import se306.Algorithm.Processor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ public class Node {
     private int nodeWeight;
     private String nodeIdentifier;
     private List<Node> parentNodes = new ArrayList<>();
+    private Processor procScheduledInto;
 
 
 
@@ -40,6 +43,17 @@ public class Node {
         this.listOfIncomingEdges.add(edge);
     }
 
+    public Edge getIncomingEdge(Node parent) {
+        for (Edge edges : this.listOfIncomingEdges) {
+            if (edges.getNodeStart().equals(parent)) {
+                return edges;
+            }
+        }
+
+        // No match was found
+        return null;
+    }
+
     public String getNodeIdentifier(){
         return this.nodeIdentifier;
     }
@@ -51,5 +65,9 @@ public class Node {
     public void addParent(Node parent) {
         this.parentNodes.add(parent);
     }
+
+    public void assignProcessor(Processor proc) { this.procScheduledInto = proc; }
+
+    public Processor getProcessor() { return this.procScheduledInto; }
 
 }
