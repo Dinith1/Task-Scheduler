@@ -49,7 +49,16 @@ public class Node {
                 return edges;
             }
         }
+        // No match was found
+        return null;
+    }
 
+    public Edge getOutgoingEdge(Node child) {
+        for (Edge edges : this.listOfOutgoingEdges) {
+            if (edges.getNodeStart().equals(child)) {
+                return edges;
+            }
+        }
         // No match was found
         return null;
     }
