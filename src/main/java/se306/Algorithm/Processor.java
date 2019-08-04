@@ -10,12 +10,21 @@ public class Processor {
 
     private int currentCost;
     private HashMap<Node, Integer> scheduledNodes;
+    private String processorIdentifier;
 
-    public Processor() {
+    public Processor(String processorIdentifier) {
         scheduledNodes = new HashMap<>();
         currentCost = 0;
+        this.processorIdentifier = processorIdentifier;
     }
 
+    /**
+     * Gets the identifier for the processor
+     * @return Identifier for the processor i.e processor 1, processor 2...
+     */
+    public String getProcessorIdentifier(){
+        return processorIdentifier;
+    }
 
     /**
      * Gets the current cost of the processor; the finishing time/cost of the last scheduled node

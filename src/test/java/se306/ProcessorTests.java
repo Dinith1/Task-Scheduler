@@ -17,7 +17,7 @@ public class ProcessorTests {
     @Before
     public void setup() {
         // Create and setup nodes and processors
-        proc1 = new Processor();
+        proc1 = new Processor("1");
         A = new Node(3, "1");
         B = new Node(2, "2");
         C = new Node(10, "3");
@@ -58,7 +58,7 @@ public class ProcessorTests {
         B.addIncomingEdges(aToB);
         A.addOutGoingEdges(aToB);
 
-        Processor proc2 = new Processor();
+        Processor proc2 = new Processor("2");
         proc2.addToSchedule(B);
         assertEquals(10, proc2.getCurrentCost());
     }
