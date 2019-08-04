@@ -3,43 +3,53 @@ package se306.Input;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Node {
 
-    private List<Edge> ListOfOutgoingEdges;
-    private List<Edge> ListOfIncomingEdges;
+    private List<Edge> listOfOutgoingEdges;
+    private List<Edge> listOfIncomingEdges;
     private int nodeWeight;
     private String nodeIdentifier;
+    private List<Node> parentNodes = new ArrayList<>();
 
 
 
     public Node(int weight, String nodeIdentifier) {
         this.nodeWeight = weight;
-        this.ListOfIncomingEdges = new ArrayList<>();
-        this.ListOfOutgoingEdges = new ArrayList<>();
+        this.listOfIncomingEdges = new ArrayList<>();
+        this.listOfOutgoingEdges = new ArrayList<>();
         this.nodeIdentifier = nodeIdentifier;
     }
 
     public int getNodeWeight(){
-        return nodeWeight;
+        return this.nodeWeight;
     }
 
     public int getNumberOfOutGoingEdges(){
-        return ListOfOutgoingEdges.size();
+        return this.listOfOutgoingEdges.size();
     }
 
     public int getNumberOfIncomingEdges(){
-        return ListOfIncomingEdges.size();
+        return this.listOfIncomingEdges.size();
     }
 
     public void addOutGoingEdges(Edge edge){
-        ListOfOutgoingEdges.add(edge);
+        this.listOfOutgoingEdges.add(edge);
     }
     public void addIncomingEdges(Edge edge){
-        ListOfIncomingEdges.add(edge);
+        this.listOfIncomingEdges.add(edge);
     }
 
     public String getNodeIdentifier(){
-        return nodeIdentifier;
+        return this.nodeIdentifier;
+    }
+
+    public List<Node> getParentNodes(){
+        return this.parentNodes;
+    }
+
+    public void addParent(Node parent) {
+        this.parentNodes.add(parent);
     }
 
 }
