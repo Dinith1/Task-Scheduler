@@ -1,8 +1,10 @@
 .DS_Store
+bin/
 .idea/
 .vscode/
 target
 out/
+.iml
 .classpath
 .settings/
 .project
