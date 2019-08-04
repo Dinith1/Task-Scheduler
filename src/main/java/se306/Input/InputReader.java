@@ -13,18 +13,16 @@ public class InputReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
-    private List<Node> listOfSortedNodes = new ArrayList<>();
+    private int numberOfProcesses;
 
     /**
-     * Takes in a dot file, and parses it into Nodes and Edges, which are added into
-     * their respective ArrayLists
-     * 
-     * @param file
+     * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
+     * @param isr
      * @throws IOException
      */
-    public void readInput(File file) throws IOException {
+    public void readInput(InputStreamReader isr) throws IOException {
 
-        BufferedReader buffRead = new BufferedReader(new FileReader(file));
+        BufferedReader bufRead = new BufferedReader(isr);
 
         // Skip first line of file
         buffRead.readLine();
@@ -79,9 +77,31 @@ public class InputReader {
     }
 
     /**
-     * Takes in parameters of the node weight and node identifier and creates a new
-     * node object, then add it to a list of nodes
-     * 
+     * Takes in the command line arguments and produces number
+     * of processors to be used in algorithm
+     * @param input
+     */
+    public void parseCommandLineProcessorCount(String[] input) {
+        if (input.length == 0) {
+            System.out.println("No processors specified, defaulted to 1.");
+        } else if (input.length == 1 ) {
+            try {
+                int i = Integer.parseInt(input[0]);
+                numberOfProcesses = i;
+                System.out.println("Number of processors: " + i);
+                return;
+            } catch(NumberFormatException e) {
+                System.out.println("Unrecognised option, defaulted to 1 processor");
+            }
+        } else {
+            System.out.println("Too many arguments provided, defaulted to 1 processor");
+        }
+        numberOfProcesses = 1;
+    }
+
+    /**
+     * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
+     * to a list of nodes
      * @param weight
      * @param nodeIdentifier
      */
@@ -150,57 +170,4 @@ public class InputReader {
         return nodeIdentifier;
     }
 
-    /**
-     * Creates an order of nodes to be scheduled, only considering dependencies on parents.
-     *
-     * @param currentNode
-     */
-    private void addToSchedule(Node currentNode) {
-        // Iterate through all input nodes WITHOUT assuming the first node is the root node
-        while (!(listOfNodes.isEmpty())) {
-            if (currentNode.getParentNodes().isEmpty() || isAllParentsVisited(currentNode)) {
-                listOfSortedNodes.add(currentNode);
-                listOfNodes.remove(currentNode);
-                // Stop ordering once there are no more input nodes to iterate through
-                if (!(listOfNodes.isEmpty())) {
-                    currentNode = listOfNodes.element();
-                }
-            } else {
-                // Parent node must be ordered before the child
-                currentNode = getNextUnvisitedParent(currentNode);
-            }
-        }
-    }
-
-    /**
-     * Checks if all the parents of a node have been visited and returns true or false
-     *
-     * @param child
-     * @return boolean
-     */
-    private boolean isAllParentsVisited(Node child) {
-        boolean isAllVisited = true;
-        for (Node parent : child.getParentNodes()) {
-            if (!listOfSortedNodes.contains(parent)) {
-                isAllVisited = false;
-            }
-        }
-        return isAllVisited;
-    }
-
-    /**
-     * Finds the parents of a node and returns either an unvisited parent (in no particular order) or null if all have
-     * been visited
-     *
-     * @param child
-     * @return
-     */
-    private Node getNextUnvisitedParent(Node child) {
-        for (Node parent : child.getParentNodes()) {
-            if (!listOfSortedNodes.contains(parent)) {
-                return parent;
-            }
-        }
-        return null;
-    }
 }

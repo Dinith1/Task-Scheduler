@@ -4,6 +4,7 @@ bin/
 .vscode/
 target
 out/
+.iml
 .classpath
 .settings/
 .project
