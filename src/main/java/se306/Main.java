@@ -17,7 +17,7 @@ public class Main {
         // "src/resources/Nodes_9_SeriesParallel.dot"
         // "src/resources/Nodes_10_Random.dot"
         // "src/resources/Nodes_11_OutTree.dot"
-        File file = new File("src/resources/Nodes_8_Random.dot").getAbsoluteFile();
+        File file = new File("src/resources/Nodes_9_SeriesParallel.dot").getAbsoluteFile();
         InputReader inputReader = new InputReader();
         inputReader.readInput(file);
     }

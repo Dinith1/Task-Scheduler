@@ -78,9 +78,6 @@ public class InputReader {
         }
     }
 
-    public List<Node> getNodeList() {
-        return this.listOfNodes;
-    }
 
     /**
      * Takes in parameters of the node weight and node identifier and creates a new
