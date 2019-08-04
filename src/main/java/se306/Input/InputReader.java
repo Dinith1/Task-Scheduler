@@ -66,6 +66,10 @@ public class InputReader {
         }
     }
 
+    public List<Node> getNodeList() {
+        return this.listOfNodes;
+    }
+
     /**
      * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
      * to a list of nodes
@@ -132,4 +136,5 @@ public class InputReader {
         String nodeIdentifier = line.substring(0,iEnd);
         return nodeIdentifier;
     }
+
 }
