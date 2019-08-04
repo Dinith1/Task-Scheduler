@@ -37,7 +37,7 @@ public class Processor {
 
     /**
      * Takes a Node parameter as the node to be added to the processor, ensuring that communication costs are
-     * also taken into consideration //TODO
+     * also taken into consideration
      * @param node - the node to add to the schedule
      */
     public void addToSchedule(Node node) {
@@ -55,7 +55,8 @@ public class Processor {
     /**
      * Takes a Node parameter as the node to use to calculate communication costs, if any.
      * The processor currently ensures that if there is at least one parent that has not been scheduled in the
-     * current processor, communication costs exist.
+     * current processor, communication costs exist. It also ensures that all parents/dependencies are have
+     * completed their schedule before the child can be scheduled.
      * @param node - the node to add to calculate communication costs
      */
     private int calculateCommunicationCosts(Node node) {
@@ -63,26 +64,37 @@ public class Processor {
         // Obtain list of parents of the node
         List<Node> parentNodes = node.getParentNodes();
 
-        // Check if there is a parent that is NOT scheduled in this processor
-        for (Node parent : parentNodes) {
+        // Keep track of the maximum cost of all parents and use as a basis to schedule the child
+        int maxParentCost = 0;
+        Node maxParent = null;
 
+        // Find the parent with the latest schedule in another processor (if any)
+        for (Node parent : parentNodes) {
             if (!scheduledNodes.containsKey(parent)) {
 
                 // If scheduled in a different processor, obtain the minimum time/cost that the child
                 // node must be scheduled
                 int parentScheduleEnd = parent.getProcessor().getSchedule().get(parent);
-                int communicationCost = node.getIncomingEdge(parent).getEdgeWeight();
 
-                if (parentScheduleEnd > this.currentCost) {
-                    // Ensure that the child node is always scheduled after the parent node
-                    return (parentScheduleEnd - this.currentCost) + communicationCost;
-                } else {
-                    return communicationCost;
+                if (maxParentCost < parentScheduleEnd) {
+
+                    maxParentCost = parentScheduleEnd;
+                    maxParent = parent;
                 }
             }
         }
 
-        return 0;
+        // If there exists a parent that is scheduled in another processor, use a communication cost
+        if (maxParent != null) {
+            int communicationCost = node.getIncomingEdge(maxParent).getEdgeWeight();
+
+            if (maxParentCost > this.currentCost) {
+                // Ensure that the child node is always scheduled after the parent node
+                return (maxParentCost - this.currentCost) + communicationCost;
+
+            } else { return communicationCost; }
+
+        } else { return 0; }
     }
 
 
