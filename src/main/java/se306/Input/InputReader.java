@@ -1,16 +1,19 @@
 package se306.Input;
 
-import java.io.*;
-import java.sql.SQLOutput;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 public class InputReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
-    private HashSet<Node> storedNodes = new HashSet<>();
     private List<Node> listOfSortedNodes = new ArrayList<>();
-    private int c;
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
@@ -70,8 +73,8 @@ public class InputReader {
 
         addToSchedule(node);
 
-        for (int i = 0; i < listOfSortedNodes.size(); i++) {
-            System.out.println(listOfSortedNodes.get(i).getNodeIdentifier());
+        for (Node n : listOfSortedNodes) {
+            System.out.println(n.getNodeIdentifier());
         }
     }
 
@@ -147,44 +150,34 @@ public class InputReader {
         return nodeIdentifier;
     }
 
+    /**
+     * Creates an order of nodes to be scheduled, only considering dependencies on parents.
+     *
+     * @param currentNode
+     */
     private void addToSchedule(Node currentNode) {
-        while (!listOfNodes.isEmpty()) {
-            Node parent = null;
-            if (currentNode.getParentNodes().isEmpty() || ((parent = getNextUnvisitedParent(currentNode)) == null)) {
+        // Iterate through all input nodes WITHOUT assuming the first node is the root node
+        while (!(listOfNodes.isEmpty())) {
+            if (currentNode.getParentNodes().isEmpty() || isAllParentsVisited(currentNode)) {
                 listOfSortedNodes.add(currentNode);
                 listOfNodes.remove(currentNode);
-                System.out.println(currentNode.getNodeIdentifier());
+                // Stop ordering once there are no more input nodes to iterate through
+                if (!(listOfNodes.isEmpty())) {
+                    currentNode = listOfNodes.element();
+                }
             } else {
+                // Parent node must be ordered before the child
                 currentNode = getNextUnvisitedParent(currentNode);
             }
         }
     }
 
-    // private void addToSchedule(Node node) {
-    // c++;
-    // // System.out.println("........: " + c);
-    // while (!listOfNodes.isEmpty()) {
-    // Node parent = null;
-    // if (node.getParentNodes().isEmpty() || (!node.getParentNodes().isEmpty() &&
-    // ((parent = allParentsVisited(node)) == null))) { // Has no (unvisited)
-    // parents
-    // listOfSortedNodes.add(node);
-    // System.out.println("before pop " + node.getNodeIdentifier());
-    // storedNodes.add(node);
-    // listOfNodes.remove(node);
-    //
-    // node = listOfNodes.poll();
-    // System.out.println("after pop " + node.getNodeIdentifier());
-    // } else { // node must have an unvisited parent
-    // addToSchedule(parent);
-    //
-    // // System.out.println(parent.getNodeIdentifier());
-    // }
-    // }
-    // listOfSortedNodes.add(node);
-    //
-    // }
-
+    /**
+     * Checks if all the parents of a node have been visited and returns true or false
+     *
+     * @param child
+     * @return boolean
+     */
     private boolean isAllParentsVisited(Node child) {
         boolean isAllVisited = true;
         for (Node parent : child.getParentNodes()) {
@@ -195,6 +188,13 @@ public class InputReader {
         return isAllVisited;
     }
 
+    /**
+     * Finds the parents of a node and returns either an unvisited parent (in no particular order) or null if all have
+     * been visited
+     *
+     * @param child
+     * @return
+     */
     private Node getNextUnvisitedParent(Node child) {
         for (Node parent : child.getParentNodes()) {
             if (!listOfSortedNodes.contains(parent)) {
@@ -203,13 +203,4 @@ public class InputReader {
         }
         return null;
     }
-
-    // private Node allParentsVisited(Node child) {
-    // for (Node parent: child.getParentNodes()) {
-    // if (!storedNodes.contains(parent)) {
-    // return parent;
-    // }
-    // }
-    // return null;
-    // }
 }
