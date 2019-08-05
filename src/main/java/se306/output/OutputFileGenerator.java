@@ -14,7 +14,7 @@ public class OutputFileGenerator {
 
 	private PrintWriter writer;
 	private List<Line> lineInformation = new ArrayList<>();
-	private static final String OUTPUT_FILE_NAME = "./output.dot";
+	public final String OUTPUT_FILE_NAME = "./output.dot";
 
 	/**
 	 * Adds information on the process and start time to each line with node information,
