@@ -15,6 +15,7 @@ public class InputFileReader {
     private List<Edge> listOfEdges = new ArrayList<>();
     private int numberOfProcesses;
     private List<Node> listOfSortedNodes = new ArrayList<>();
+    private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
@@ -26,10 +27,9 @@ public class InputFileReader {
         BufferedReader buffRead = new BufferedReader(isr);
 
         // Skip first line of file
-        buffRead.readLine();
+        String line = buffRead.readLine();
 
-        String line;
-
+        outputFileGenerator.readLine(line);
         while ((line = buffRead.readLine()) != null) {
             String end = line.substring(0, 1);
 
@@ -37,7 +37,6 @@ public class InputFileReader {
             if (end.equalsIgnoreCase("}")) {
                 break;
             }
-
             // Only start reading if first seen character of a line is an number
             line = line.replaceAll("\\s", "");
             String firstDigit = line.substring(0, 1);
@@ -52,6 +51,7 @@ public class InputFileReader {
                     makeNode(currentWeight, nodeIdentifier);
 
                 } else { // Handle edges
+                    outputFileGenerator.readLine(line);
                     // Get start node of edge
                     String startNode = line.substring(0, line.indexOf("-"));
 
@@ -105,6 +105,7 @@ public class InputFileReader {
     private void makeNode(int weight, String nodeIdentifier) {
         Node currentNode = new Node(weight, nodeIdentifier);
         listOfNodes.add(currentNode);
+        outputFileGenerator.readLine(currentNode);
         System.out.println("Added node " + currentNode.getNodeIdentifier() + " with weight = "
                 + currentNode.getNodeWeight() + " to node list");
     }
@@ -135,7 +136,6 @@ public class InputFileReader {
         startNode.addOutGoingEdges(currentEdge);
         endNode.addIncomingEdges(currentEdge);
         listOfEdges.add(currentEdge);
-
         System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
                 + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()
                 + " to edge list");
@@ -188,7 +188,7 @@ public class InputFileReader {
                 currentNode = getNextUnvisitedParent(currentNode);
             }
         }
-        OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
+
         Scheduling scheduling = new Scheduling();
         scheduling.createSchedule(numberOfProcesses, listOfSortedNodes);
         outputFileGenerator.generateFile(scheduling.getProcessorList());
