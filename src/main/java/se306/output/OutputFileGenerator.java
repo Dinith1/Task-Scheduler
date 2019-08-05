@@ -12,7 +12,7 @@ import java.util.Map;
 public class OutputFileGenerator {
 
 	private PrintWriter writer;
-	private static final String OUTPUT_FILE_NAME = "../output.dot";
+	private static final String OUTPUT_FILE_NAME = "./output.dot";
 
 
 	public OutputFileGenerator() {
