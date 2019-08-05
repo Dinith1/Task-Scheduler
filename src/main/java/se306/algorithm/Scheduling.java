@@ -25,6 +25,8 @@ public class Scheduling {
      * @param listOfSortedNodes - the list of nodes that are in sorted order from InputReader class
      */
     public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes){
+
+        // Creates the number of processes specified by the user
         createProcessors(numberOfProcessors);
 
         /**
