@@ -8,6 +8,8 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InputFileReader {
 
@@ -37,34 +39,35 @@ public class InputFileReader {
             if (end.equalsIgnoreCase("}")) {
                 break;
             }
-            // Only start reading if first seen character of a line is an number
-            //TODO: at the moment this line removes the lines that aren't important but file 10 would output incorrectly
-            line = line.replaceAll("\\s", "");
-            String firstDigit = line.substring(0, 1);
-
-            if (firstDigit.matches("\\d")) {
-
-                // If "->" appears, it means it is an edge, otherwise it is a node.
-                // Get the node identifier and weight then make a Node object
-                if (line.indexOf("->") == -1) { // Handle nodes
-                    int currentWeight = findEdgeWeight(line);
-                    String nodeIdentifier = parseNodeIdentifier(line);
-                    makeNode(currentWeight, nodeIdentifier);
-
-                } else { // Handle edges
-                    // Get start node of edge
-                    String startNode = line.substring(0, line.indexOf("-"));
-
-                    // Get end node of edge
-                    String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-
-                    int edgeWeight = findEdgeWeight(line);
-
-                    makeEdge(startNode, endNode, edgeWeight);
-                }
-
+            // If the line is not a line that includes a node or an edge
+            Pattern p = Pattern.compile(".*\\[Weight=[0-9]\\];");
+            Matcher m = p.matcher(line);
+            if (!m.matches()) {
+                outputFileGenerator.readLine(line);
+                continue;
             }
+
+            // If "->" appears, it means it is an edge, otherwise it is a node.
+            // Get the node identifier and weight then make a Node object
+            if (line.indexOf("->") == -1) { // Handle nodes
+                int currentWeight = findEdgeWeight(line);
+                String nodeIdentifier = parseNodeIdentifier(line);
+                makeNode(currentWeight, nodeIdentifier);
+
+            } else { // Handle edges
+                // Get start node of edge
+                String startNode = line.substring(0, line.indexOf("-"));
+
+                // Get end node of edge
+                String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
+
+                int edgeWeight = findEdgeWeight(line);
+
+                makeEdge(startNode, endNode, edgeWeight);
+            }
+
         }
+
 
         buffRead.close();
 
