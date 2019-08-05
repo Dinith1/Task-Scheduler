@@ -2,9 +2,9 @@ package se306;
 
 import org.junit.Before;
 import org.junit.Test;
-import se306.Algorithm.Processor;
-import se306.Input.Edge;
-import se306.Input.Node;
+import se306.algorithm.Processor;
+import se306.input.Edge;
+import se306.input.Node;
 
 import static org.junit.Assert.assertEquals;
 

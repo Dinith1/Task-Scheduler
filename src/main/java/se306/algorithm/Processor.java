@@ -1,6 +1,6 @@
-package se306.Algorithm;
+package se306.algorithm;
 
-import se306.Input.Node;
+import se306.input.Node;
 
 import java.util.HashMap;
 import java.util.List;

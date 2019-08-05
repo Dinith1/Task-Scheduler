@@ -1,4 +1,7 @@
-package se306.Input;
+package se306.input;
+
+import se306.algorithm.Scheduling;
+import se306.output.OutputFileGenerator;
 
 import java.io.*;
 import java.util.ArrayDeque;
@@ -6,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-public class InputReader {
+public class InputFileReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
@@ -68,10 +71,6 @@ public class InputReader {
         Node node = (listOfNodes.size() > 0) ? listOfNodes.peek() : null;
 
         addToSchedule(node);
-
-        for (Node n : listOfSortedNodes) {
-            System.out.println(n.getNodeIdentifier());
-        }
     }
 
     /**
@@ -189,6 +188,10 @@ public class InputReader {
                 currentNode = getNextUnvisitedParent(currentNode);
             }
         }
+        OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
+        Scheduling scheduling = new Scheduling();
+        scheduling.createSchedule(numberOfProcesses, listOfSortedNodes);
+        outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 
     /**
