@@ -15,57 +15,52 @@ public class OutputFileGenerator {
 	private List<Line> lineInformation = new ArrayList<>();
 	private static final String OUTPUT_FILE_NAME = "./output.dot";
 
-
-	public OutputFileGenerator() {
-		try {
-			writer = new PrintWriter(OUTPUT_FILE_NAME);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Adds information on the process and start time to each line with node information,
 	 * this information will need to be outputted. Directly accesses the Line class to make the
 	 * change
 	 *
-	 * @param processor
-	 * @param node
-	 */
-	private void addProcessorsToLines(Processor processor, Node node) {
-		for (Line line : lineInformation) {
-			if (node.equals(line.node)) {
-				line.setProcessor(processor);
-				line.setNodeStartTime(processor.getSchedule().get(node).intValue());
-			}
-		}
-	}
-
-	/**
-	 * Steps to generate the file and writes it
-	 *
 	 * @param processorList
 	 */
-	public void generateFile(List<Processor> processorList) {
+	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
 			Iterator it = processor.getSchedule().entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
 				Node node = (Node) pair.getKey();
-//				writer.println(node.getNodeIdentifier() + " = " + pair.getValue() + " = " + processor.getProcessorIdentifier());
-				addProcessorsToLines(processor, node);
+				for (Line line : lineInformation) {
+					if (node.equals(line.node)) {
+						line.setProcessor(processor);
+						line.setNodeStartTime(processor.getSchedule().get(node).intValue());
+					}
+				}
 				it.remove(); // avoids a ConcurrentModificationException
-				//TODO: remove code from below here, debugging purposes only
-				System.out.println(pair.getValue());
 			}
 		}
+	}
+
+	/**
+	 * Steps to generate the file after gathering data from inputs.
+	 * This method assigns processors to the nodes to be printed
+	 *
+	 */
+	public void generateFile(List<Processor> processorList) {
+		addProcessorsToLines(processorList);
 		printLinesToFile();
 		closeWriter();
 	}
 
+	/**
+	 * Prints each of the lines to the file, logic handled by the Line inner class
+	 */
 	private void printLinesToFile() {
-		for (Line line : lineInformation) {
-			writer.println(line.getStringLine());
+		try {
+			writer = new PrintWriter(OUTPUT_FILE_NAME);
+			for (Line line : lineInformation) {
+				writer.println(line.getStringLine());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -82,7 +77,7 @@ public class OutputFileGenerator {
 
 	/**
 	 * Reads the lines that do not specify a node, e.g. lines for edges or other redundant lines
-	 * and directly prints it out
+	 * and records them as String lines to be outputted later
 	 *
 	 * @param line
 	 */
@@ -100,14 +95,14 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * Stores information on lines, may need to change later since its a data class, but I
+	 * Stores information of lines, may need to change later since its a data class, but I
 	 * cannot think of any ways to do it another way.
 	 */
 	private class Line {
 		private Node node;
-		private Processor processor;
-		private String nonNodeLine;
-		private int nodeStartTime;
+		private Processor processor; // processor that the node represented in the line
+		private String nonNodeLine; //directly copy any strings that are not node information
+		private int nodeStartTime; //start time of node represented in this line
 
 		void setNode(Node node) {
 			this.node = node;
@@ -125,14 +120,11 @@ public class OutputFileGenerator {
 			this.nodeStartTime = nodeStartTime;
 		}
 
-		Node getNode() {
-			return this.node;
-		}
-
-		Processor getProcessor() {
-			return this.processor;
-		}
-
+		/**
+		 * Outputs the line if its not a node line (if its an edge line or redundant data line)
+		 * Otherwise combine the node data to be formatted to the output.
+		 * @return
+		 */
 		String getStringLine() {
 			if (node != null) {
 				String lineToOutput = node.getNodeIdentifier() + "\t" + "[Weight=" + node.getNodeWeight()
