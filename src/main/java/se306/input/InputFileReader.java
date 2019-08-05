@@ -38,6 +38,7 @@ public class InputFileReader {
                 break;
             }
             // Only start reading if first seen character of a line is an number
+            //TODO: at the moment this line removes the lines that aren't important but file 10 would output incorrectly
             line = line.replaceAll("\\s", "");
             String firstDigit = line.substring(0, 1);
 
@@ -51,7 +52,6 @@ public class InputFileReader {
                     makeNode(currentWeight, nodeIdentifier);
 
                 } else { // Handle edges
-                    outputFileGenerator.readLine(line);
                     // Get start node of edge
                     String startNode = line.substring(0, line.indexOf("-"));
 
@@ -135,6 +135,7 @@ public class InputFileReader {
         Edge currentEdge = new Edge(startNode, endNode, edgeWeight);
         startNode.addOutGoingEdges(currentEdge);
         endNode.addIncomingEdges(currentEdge);
+        outputFileGenerator.readLine(currentEdge);
         listOfEdges.add(currentEdge);
         System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
                 + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()

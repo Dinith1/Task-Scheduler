@@ -1,6 +1,7 @@
 package se306.output;
 
 import se306.algorithm.Processor;
+import se306.input.Edge;
 import se306.input.Node;
 
 import java.io.*;
@@ -59,31 +60,27 @@ public class OutputFileGenerator {
 			for (Line line : lineInformation) {
 				writer.println(line.getStringLine());
 			}
+			writer.println("}");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Reads the line as InputFileReader is doing its thing and gets the information of the nodes
-	 *
-	 * @param node
+	 * checks the object type of input line, if its a node, edge, or other redundant data
+	 * Store the information appropriately, handled by the Line class
+	 * @param lineInfo
 	 */
-	public void readLine(Node node) {
+	public void readLine(Object lineInfo) {
 		Line newLine = new Line();
-		newLine.setNode(node);
-		lineInformation.add(newLine);
-	}
+		if (lineInfo instanceof Node) {
+			newLine.setNode((Node)lineInfo);
+		} else if (lineInfo instanceof Edge) {
+			newLine.setEdge((Edge)lineInfo);
+		} else if (lineInfo instanceof String) {
+			newLine.recordLine((String)lineInfo);
+		}
 
-	/**
-	 * Reads the lines that do not specify a node, e.g. lines for edges or other redundant lines
-	 * and records them as String lines to be outputted later
-	 *
-	 * @param line
-	 */
-	public void readLine(String line) {
-		Line newLine = new Line();
-		newLine.recordLine(line);
 		lineInformation.add(newLine);
 	}
 
@@ -100,6 +97,7 @@ public class OutputFileGenerator {
 	 */
 	private class Line {
 		private Node node;
+		private Edge edge;
 		private Processor processor; // processor that the node represented in the line
 		private String nonNodeLine; //directly copy any strings that are not node information
 		private int nodeStartTime; //start time of node represented in this line
@@ -116,6 +114,10 @@ public class OutputFileGenerator {
 			this.nonNodeLine = line;
 		}
 
+		void setEdge(Edge edge) {
+			this.edge = edge;
+		}
+
 		void setNodeStartTime(int nodeStartTime) {
 			this.nodeStartTime = nodeStartTime;
 		}
@@ -127,9 +129,13 @@ public class OutputFileGenerator {
 		 */
 		String getStringLine() {
 			if (node != null) {
-				String lineToOutput = node.getNodeIdentifier() + "\t" + "[Weight=" + node.getNodeWeight()
+				String lineToOutput = "\t" + node.getNodeIdentifier() + "\t\t[Weight=" + node.getNodeWeight()
 						+ ",Start=" + this.nodeStartTime + ",Processor=" + processor.getProcessorIdentifier()
 						+ "];";
+				return lineToOutput;
+			} else if (edge != null) {
+				String lineToOutput = "\t" + edge.getNodeStart().getNodeIdentifier() + " -> " +
+						edge.getNodeEnd().getNodeIdentifier() + "\t[Weight=" + edge.getEdgeWeight() + "];";
 				return lineToOutput;
 			} else {
 				return this.nonNodeLine;

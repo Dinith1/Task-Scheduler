@@ -105,16 +105,4 @@ public class Processor {
 
         } else { return 0; }
     }
-
-//    public getContents() {
-//
-//        for (Map.Entry<Node, Integer> entry : scheduledNodes.entrySet()) {
-//            Node node = entry.getKey();
-//            Integer finishingCost = entry.getValue();
-//
-//            // TODO for @Allen's Output
-//        }
-//    }
-
-
 }
