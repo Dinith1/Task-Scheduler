@@ -100,6 +100,15 @@ public class InputFileReader {
     }
 
     /**
+     * Parse all command line arguments
+     * @param input
+     */
+    public void parseCommandLineArguments(String[] input) {
+        //TODO: parse command line arguments as stated in the brief.
+        numberOfProcesses = 3;
+    }
+
+    /**
      * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
      * to a list of nodes
      * @param weight

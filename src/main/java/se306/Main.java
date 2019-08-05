@@ -20,7 +20,7 @@ public class Main {
         InputStream in = Main.class.getResourceAsStream("/Nodes_10_Random.dot");
         InputStreamReader isr = new InputStreamReader(in);
         InputFileReader inputFileReader = new InputFileReader();
-        inputFileReader.parseCommandLineProcessorCount(args);
+        inputFileReader.parseCommandLineArguments(args);
         inputFileReader.readInput(isr);
     }
 }
