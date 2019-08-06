@@ -1,10 +1,10 @@
 package se306;
 
-import se306.Input.InputReader;
+import se306.input.InputFileReader;
 
 import java.io.*;
 
-//Main class to test InputReader functionality
+//Main class to test InputFileReader functionality
 public class Main {
 
 
@@ -17,11 +17,11 @@ public class Main {
         // "src/resources/Nodes_10_Random.dot"
         // "src/resources/Nodes_11_OutTree.dot"
 
-        InputStream in = Main.class.getResourceAsStream("/Nodes_9_SeriesParallel.dot");
+        InputStream in = Main.class.getResourceAsStream("/Nodes_10_Random.dot");
         InputStreamReader isr = new InputStreamReader(in);
-        InputReader inputReader = new InputReader();
-        inputReader.parseCommandLineProcessorCount(args);
-        inputReader.readInput(isr);
+        InputFileReader inputFileReader = new InputFileReader();
+        inputFileReader.parseCommandLineArguments(args);
+        inputFileReader.readInput(isr);
     }
 }
 

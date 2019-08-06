@@ -1,6 +1,6 @@
-package se306.Input;
+package se306.input;
 
-import se306.Algorithm.Processor;
+import se306.algorithm.Processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +78,6 @@ public class Node {
     public void assignProcessor(Processor proc) { this.procScheduledInto = proc; }
 
     public Processor getProcessor() { return this.procScheduledInto; }
+
 
 }

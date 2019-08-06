@@ -1,17 +1,23 @@
-package se306.Input;
+package se306.input;
+
+import se306.algorithm.Scheduling;
+import se306.output.OutputFileGenerator;
 
 import java.io.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class InputReader {
+public class InputFileReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
     private int numberOfProcesses;
     private List<Node> listOfSortedNodes = new ArrayList<>();
+    private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
@@ -23,10 +29,9 @@ public class InputReader {
         BufferedReader buffRead = new BufferedReader(isr);
 
         // Skip first line of file
-        buffRead.readLine();
+        String line = buffRead.readLine();
 
-        String line;
-
+        outputFileGenerator.readLine(line);
         while ((line = buffRead.readLine()) != null) {
             String end = line.substring(0, 1);
 
@@ -34,44 +39,41 @@ public class InputReader {
             if (end.equalsIgnoreCase("}")) {
                 break;
             }
-
-            // Only start reading if first seen character of a line is an number
-            line = line.replaceAll("\\s", "");
-            String firstDigit = line.substring(0, 1);
-
-            if (firstDigit.matches("\\d")) {
-
-                // If "->" appears, it means it is an edge, otherwise it is a node.
-                // Get the node identifier and weight then make a Node object
-                if (line.indexOf("->") == -1) { // Handle nodes
-                    int currentWeight = findEdgeWeight(line);
-                    String nodeIdentifier = parseNodeIdentifier(line);
-                    makeNode(currentWeight, nodeIdentifier);
-
-                } else { // Handle edges
-                    // Get start node of edge
-                    String startNode = line.substring(0, line.indexOf("-"));
-
-                    // Get end node of edge
-                    String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-
-                    int edgeWeight = findEdgeWeight(line);
-
-                    makeEdge(startNode, endNode, edgeWeight);
-                }
-
+            // If the line is not a line that includes a node or an edge
+            Pattern p = Pattern.compile(".*\\[Weight=[0-9]\\];");
+            Matcher m = p.matcher(line);
+            if (!m.matches()) {
+                outputFileGenerator.readLine(line);
+                continue;
             }
+
+            // If "->" appears, it means it is an edge, otherwise it is a node.
+            // Get the node identifier and weight then make a Node object
+            if (line.indexOf("->") == -1) { // Handle nodes
+                int currentWeight = findEdgeWeight(line);
+                String nodeIdentifier = parseNodeIdentifier(line);
+                makeNode(currentWeight, nodeIdentifier);
+
+            } else { // Handle edges
+                // Get start node of edge
+                String startNode = line.substring(0, line.indexOf("-"));
+
+                // Get end node of edge
+                String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
+
+                int edgeWeight = findEdgeWeight(line);
+
+                makeEdge(startNode, endNode, edgeWeight);
+            }
+
         }
+
 
         buffRead.close();
 
         Node node = (listOfNodes.size() > 0) ? listOfNodes.peek() : null;
 
         addToSchedule(node);
-
-        for (Node n : listOfSortedNodes) {
-            System.out.println(n.getNodeIdentifier());
-        }
     }
 
     /**
@@ -98,6 +100,15 @@ public class InputReader {
     }
 
     /**
+     * Parse all command line arguments
+     * @param input
+     */
+    public void parseCommandLineArguments(String[] input) {
+        //TODO: parse command line arguments as stated in the brief.
+        numberOfProcesses = 3;
+    }
+
+    /**
      * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
      * to a list of nodes
      * @param weight
@@ -106,6 +117,7 @@ public class InputReader {
     private void makeNode(int weight, String nodeIdentifier) {
         Node currentNode = new Node(weight, nodeIdentifier);
         listOfNodes.add(currentNode);
+        outputFileGenerator.readLine(currentNode);
         System.out.println("Added node " + currentNode.getNodeIdentifier() + " with weight = "
                 + currentNode.getNodeWeight() + " to node list");
     }
@@ -135,8 +147,8 @@ public class InputReader {
         Edge currentEdge = new Edge(startNode, endNode, edgeWeight);
         startNode.addOutGoingEdges(currentEdge);
         endNode.addIncomingEdges(currentEdge);
+        outputFileGenerator.readLine(currentEdge);
         listOfEdges.add(currentEdge);
-
         System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
                 + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()
                 + " to edge list");
@@ -189,6 +201,10 @@ public class InputReader {
                 currentNode = getNextUnvisitedParent(currentNode);
             }
         }
+
+        Scheduling scheduling = new Scheduling();
+        scheduling.createSchedule(numberOfProcesses, listOfSortedNodes);
+        outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 
     /**

@@ -1,10 +1,9 @@
-package se306.Algorithm;
+package se306.algorithm;
 
-import se306.Input.Node;
+import se306.input.Node;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Processor {
 
@@ -106,16 +105,4 @@ public class Processor {
 
         } else { return 0; }
     }
-
-//    public getContents() {
-//
-//        for (Map.Entry<Node, Integer> entry : scheduledNodes.entrySet()) {
-//            Node node = entry.getKey();
-//            Integer finishingCost = entry.getValue();
-//
-//            // TODO for @Allen's Output
-//        }
-//    }
-
-
 }
