@@ -1,12 +1,18 @@
 # SE306.Project1
 
+## Run from IntelliJ
+1. Keep .dot files on the top project directory.
+2. Change run configuration to include command line inputs to your liking
+3. Run Main.main()
+4. The output file should be in your top level directory of project
+
 ## Build Maven project
 
 1. Run `mvn package`. This should generate a target folder on top directory
 2. Open up a terminal and cd to the target folder
-3. Run `java -jar project1-1.0-SNAPSHOT-jar-with-dependencies.jar`
-4. It should run fine, if not, run `mvn clean` and try again. If it still doesn't work then Google it or let Allen know
-and he will update this readme.
+3. Run `scheduler.jar`
+4. It should run fine, if not, run `mvn clean` and try again.
+5. The output file should be in the same directory as your jar. i.e top level directory in target folder
 
 ## For IntelliJ or eclipse users
 
