@@ -39,7 +39,7 @@ public class InputFileReader {
                 break;
             }
             // If the line is not a line that includes a node or an edge
-            Pattern p = Pattern.compile(".*\\[Weight=/[0-9]+/\\];");
+            Pattern p = Pattern.compile(".*\\[Weight=.*];");
             Matcher m = p.matcher(line);
             if (!m.matches()) {
                 outputFileGenerator.readLine(line);
@@ -56,12 +56,11 @@ public class InputFileReader {
             } else { // Handle edges
                 // Get start node of edge
                 String startNode = line.substring(0, line.indexOf("-"));
-
+                startNode = startNode.replaceAll("\\s+","");
                 // Get end node of edge
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-
+                endNode = endNode.replaceAll("\\s+","");
                 int edgeWeight = findEdgeWeight(line);
-
                 makeEdge(startNode, endNode, edgeWeight);
             }
 
