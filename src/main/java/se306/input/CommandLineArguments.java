@@ -3,6 +3,9 @@ package se306.input;
 import com.google.devtools.common.options.Option;
 import com.google.devtools.common.options.OptionsBase;
 
+/**
+ * This class is used to store information on command line arguments only
+ */
 public class CommandLineArguments extends OptionsBase{
 	@Option(
 			name = "input-file",

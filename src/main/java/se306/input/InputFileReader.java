@@ -39,7 +39,7 @@ public class InputFileReader {
                 break;
             }
             // If the line is not a line that includes a node or an edge
-            Pattern p = Pattern.compile(".*\\[Weight=[0-9]\\];");
+            Pattern p = Pattern.compile(".*\\[Weight=/[0-9]+/\\];");
             Matcher m = p.matcher(line);
             if (!m.matches()) {
                 outputFileGenerator.readLine(line);
@@ -85,8 +85,6 @@ public class InputFileReader {
         Node currentNode = new Node(weight, nodeIdentifier);
         listOfNodes.add(currentNode);
         outputFileGenerator.readLine(currentNode);
-        System.out.println("Added node " + currentNode.getNodeIdentifier() + " with weight = "
-                + currentNode.getNodeWeight() + " to node list");
     }
 
     /**

@@ -29,7 +29,7 @@ public class CommandLineParser {
 	private CommandLineParser()
 	{
 		numberOfProcesses = 2;
-		outputFileName = "/output.dot";
+		outputFileName = "output.dot";
 	}
 
 	// static method to create instance of Singleton class
