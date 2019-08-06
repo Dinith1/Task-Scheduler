@@ -1,6 +1,7 @@
 package se306;
 
 import org.junit.Test;
+import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 import se306.output.OutputFileGenerator;
 
@@ -38,8 +39,7 @@ public class IOTests
 			InputStreamReader isr = new InputStreamReader(in);
 
 			InputFileReader inputFileReader = new InputFileReader();
-			String[] commandLineInput = {"2"};
-			inputFileReader.parseCommandLineProcessorCount(commandLineInput);
+			CommandLineParser.getInstance().getNumberOfProcesses();
 
 			try {
 				inputFileReader.readInput(isr);

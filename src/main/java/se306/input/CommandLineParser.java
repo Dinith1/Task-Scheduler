@@ -1,4 +1,71 @@
 package se306.input;
 
+import com.google.devtools.common.options.OptionsParser;
+
+import java.util.Collections;
+
+/**
+ * Singleton class for parsing command line inputs
+ */
 public class CommandLineParser {
+	private static CommandLineParser commandLineParser_instance = null;
+	private String inputFileName;
+	private String outputFileName;
+	private int numberOfProcesses;
+
+	public int getNumberOfProcesses() {
+		return numberOfProcesses;
+	}
+
+	public String getInputFileName() {
+		return inputFileName;
+	}
+
+	public String getOutputFileName() {
+		return outputFileName;
+	}
+
+	// private constructor restricted to this class itself
+	private CommandLineParser()
+	{
+		numberOfProcesses = 2;
+		outputFileName = "/output.dot";
+	}
+
+	// static method to create instance of Singleton class
+	public static CommandLineParser getInstance()
+	{
+		if (commandLineParser_instance == null)
+			commandLineParser_instance = new CommandLineParser();
+
+		return commandLineParser_instance;
+	}
+
+	/**
+	 * Parse all command line arguments
+	 * @param input
+	 */
+	public void parseCommandLineArguments(String[] input) {
+		OptionsParser parser = OptionsParser.newOptionsParser(CommandLineArguments.class);
+		parser.parseAndExitUponError(input);
+		CommandLineArguments options = parser.getOptions(CommandLineArguments.class);
+		if (options.inputFile.isEmpty() || options.numberOfCores < 0 || options.numberOfProcessors < 1) {
+			printUsage(parser);
+			return;
+		}
+
+		numberOfProcesses = options.numberOfProcessors;
+		System.out.println(numberOfProcesses);
+		inputFileName = "/" + options.inputFile;
+		System.out.println(inputFileName);
+		outputFileName = options.outputFile;
+		System.out.println(outputFileName);
+
+	}
+
+	private static void printUsage(OptionsParser parser) {
+		System.out.println("Usage: java -jar scheduler.jar [OPTIONS]");
+		System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(),
+				OptionsParser.HelpVerbosity.LONG));
+	}
 }
