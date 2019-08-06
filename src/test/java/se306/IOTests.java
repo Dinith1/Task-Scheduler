@@ -24,8 +24,8 @@ public class IOTests
 
 		// Resources provided as example input graphs
 		List<String> pathNames = new ArrayList<>();
-//		pathNames.add("/Nodes_7_OutTree.dot");
-//		pathNames.add("/Nodes_8_Random.dot");
+		pathNames.add("/Nodes_7_OutTree.dot");
+		pathNames.add("/Nodes_8_Random.dot");
 		pathNames.add("/Nodes_9_SeriesParallel.dot");
 		pathNames.add("/Nodes_10_Random.dot");
 		pathNames.add("/Nodes_11_OutTree.dot");

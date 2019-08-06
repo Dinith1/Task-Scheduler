@@ -25,14 +25,19 @@ public class CommandLineParser {
 		return outputFileName;
 	}
 
-	// private constructor restricted to this class itself
+	/**
+	 * Private constructor only called by this class
+	 */
 	private CommandLineParser()
 	{
 		numberOfProcesses = 2;
 		outputFileName = "output.dot";
 	}
 
-	// static method to create instance of Singleton class
+	/**
+	 * Static method to return single instance of singleton class
+	 * @return
+	 */
 	public static CommandLineParser getInstance()
 	{
 		if (commandLineParser_instance == null)
