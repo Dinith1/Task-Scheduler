@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class SchedulerTests {
+public class SchedulerTest {
 
     private List<Node> orderedListNode = new ArrayList<>();
     Node a;
@@ -24,26 +24,26 @@ public class SchedulerTests {
     Node g;
 
     /*
-    * This test case mimics Nodes_7_OutTree.dot
-    */
+     * This test case mimics Nodes_7_OutTree.dot
+     */
     @Before
     public void setupNodes_7_OutTree() {
 
-        //Create nodes
-       a = new Node(5,"0");
-       b = new Node(6,"1");
-       c = new Node(5,"2");
-       d = new Node(6,"3");
-       e = new Node(4,"4");
-       f = new Node(7,"5");
-       g = new Node(7,"6");
+        // Create nodes
+        a = new Node(5, "0");
+        b = new Node(6, "1");
+        c = new Node(5, "2");
+        d = new Node(6, "3");
+        e = new Node(4, "4");
+        f = new Node(7, "5");
+        g = new Node(7, "6");
         // Create and setup Edges
-        Edge ab = new Edge(a,b,15);
-        Edge ac = new Edge(a,c,11);
-        Edge ad = new Edge(a,d,11);
-        Edge be = new Edge(b,e,19);
-        Edge bf = new Edge(b,f,4);
-        Edge bg = new Edge(b,g,21);
+        Edge ab = new Edge(a, b, 15);
+        Edge ac = new Edge(a, c, 11);
+        Edge ad = new Edge(a, d, 11);
+        Edge be = new Edge(b, e, 19);
+        Edge bf = new Edge(b, f, 4);
+        Edge bg = new Edge(b, g, 21);
 
         // Initialise node a
         a.addOutGoingEdges(ab);
@@ -77,48 +77,49 @@ public class SchedulerTests {
         orderedListNode.add(f);
         orderedListNode.add(g);
 
-
-
     }
+
     /**
-     * This test case mimics the Nodes_7_OutTree.dot with 2 processors and checks that the scheduling times are correct
-     * and each node is in the correct processor
+     * This test case mimics the Nodes_7_OutTree.dot with 2 processors and checks
+     * that the scheduling times are correct and each node is in the correct
+     * processor
      */
 
     @Test
     public void testCreateSchedulerWithNodes_7_OutTree_2Processors() {
         Scheduling scheduler = new Scheduling();
 
-        scheduler.createSchedule(2,orderedListNode);
+        scheduler.createSchedule(2, orderedListNode);
         List<Processor> processList = scheduler.getProcessorList();
 
         Processor p1 = processList.get(0);
         Processor p2 = processList.get(1);
 
         assertEquals((Integer) 5, p1.getSchedule().get(a));
-        assertEquals((Integer) 10,  p1.getSchedule().get(c));
+        assertEquals((Integer) 10, p1.getSchedule().get(c));
         assertEquals((Integer) 16, p1.getSchedule().get(d));
-        assertEquals((Integer) 49,  p1.getSchedule().get(e));
+        assertEquals((Integer) 49, p1.getSchedule().get(e));
         assertEquals((Integer) 26, p2.getSchedule().get(b));
-        assertEquals((Integer) 33,  p2.getSchedule().get(f));
+        assertEquals((Integer) 33, p2.getSchedule().get(f));
         assertEquals((Integer) 40, p2.getSchedule().get(g));
 
     }
 
     /**
-     * Tests that the comparator works for reordering based on process identifier number
+     * Tests that the comparator works for reordering based on process identifier
+     * number
      */
     @Test
-    public void testGetProcessList(){
+    public void testGetProcessList() {
         Scheduling scheduler = new Scheduling();
 
-        scheduler.createSchedule(4,orderedListNode);
+        scheduler.createSchedule(4, orderedListNode);
         List<Processor> processList = scheduler.getProcessorList();
 
-        assertEquals("0",processList.get(0).getProcessorIdentifier());
-        assertEquals("1",processList.get(1).getProcessorIdentifier());
-        assertEquals("2",processList.get(2).getProcessorIdentifier());
-        assertEquals("3",processList.get(3).getProcessorIdentifier());
+        assertEquals("0", processList.get(0).getProcessorIdentifier());
+        assertEquals("1", processList.get(1).getProcessorIdentifier());
+        assertEquals("2", processList.get(2).getProcessorIdentifier());
+        assertEquals("3", processList.get(3).getProcessorIdentifier());
 
     }
 
