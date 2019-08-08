@@ -14,6 +14,7 @@ public class Processor {
 
     public Processor(String processorIdentifier) {
         scheduledNodes = new HashMap<>();
+        startTimes = new HashMap<>();
         currentCost = 0;
         this.processorIdentifier = processorIdentifier;
     }
