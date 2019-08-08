@@ -1,36 +1,36 @@
-package se306.Input;
+package se306.input;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import se306.algorithm.Scheduling;
+import se306.output.OutputFileGenerator;
+
+import java.io.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class InputReader {
+public class InputFileReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
     private List<Node> listOfSortedNodes = new ArrayList<>();
+    private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
     /**
-     * Takes in a dot file, and parses it into Nodes and Edges, which are added into
-     * their respective ArrayLists
-     * 
-     * @param file
+     * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
+     * @param isr
      * @throws IOException
      */
-    public void readInput(File file) throws IOException {
+    public void readInput(InputStreamReader isr) throws IOException {
 
-        BufferedReader buffRead = new BufferedReader(new FileReader(file));
+        BufferedReader buffRead = new BufferedReader(isr);
 
         // Skip first line of file
-        buffRead.readLine();
+        String line = buffRead.readLine();
 
-        String line;
-
+        outputFileGenerator.readLine(line);
         while ((line = buffRead.readLine()) != null) {
             String end = line.substring(0, 1);
 
@@ -38,59 +38,53 @@ public class InputReader {
             if (end.equalsIgnoreCase("}")) {
                 break;
             }
-
-            // Only start reading if first seen character of a line is an number
-            line = line.replaceAll("\\s", "");
-            String firstDigit = line.substring(0, 1);
-
-            if (firstDigit.matches("\\d")) {
-
-                // If "->" appears, it means it is an edge, otherwise it is a node.
-                // Get the node identifier and weight then make a Node object
-                if (line.indexOf("->") == -1) { // Handle nodes
-                    int currentWeight = findEdgeWeight(line);
-                    String nodeIdentifier = parseNodeIdentifier(line);
-                    makeNode(currentWeight, nodeIdentifier);
-
-                } else { // Handle edges
-                    // Get start node of edge
-                    String startNode = line.substring(0, line.indexOf("-"));
-
-                    // Get end node of edge
-                    String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-
-                    int edgeWeight = findEdgeWeight(line);
-
-                    makeEdge(startNode, endNode, edgeWeight);
-                }
-
+            // If the line is not a line that includes a node or an edge
+            Pattern p = Pattern.compile(".*\\[Weight=.*];");
+            Matcher m = p.matcher(line);
+            if (!m.matches()) {
+                outputFileGenerator.readLine(line);
+                continue;
             }
+
+            // If "->" appears, it means it is an edge, otherwise it is a node.
+            // Get the node identifier and weight then make a Node object
+            if (line.indexOf("->") == -1) { // Handle nodes
+                int currentWeight = findEdgeWeight(line);
+                String nodeIdentifier = parseNodeIdentifier(line);
+                makeNode(currentWeight, nodeIdentifier);
+
+            } else { // Handle edges
+                // Get start node of edge
+                String startNode = line.substring(0, line.indexOf("-"));
+                startNode = startNode.replaceAll("\\s+","");
+                // Get end node of edge
+                String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
+                endNode = endNode.replaceAll("\\s+","");
+                int edgeWeight = findEdgeWeight(line);
+                makeEdge(startNode, endNode, edgeWeight);
+            }
+
         }
+
 
         buffRead.close();
 
         Node node = (listOfNodes.size() > 0) ? listOfNodes.peek() : null;
 
         addToSchedule(node);
-
-        for (Node n : listOfSortedNodes) {
-            System.out.println(n.getNodeIdentifier());
-        }
     }
 
 
     /**
-     * Takes in parameters of the node weight and node identifier and creates a new
-     * node object, then add it to a list of nodes
-     * 
+     * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
+     * to a list of nodes
      * @param weight
      * @param nodeIdentifier
      */
     private void makeNode(int weight, String nodeIdentifier) {
         Node currentNode = new Node(weight, nodeIdentifier);
         listOfNodes.add(currentNode);
-        System.out.println("Added node " + currentNode.getNodeIdentifier() + " with weight = "
-                + currentNode.getNodeWeight() + " to node list");
+        outputFileGenerator.readLine(currentNode);
     }
 
     /**
@@ -118,8 +112,8 @@ public class InputReader {
         Edge currentEdge = new Edge(startNode, endNode, edgeWeight);
         startNode.addOutGoingEdges(currentEdge);
         endNode.addIncomingEdges(currentEdge);
+        outputFileGenerator.readLine(currentEdge);
         listOfEdges.add(currentEdge);
-
         System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
                 + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()
                 + " to edge list");
@@ -151,6 +145,7 @@ public class InputReader {
         return nodeIdentifier;
     }
 
+
     /**
      * Creates an order of nodes to be scheduled, only considering dependencies on parents.
      *
@@ -171,6 +166,10 @@ public class InputReader {
                 currentNode = getNextUnvisitedParent(currentNode);
             }
         }
+
+        Scheduling scheduling = new Scheduling();
+        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcesses(), listOfSortedNodes);
+        outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 
     /**
@@ -205,3 +204,4 @@ public class InputReader {
         return null;
     }
 }
+
