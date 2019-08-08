@@ -9,3 +9,5 @@ out/
 .settings/
 .project
 output.dot
+Nodes_*
+*.dot
