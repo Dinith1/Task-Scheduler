@@ -106,6 +106,29 @@ public class SchedulerTest {
     }
 
     /**
+     * This test case checks that the start times of the schedule correspond to the
+     * start time of the schedule (before the current node begins)
+     */
+    @Test
+    public void testStartTimes() {
+        Scheduling scheduler = new Scheduling();
+
+        scheduler.createSchedule(2, orderedListNode);
+        List<Processor> processList = scheduler.getProcessorList();
+
+        Processor p1 = processList.get(0);
+        Processor p2 = processList.get(1);
+
+        assertEquals((Integer) 0, p1.getStartTimes().get(a));
+        assertEquals((Integer) 5, p1.getStartTimes().get(c));
+        assertEquals((Integer) 10, p1.getStartTimes().get(d));
+        assertEquals((Integer) 16, p1.getStartTimes().get(e));
+        assertEquals((Integer) 0, p2.getStartTimes().get(b));
+        assertEquals((Integer) 26, p2.getStartTimes().get(f));
+        assertEquals((Integer) 33, p2.getStartTimes().get(g));
+    }
+
+    /**
      * Tests that the comparator works for reordering based on process identifier
      * number
      */
