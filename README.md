@@ -8,7 +8,7 @@
 | Hong Shi | hshi952 | 314381442 |
 | Michelle Tan | mtan264 | 186674282 |
 | Richard Ng | rng448 | 169182120 |
-| Vanessa Ciputra |  |  |
+| Vanessa Ciputra | vcip451 | 804079209 |
 
 ## Branches:
 
