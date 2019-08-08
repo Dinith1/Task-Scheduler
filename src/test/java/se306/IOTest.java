@@ -14,7 +14,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.fail;
 
-public class IOTests
+public class IOTest
 {
     /**
      * This "test" should be run to check any changes do not affect any examples

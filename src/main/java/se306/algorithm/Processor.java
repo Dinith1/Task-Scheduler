@@ -9,6 +9,7 @@ public class Processor {
 
     private int currentCost;
     private HashMap<Node, Integer> scheduledNodes;
+    private HashMap<Node, Integer> startTimes;
     private String processorIdentifier;
 
     public Processor(String processorIdentifier) {
@@ -43,6 +44,8 @@ public class Processor {
         return this.scheduledNodes;
     }
 
+    public HashMap<Node, Integer> getStartTimes() { return this.startTimes; }
+
 
     /**
      * Takes a Node parameter as the node to be added to the processor, ensuring that communication costs are
@@ -53,6 +56,7 @@ public class Processor {
 
         // Add node into the hashmap schedule, where the value is calculated by
         // (weight of the node + current cost of this processor + any communication costs)
+        startTimes.put(node, currentCost);
         scheduledNodes.put(node, node.getNodeWeight() + currentCost + calculateCommunicationCosts(node));
         node.assignProcessor(this);
 

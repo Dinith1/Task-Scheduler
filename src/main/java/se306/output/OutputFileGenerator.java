@@ -26,14 +26,14 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			Iterator it = processor.getSchedule().entrySet().iterator();
+			Iterator it = processor.getStartTimes().entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
 				Node node = (Node) pair.getKey();
 				for (Line line : lineInformation) {
 					if (node.equals(line.node)) {
 						line.setProcessor(processor);
-						line.setNodeStartTime(processor.getSchedule().get(node).intValue());
+						line.setNodeStartTime(processor.getStartTimes().get(node));
 					}
 				}
 				it.remove(); // avoids a ConcurrentModificationException

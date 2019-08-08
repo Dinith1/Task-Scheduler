@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class SchedulerTests {
+public class SchedulerTest {
 
     private List<Node> orderedListNode = new ArrayList<>();
     Node a;

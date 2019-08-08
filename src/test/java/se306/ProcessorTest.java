@@ -8,7 +8,7 @@ import se306.input.Node;
 
 import static org.junit.Assert.assertEquals;
 
-public class ProcessorTests {
+public class ProcessorTest {
 
     private Processor proc1;
     private Node A, B, C;
