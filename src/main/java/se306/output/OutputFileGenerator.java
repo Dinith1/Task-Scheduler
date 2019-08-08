@@ -1,6 +1,7 @@
 package se306.output;
 
 import se306.algorithm.Processor;
+import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
 
@@ -14,7 +15,7 @@ public class OutputFileGenerator {
 
 	private PrintWriter writer;
 	private List<Line> lineInformation = new ArrayList<>();
-	public final String OUTPUT_FILE_NAME = "./output.dot";
+	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
 
 	/**
 	 * Adds information on the process and start time to each line with node information,

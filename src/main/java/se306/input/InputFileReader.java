@@ -15,7 +15,6 @@ public class InputFileReader {
 
     private Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
-    private int numberOfProcesses;
     private List<Node> listOfSortedNodes = new ArrayList<>();
     private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
@@ -40,7 +39,7 @@ public class InputFileReader {
                 break;
             }
             // If the line is not a line that includes a node or an edge
-            Pattern p = Pattern.compile(".*\\[Weight=[0-9]\\];");
+            Pattern p = Pattern.compile(".*\\[Weight=.*];");
             Matcher m = p.matcher(line);
             if (!m.matches()) {
                 outputFileGenerator.readLine(line);
@@ -57,12 +56,11 @@ public class InputFileReader {
             } else { // Handle edges
                 // Get start node of edge
                 String startNode = line.substring(0, line.indexOf("-"));
-
+                startNode = startNode.replaceAll("\\s+","");
                 // Get end node of edge
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-
+                endNode = endNode.replaceAll("\\s+","");
                 int edgeWeight = findEdgeWeight(line);
-
                 makeEdge(startNode, endNode, edgeWeight);
             }
 
@@ -77,38 +75,6 @@ public class InputFileReader {
     }
 
     /**
-     * Takes in the command line arguments and produces number
-     * of processors to be used in algorithm
-     * @param input
-     */
-    public void parseCommandLineProcessorCount(String[] input) {
-        if (input.length == 0) {
-            System.out.println("No processors specified, defaulted to 1.");
-        } else if (input.length == 1 ) {
-            try {
-                int i = Integer.parseInt(input[0]);
-                numberOfProcesses = i;
-                System.out.println("Number of processors: " + i);
-                return;
-            } catch(NumberFormatException e) {
-                System.out.println("Unrecognised option, defaulted to 1 processor");
-            }
-        } else {
-            System.out.println("Too many arguments provided, defaulted to 1 processor");
-        }
-        numberOfProcesses = 1;
-    }
-
-    /**
-     * Parse all command line arguments
-     * @param input
-     */
-    public void parseCommandLineArguments(String[] input) {
-        //TODO: parse command line arguments as stated in the brief.
-        numberOfProcesses = 3;
-    }
-
-    /**
      * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
      * to a list of nodes
      * @param weight
@@ -118,8 +84,6 @@ public class InputFileReader {
         Node currentNode = new Node(weight, nodeIdentifier);
         listOfNodes.add(currentNode);
         outputFileGenerator.readLine(currentNode);
-        System.out.println("Added node " + currentNode.getNodeIdentifier() + " with weight = "
-                + currentNode.getNodeWeight() + " to node list");
     }
 
     /**
@@ -203,7 +167,7 @@ public class InputFileReader {
         }
 
         Scheduling scheduling = new Scheduling();
-        scheduling.createSchedule(numberOfProcesses, listOfSortedNodes);
+        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcesses(), listOfSortedNodes);
         outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 
