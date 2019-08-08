@@ -2,8 +2,7 @@ package se306;
 
 import org.junit.Before;
 import org.junit.Test;
-import se306.Input.Edge;
-import se306.Input.Node;
+import se306.input.Node;
 
 import java.util.ArrayList;
 import java.util.List;
