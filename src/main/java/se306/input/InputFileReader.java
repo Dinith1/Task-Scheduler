@@ -74,6 +74,7 @@ public class InputFileReader {
         addToSchedule(node);
     }
 
+
     /**
      * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
      * to a list of nodes
