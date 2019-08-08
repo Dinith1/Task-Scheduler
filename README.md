@@ -6,6 +6,16 @@
 3. Run Main.main()
 4. The output file should be in your top level directory of project
 
+## Team:
+| Name | UPI  | ID no.  |
+|---|---|---|
+| Allen Nian | ania716 | 958920712 |
+| Dinith Wannigama | dwan609 | 834713594 |
+| Hong Shi | hshi952 | 314381442 |
+| Michelle Tan | mtan264 | 186674282 |
+| Richard Ng | rng448 | 169182120 |
+| Vanessa Ciputra | vcip451 | 804079209 |
+
 ## Build Maven project
 
 1. Run `mvn package`. This should generate a target folder on top directory
@@ -17,3 +27,4 @@
 ## For IntelliJ or eclipse users
 
 Make sure to enable auto imports, as a maven project might mess with importing otherwise.
+
