@@ -44,7 +44,6 @@ public class Scheduling {
                 else {
                     return 1;
                 }
-
             }
         };
         // Loops through all the nodes available
