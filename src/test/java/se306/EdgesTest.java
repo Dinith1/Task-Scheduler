@@ -10,7 +10,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import se306.input.Edge;
 import se306.input.Node;
 import static junit.framework.TestCase.assertEquals;
-
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,5 +41,12 @@ public class EdgesTest {
         assertEquals(startNodeMock,edge.getNodeStart());
         assertEquals(endNodeMock,edge.getNodeEnd());
         assertEquals(weight,edge.getEdgeWeight());
+
+        startNodeMock.addOutGoingEdges(edge);
+        endNodeMock.addIncomingEdges(edge);
+        verify(startNodeMock).addOutGoingEdges(edge);
+        verify(endNodeMock).addIncomingEdges(edge);
+        verifyNoMoreInteractions(endNodeMock);
+
     }
 }
