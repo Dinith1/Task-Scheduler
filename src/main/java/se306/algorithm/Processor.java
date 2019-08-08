@@ -45,6 +45,11 @@ public class Processor {
         return this.scheduledNodes;
     }
 
+    /**
+     * Gets the current start times of the processor through a hashmap where the key is the Node itself
+     * and the value is an Integer that represents the starting time that it has been scheduled in the processor
+     *
+     */
     public HashMap<Node, Integer> getStartTimes() { return this.startTimes; }
 
 
