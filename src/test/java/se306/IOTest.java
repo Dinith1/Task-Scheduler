@@ -14,13 +14,12 @@ import java.util.List;
 
 import static junit.framework.TestCase.fail;
 
-public class IOTest
-{
-    /**
-     * This "test" should be run to check any changes do not affect any examples
-     */
+public class IOTest {
+	/**
+	 * This "test" should be run to check any changes do not affect any examples
+	 */
 	@Test
-	public void testAllResources () {
+	public void testAllResources() {
 
 		// Resources provided as example input graphs
 		List<String> pathNames = new ArrayList<>();
@@ -44,7 +43,7 @@ public class IOTest
 			try {
 				inputFileReader.readInput(isr);
 				File file = new File(new OutputFileGenerator().OUTPUT_FILE_NAME);
-				if(!file.exists()){
+				if (!file.exists()) {
 					fail();
 				}
 			} catch (IOException e) {

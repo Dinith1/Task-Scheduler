@@ -13,7 +13,6 @@ public class ProcessorTest {
     private Processor proc1;
     private Node A, B, C;
 
-
     @Before
     public void setup() {
         // Create and setup nodes and processors
