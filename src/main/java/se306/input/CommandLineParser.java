@@ -70,7 +70,7 @@ public class CommandLineParser {
 	}
 
 	private static void printUsage(OptionsParser parser) {
-		System.out.println("Usage: java -jar scheduler.jar [OPTIONS]");
+		System.out.println("Usage: java -jar scheduler.jar INPUT.dot P [OPTIONS]");
 		System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(),
 				OptionsParser.HelpVerbosity.LONG));
 	}

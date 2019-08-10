@@ -34,7 +34,7 @@ public class CommandLineArguments extends OptionsBase{
 
 	@Option(
 			name = "cores",
-			abbrev = 'n',
+			abbrev = 'p',
 			help = "use N cores for execution in parallel (default is sequential).",
 			defaultValue = "1"
 	)
