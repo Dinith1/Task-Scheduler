@@ -1,9 +1,13 @@
 package se306;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
-import java.io.*;
+import se306.logging.Log;
 
 /**
  * Main class to test InputFileReader functionality
@@ -28,12 +32,9 @@ public class Main {
         try {
             parser.parseCommandLineArguments(args);
 
-        } catch (InvalidInputException e) { // Processor input missing
-            System.err.println(e.getMessage() + "\n");
-            return;
-
-        } catch (NumberFormatException e) { // Processor input was not a number
-            System.err.println(e.getMessage() + "\n");
+        } catch (InvalidInputException | NumberFormatException e) {
+            Log.error(e.getMessage());
+            parser.printUsage();
             return;
         }
 
@@ -41,9 +42,9 @@ public class Main {
         // TODO
         // Preferably try to move this out of main
         InputStream in = null;
-        in = Main.class.getResourceAsStream(parser.getInputFileName());
-        System.out.println(in);
-        
+        in = Main.class.getResourceAsStream("/" + parser.getInputFileName());
+        // System.out.println(in);
+
         if (in != null) {
             InputStreamReader isr = new InputStreamReader(in);
             InputFileReader inputFileReader = new InputFileReader();
@@ -55,6 +56,6 @@ public class Main {
 
         long executionEndTime = System.nanoTime();
         long executionTIme = executionEndTime - executionStartTime;
-        System.out.println("Execution Time in milliseconds: " + executionTIme / 1000000);
+        System.out.printf("Execution Time: %dms", executionTIme / 1000000);
     }
 }

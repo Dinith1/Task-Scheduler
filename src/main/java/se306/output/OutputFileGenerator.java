@@ -5,7 +5,8 @@ import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,9 +19,9 @@ public class OutputFileGenerator {
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
 
 	/**
-	 * Adds information on the process and start time to each line with node information,
-	 * this information will need to be outputted. Directly accesses the Line class to make the
-	 * change
+	 * Adds information on the process and start time to each line with node
+	 * information, this information will need to be outputted. Directly accesses
+	 * the Line class to make the change
 	 *
 	 * @param processorList
 	 */
@@ -42,8 +43,8 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * Steps to generate the file after gathering data from inputs.
-	 * This method assigns processors to the nodes to be printed
+	 * Steps to generate the file after gathering data from inputs. This method
+	 * assigns processors to the nodes to be printed
 	 *
 	 */
 	public void generateFile(List<Processor> processorList) {
@@ -68,18 +69,19 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * checks the object type of input line, if its a node, edge, or other redundant data
-	 * Store the information appropriately, handled by the Line class
+	 * checks the object type of input line, if its a node, edge, or other redundant
+	 * data Store the information appropriately, handled by the Line class
+	 * 
 	 * @param lineInfo
 	 */
 	public void readLine(Object lineInfo) {
 		Line newLine = new Line();
 		if (lineInfo instanceof Node) {
-			newLine.setNode((Node)lineInfo);
+			newLine.setNode((Node) lineInfo);
 		} else if (lineInfo instanceof Edge) {
-			newLine.setEdge((Edge)lineInfo);
+			newLine.setEdge((Edge) lineInfo);
 		} else if (lineInfo instanceof String) {
-			newLine.recordLine((String)lineInfo);
+			newLine.recordLine((String) lineInfo);
 		}
 
 		lineInformation.add(newLine);
@@ -93,15 +95,15 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * Stores information of lines, may need to change later since its a data class, but I
-	 * cannot think of any ways to do it another way.
+	 * Stores information of lines, may need to change later since its a data class,
+	 * but I cannot think of any ways to do it another way.
 	 */
 	private class Line {
 		private Node node;
 		private Edge edge;
 		private Processor processor; // processor that the node represented in the line
-		private String nonNodeLine; //directly copy any strings that are not node information
-		private int nodeStartTime; //start time of node represented in this line
+		private String nonNodeLine; // directly copy any strings that are not node information
+		private int nodeStartTime; // start time of node represented in this line
 
 		void setNode(Node node) {
 			this.node = node;
@@ -124,19 +126,19 @@ public class OutputFileGenerator {
 		}
 
 		/**
-		 * Outputs the line if its not a node line (if its an edge line or redundant data line)
-		 * Otherwise combine the node data to be formatted to the output.
+		 * Outputs the line if its not a node line (if its an edge line or redundant
+		 * data line) Otherwise combine the node data to be formatted to the output.
+		 * 
 		 * @return
 		 */
 		String getStringLine() {
 			if (node != null) {
 				String lineToOutput = "\t" + node.getNodeIdentifier() + "\t\t[Weight=" + node.getNodeWeight()
-						+ ",Start=" + this.nodeStartTime + ",Processor=" + processor.getProcessorIdentifier()
-						+ "];";
+						+ ",Start=" + this.nodeStartTime + ",Processor=" + processor.getProcessorIdentifier() + "];";
 				return lineToOutput;
 			} else if (edge != null) {
-				String lineToOutput = "\t" + edge.getNodeStart().getNodeIdentifier() + " -> " +
-						edge.getNodeEnd().getNodeIdentifier() + "\t[Weight=" + edge.getEdgeWeight() + "];";
+				String lineToOutput = "\t" + edge.getNodeStart().getNodeIdentifier() + " -> "
+						+ edge.getNodeEnd().getNodeIdentifier() + "\t[Weight=" + edge.getEdgeWeight() + "];";
 				return lineToOutput;
 			} else {
 				return this.nonNodeLine;

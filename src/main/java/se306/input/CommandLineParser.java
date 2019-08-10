@@ -2,6 +2,8 @@ package se306.input;
 
 import com.google.devtools.common.options.OptionsParser;
 import se306.exceptions.InvalidInputException;
+import se306.logging.Log;
+
 import java.util.Collections;
 
 /**
@@ -12,6 +14,7 @@ public class CommandLineParser {
 	private String inputFileName;
 	private String outputFileName;
 	private int numProcesses;
+	private OptionsParser optParser;
 
 	/**
 	 * Private constructor only called by this class
@@ -19,6 +22,7 @@ public class CommandLineParser {
 	private CommandLineParser() {
 		numProcesses = 1;
 		outputFileName = "output.dot";
+		optParser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 	}
 
 	/**
@@ -28,6 +32,61 @@ public class CommandLineParser {
 	 */
 	public static CommandLineParser getInstance() {
 		return (cmdLineParser == null) ? new CommandLineParser() : cmdLineParser;
+	}
+
+	/**
+	 * Parse all command line arguments
+	 * 
+	 * @param input The string arguments
+	 */
+	public void parseCommandLineArguments(String[] input) throws InvalidInputException {
+		optParser.parseAndExitUponError(input);
+		checkInvalidArgs(input);
+
+		Log.info("Input file entered: " + this.inputFileName);
+		Log.info("Output will be saved to: " + this.outputFileName);
+	}
+
+	/**
+	 * Checks the input for illegal arguments
+	 * 
+	 * @param input Arguments as strings to check for legality
+	 * @throws InvalidInputException
+	 */
+	private void checkInvalidArgs(String[] input) throws InvalidInputException {
+		// Check that all compulsory inputs have been entered (2 inputs)
+		if (input.length < 2) {
+			throw new InvalidInputException("Please enter the .dot input file AND number of processes to be used");
+		}
+
+		// Parse the number of processors to be used
+		try {
+			this.numProcesses = Integer.parseInt(input[1]);
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException("Please enter an integer for the number of processes to be used");
+		}
+
+		// Check that at least one process has been entered
+		if (this.numProcesses < 1) {
+			throw new InvalidInputException("Please enter a valid number of processes (at least 1)");
+		}
+
+		CommandLineArguments options = optParser.getOptions(CommandLineArguments.class);
+
+		// Check that more than 0 cores (processors) are entered
+		if (options.numCores < 1) {
+			throw new InvalidInputException(
+					"Please enter a valid number of cores (processors) for paralellising the search");
+		}
+
+		this.inputFileName = input[0];
+
+		// Check that the file is a .dot file
+		if (!this.inputFileName.toLowerCase().endsWith(".dot")) {
+			throw new InvalidInputException("Please enter a valid .dot file");
+		}
+
+		this.outputFileName = options.outputFile;
 	}
 
 	/**
@@ -58,82 +117,14 @@ public class CommandLineParser {
 	}
 
 	/**
-	 * Parse all command line arguments
-	 * 
-	 * @param input The string arguments
-	 */
-	public void parseCommandLineArguments(String[] input) throws InvalidInputException {
-		// Set the OptionsParser to use the arguments specified in the CommandLineArguments class
-		OptionsParser parser = OptionsParser.newOptionsParser(CommandLineArguments.class);
-
-		parser.parseAndExitUponError(input);
-		checkInvalidArgs(input, parser);
-
-	}
-
-	/**
-	 * Checks the input for illegal arguments
-	 * 
-	 * @param input  Arguments as strings to check for legality
-	 * @param parser The OptionsParser object used to parse/store the input
-	 *               arguments
-	 * @throws InvalidInputException
-	 */
-	private void checkInvalidArgs(String[] input, OptionsParser parser) throws InvalidInputException {
-		// Check that all compulsory inputs have been entered (2 inputs)
-		if (input.length < 2) {
-			printUsage(parser);
-
-			throw new InvalidInputException("Please enter the .dot input file AND number of processors to be used");
-		}
-
-		// Parse the number of processors to be used
-		try {
-			this.numProcesses = Integer.parseInt(input[1]);
-		} catch (NumberFormatException e) {
-			printUsage(parser);
-
-			throw new NumberFormatException("Please enter an integer for the number of processors to be used");
-		}
-
-		// Check that at least one processor has been entered
-		if (this.numProcesses < 1) {
-			printUsage(parser);
-
-			throw new InvalidInputException("Please enter a valid number of processors (at least 1)");
-		}
-
-		CommandLineArguments options = parser.getOptions(CommandLineArguments.class);
-
-		// Checks that options are valid (currently only checks the cores option)
-		if (options.numberOfCores < 0) {
-			printUsage(parser);
-			throw new InvalidInputException("Please enter a valid number of cores for paralellising the search");
-		}
-
-		System.out.println(this.numProcesses);
-		this.inputFileName = "/" + input[0];
-
-		// Checks that the file is a .dot file
-		if (!this.inputFileName.toLowerCase().endsWith(".dot")) {
-			printUsage(parser);
-			throw new InvalidInputException("Please enter a valid .dot file");
-		}
-
-		System.out.println(inputFileName);
-		outputFileName = options.outputFile;
-		System.out.println(outputFileName);
-	}
-
-	/**
 	 * Prints out how the user should run the program with appropriate arguments
-	 * 
-	 * @param parser
 	 */
-	private static void printUsage(OptionsParser parser) {
-		System.out.println("Usage: java -jar scheduler.jar <INPUT.dot> P [OPTIONS]\n");
+	public void printUsage() {
+		System.out.println("\nUsage: java -jar scheduler.jar <input-file> <number-of-processes> [options]\n");
+		System.out.println("\t- <input-file> should be a .dot file");
+		System.out.println("\t- <number-of-processes> should be an integer greater than 0\n");
 		System.out.println(
-				parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
+				optParser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
 	}
 
 }
