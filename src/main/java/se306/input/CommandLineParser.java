@@ -55,20 +55,25 @@ public class CommandLineParser {
 		OptionsParser parser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 		parser.parseAndExitUponError(input);
 
+		// Checks that all compulsory inputs have been entered (2 inputs)
         if (input.length < 2) {
             System.out.println("Please enter both the *.dot input file AND the number of processors to be used.");
             printUsage(parser);
             throw new InvalidInputException();
         }
 
+        // Parses the number of processors to be used
         try {
             numberOfProcesses = Integer.parseInt(input[1]);
+
+            // Ensures that the number of processors must be 1 or more, otherwise throw error
             if (numberOfProcesses < 1) {
                 System.out.println("Please enter a valid number of processors.");
                 printUsage(parser);
                 throw new InvalidInputException();
             }
 
+            // Ensures that the processor input is indeed a number (no letters/symbols)
         } catch (NumberFormatException e) {
             System.out.println("Please enter a number for the processors to be used.");
             printUsage(parser);
@@ -77,12 +82,14 @@ public class CommandLineParser {
 
 		CommandLineArguments options = parser.getOptions(CommandLineArguments.class);
 
+        // Checks that options are valid (currently only checks the cores option, add more later)
+        // @TODO
 		if (options.numberOfCores < 0 ) {
             System.out.println("Please enter a valid number of cores to be used to paralellise this search.");
             printUsage(parser);
             throw new InvalidInputException();
 		}
-
+		
 
 		System.out.println(numberOfProcesses);
 		inputFileName = "/" + input[0];

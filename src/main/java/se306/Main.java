@@ -25,9 +25,9 @@ public class Main {
             parser.parseCommandLineArguments(args);
 
         } catch (InvalidInputException e) {
-                if (e.checkProcessInput(parser)) { // This exception checks if the Processor input was missing
-                    return;
-                }
+//                if (e.checkProcessInput(parser)) { // This exception checks if the Processor input was missing
+//                    return;
+//                }
             return;
 
         } catch (NumberFormatException e) { // This exception checks if the processor input was a number
