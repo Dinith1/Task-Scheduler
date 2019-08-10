@@ -7,6 +7,15 @@ import com.google.devtools.common.options.OptionsBase;
  * This class is used to store information on command line arguments only
  */
 public class CommandLineArguments extends OptionsBase{
+
+    @Option(
+            name = "help",
+            abbrev = 'h',
+            help = "Prints usage info.",
+            defaultValue = "true"
+    )
+    public boolean help;
+
 	@Option(
 			name = "input-file",
 			abbrev = 'i',
@@ -19,7 +28,7 @@ public class CommandLineArguments extends OptionsBase{
 			name = "processors",
 			abbrev = 'p',
 			help = "number of processors to schedule the input graph on.",
-			defaultValue = "2"
+			defaultValue = "0"
 	)
 	public int numberOfProcessors;
 

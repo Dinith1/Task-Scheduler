@@ -1,6 +1,7 @@
 package se306.input;
 
 import com.google.devtools.common.options.OptionsParser;
+import se306.exceptions.InputMissingException;
 
 import java.util.Collections;
 
@@ -30,7 +31,7 @@ public class CommandLineParser {
 	 */
 	private CommandLineParser()
 	{
-		numberOfProcesses = 2;
+		numberOfProcesses = 0;
 		outputFileName = "output.dot";
 	}
 
@@ -50,13 +51,13 @@ public class CommandLineParser {
 	 * Parse all command line arguments
 	 * @param input
 	 */
-	public void parseCommandLineArguments(String[] input) {
+	public void parseCommandLineArguments(String[] input) throws InputMissingException {
 		OptionsParser parser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 		parser.parseAndExitUponError(input);
 		CommandLineArguments options = parser.getOptions(CommandLineArguments.class);
 		if (options.inputFile.isEmpty() || options.numberOfCores < 0 || options.numberOfProcessors < 1) {
 			printUsage(parser);
-			return;
+			throw(new InputMissingException());
 		}
 
 		numberOfProcesses = options.numberOfProcessors;
