@@ -38,20 +38,19 @@ public class Main {
         //TODO
         //Preferably try to move this out of main
         InputStream in = null;
-        try {
-            in = Main.class.getResourceAsStream(parser.getInputFileName());
-            if(in != null){
-                InputStreamReader isr = new InputStreamReader(in);
-                InputFileReader inputFileReader = new InputFileReader();
-                inputFileReader.readInput(isr);
-            }
-        } catch (IOException e) {
-           throw new IllegalArgumentException("Invalid filename");
+        in = Main.class.getResourceAsStream(parser.getInputFileName());
+        System.out.println(in);
+        if (in != null) {
+            InputStreamReader isr = new InputStreamReader(in);
+            InputFileReader inputFileReader = new InputFileReader();
+            inputFileReader.readInput(isr);
+        } else {
+            throw new IllegalArgumentException("invalid filename");
         }
 
         long executionEndTime = System.nanoTime();
-        long executionTIme = executionEndTime-executionStartTime;
-        System.out.println("Execution Time in milliseconds: " + executionTIme/1000000);
+        long executionTIme = executionEndTime - executionStartTime;
+        System.out.println("Execution Time in milliseconds: " + executionTIme / 1000000);
     }
 }
 

@@ -89,7 +89,6 @@ public class CommandLineParser {
             printUsage(parser);
             throw new InvalidInputException();
 		}
-		
 
 		System.out.println(numberOfProcesses);
 		inputFileName = "/" + input[0];
@@ -100,6 +99,8 @@ public class CommandLineParser {
 			printUsage(parser);
 			throw new InvalidInputException();
 		}
+
+
 
 		System.out.println(inputFileName);
 		outputFileName = options.outputFile;
