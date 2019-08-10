@@ -17,22 +17,6 @@ public class CommandLineArguments extends OptionsBase{
     public boolean help;
 
 	@Option(
-			name = "input-file",
-			abbrev = 'i',
-			help = "a task graph with integer weights in dot format.",
-			defaultValue = "Nodes_10_Random.dot"
-	)
-	public String inputFile;
-
-	@Option(
-			name = "processors",
-			abbrev = 'p',
-			help = "number of processors to schedule the input graph on.",
-			defaultValue = "0"
-	)
-	public int numberOfProcessors;
-
-	@Option(
 			name = "cores",
 			abbrev = 'p',
 			help = "use N cores for execution in parallel (default is sequential).",

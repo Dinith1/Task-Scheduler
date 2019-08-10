@@ -55,14 +55,15 @@ public class CommandLineParser {
 		OptionsParser parser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 		parser.parseAndExitUponError(input);
 		CommandLineArguments options = parser.getOptions(CommandLineArguments.class);
-		if (options.inputFile.isEmpty() || options.numberOfCores < 0 || options.numberOfProcessors < 1) {
+		if (options.numberOfCores < 0 ) {
 			printUsage(parser);
-			throw(new InvalidInputException());
+            System.out.println("Please enter a valid number of cores to be used to paralellise this search.");
+            throw(new InvalidInputException());
 		}
 
-		numberOfProcesses = options.numberOfProcessors;
+		numberOfProcesses = Integer.parseInt(input[1]);
 		System.out.println(numberOfProcesses);
-		inputFileName = "/" + options.inputFile;
+		inputFileName = "/" + input[0];
 		System.out.println(inputFileName);
 		outputFileName = options.outputFile;
 		System.out.println(outputFileName);

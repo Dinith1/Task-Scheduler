@@ -33,7 +33,7 @@ public class Main {
                     System.out.println("Please enter a valid processor input.)");
                     return;
                 }
-                return;
+            return;
         }
 
         InputStream in = Main.class.getResourceAsStream(parser.getInputFileName());
