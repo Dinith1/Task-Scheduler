@@ -18,13 +18,12 @@
 
 ## Build Maven project
 
-1. Run `mvn package`. This should generate a target folder on top directory
-2. Open up a terminal and cd to the target folder
+1. Run `mvn package`. This should generate a `**target**` folder on top directory
+2. Open up a terminal and `cd` to the target folder
 3. Run `scheduler.jar`
 4. It should run fine, if not, run `mvn clean` and try again.
-5. The output file should be in the same directory as your jar. i.e top level directory in target folder
+5. The output file should be in the same directory as your jar. i.e top level directory in `**target**` folder
 
 ## For IntelliJ or eclipse users
 
 Make sure to enable auto imports, as a maven project might mess with importing otherwise.
-
