@@ -1,11 +1,10 @@
 package se306;
 
-import se306.exceptions.InputMissingException;
+import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
 import java.io.*;
-import java.util.Timer;
 
 //Main class to test InputFileReader functionality
 public class Main {
@@ -23,16 +22,18 @@ public class Main {
         CommandLineParser parser = CommandLineParser.getInstance();
 
         try {
+            if (args.length < 2) {
+                System.out.println("Please enter both the *.dot input file AND the number of processors to be used.");
+                throw new InvalidInputException();
+            }
             parser.parseCommandLineArguments(args);
 
-        } catch (InputMissingException e) {
-                if (e.checkProcessInput(parser)) { //This exception checks if the Processor input was missing
-                    System.out.println("Please enter a valid processor input");
+        } catch (InvalidInputException e) {
+                if (e.checkProcessInput(parser)) { // This exception checks if the Processor input was missing
+                    System.out.println("Please enter a valid processor input.)");
                     return;
                 }
-
-            System.out.println("Please check your command line inputs");
-            return;
+                return;
         }
 
         InputStream in = Main.class.getResourceAsStream(parser.getInputFileName());

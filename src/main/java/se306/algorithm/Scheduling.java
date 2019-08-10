@@ -1,5 +1,6 @@
 package se306.algorithm;
 
+import se306.exceptions.InvalidInputException;
 import se306.input.Node;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 public class Scheduling {
 
     // User defined available processors placed in a list
-    private List<se306.algorithm.Processor> processorList = new ArrayList<>();
+    private List<Processor> processorList = new ArrayList<>();
 
     private void createProcessors(int numberOfProcessors){
         for(int i = 0; i < numberOfProcessors;i++){
@@ -26,14 +27,21 @@ public class Scheduling {
      */
     public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes){
 
-        //Checks in case number of processors is 0 (should never happen)
-        //SOMEONE CHANGE THIS PART
-        //CURRENTLY A PLACE HOLDER SO THAT TESTS WILL NOT TTHROW NULL AND POINTER OUT OF BOUND
-        if(numberOfProcessors == 0){
-           numberOfProcessors = 2;
+        // Checks in case number of processors is 0 (should never happen)
+        // @Todo
+        try {
+            if (numberOfProcessors < 1) {
+                throw new InvalidInputException();
+            }
+        } catch (InvalidInputException e) {
+            e.printStackTrace();
         }
-        // Creates the number of processes specified by the user
-        createProcessors(numberOfProcessors);
+
+//            if (numberOfProcessors == 0) {
+//                numberOfProcessors = 2;
+//            }
+            // Creates the number of processes specified by the user
+            createProcessors(numberOfProcessors);
         /**
          * Comparator which sorts all the processors according to earliest finishing time and if equal then sorts
          * by process identifier number
@@ -63,7 +71,7 @@ public class Scheduling {
     /**
      * Returns list of Processor objects that have the nodes scheduled in order of the processor identifier number
      */
-    public List<se306.algorithm.Processor> getProcessorList(){
+    public List<Processor> getProcessorList(){
         Collections.sort(processorList, sortByIdentifierNumber);
         return processorList;
     }
@@ -71,7 +79,7 @@ public class Scheduling {
     /**
      * Comparator to be used with resorting the processor list back into the process identifier number order
      */
-    private Comparator<se306.algorithm.Processor> sortByIdentifierNumber = new Comparator<se306.algorithm.Processor>() {
+    private Comparator<Processor> sortByIdentifierNumber = new Comparator<se306.algorithm.Processor>() {
         public int compare(Processor p1, Processor p2) {
             if (Integer.parseInt(p1.getProcessorIdentifier()) < Integer.parseInt(p2.getProcessorIdentifier())) {
                 return -1;

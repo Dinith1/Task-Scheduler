@@ -2,7 +2,7 @@ package se306.exceptions;
 
 import se306.input.CommandLineParser;
 
-public  class InputMissingException extends Exception {
+public  class InvalidInputException extends Exception {
     /**
      * @param parser
      * @return boolean to see if process input was missing or invalid
