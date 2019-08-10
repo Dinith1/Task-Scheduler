@@ -3,7 +3,6 @@ package se306;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -19,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        // Example cases
+        // Example cases:
         // "src/resources/Nodes_7_OutTree.dot"
         // "src/resources/Nodes_8_Random.dot"
         // "src/resources/Nodes_9_SeriesParallel.dot"

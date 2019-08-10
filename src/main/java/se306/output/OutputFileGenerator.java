@@ -4,7 +4,6 @@ import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class OutputFileGenerator {
 		for (Processor processor : processorList) {
 			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
 			while (it.hasNext()) {
-				Map.Entry pair = (Map.Entry) it.next();
+				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
 				Node node = (Node) pair.getKey();
 				for (Line line : lineInformation) {
 					if (node.equals(line.node)) {
