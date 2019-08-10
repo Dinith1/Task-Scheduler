@@ -1,6 +1,7 @@
 package se306.input;
 
 import se306.algorithm.Scheduling;
+import se306.exceptions.InvalidInputException;
 import se306.output.OutputFileGenerator;
 
 import java.io.*;

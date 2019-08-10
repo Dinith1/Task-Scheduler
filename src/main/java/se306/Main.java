@@ -30,12 +30,11 @@ public class Main {
                 }
             return;
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) { // This exception checks if the processor input was a number
             return;
         }
 
         InputStream in = Main.class.getResourceAsStream(parser.getInputFileName());
-
         InputStreamReader isr = new InputStreamReader(in);
         InputFileReader inputFileReader = new InputFileReader();
         inputFileReader.readInput(isr);

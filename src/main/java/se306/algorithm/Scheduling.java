@@ -25,21 +25,8 @@ public class Scheduling {
      * @param numberOfProcessors - user defined number of processors that are available to be used
      * @param listOfSortedNodes - the list of nodes that are in sorted order from InputReader class
      */
-    public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes){
+    public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes) {
 
-        // Checks in case number of processors is 0 (should never happen)
-        // @Todo
-        try {
-            if (numberOfProcessors < 1) {
-                throw new InvalidInputException();
-            }
-        } catch (InvalidInputException e) {
-            e.printStackTrace();
-        }
-
-//            if (numberOfProcessors == 0) {
-//                numberOfProcessors = 2;
-//            }
             // Creates the number of processes specified by the user
             createProcessors(numberOfProcessors);
         /**
