@@ -22,20 +22,15 @@ public class Main {
         CommandLineParser parser = CommandLineParser.getInstance();
 
         try {
-            if (args.length < 2) {
-                System.out.println("Please enter both the *.dot input file AND the number of processors to be used.");
-                throw new InvalidInputException();
-            }
             parser.parseCommandLineArguments(args);
 
         } catch (InvalidInputException e) {
                 if (e.checkProcessInput(parser)) { // This exception checks if the Processor input was missing
-                    System.out.println("Please enter a valid processor input.");
                     return;
                 }
             return;
+
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a number for the processors to be used.");
             return;
         }
 
