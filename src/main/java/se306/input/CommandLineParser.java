@@ -93,6 +93,14 @@ public class CommandLineParser {
 
 		System.out.println(numberOfProcesses);
 		inputFileName = "/" + input[0];
+
+		//Checks that the file is a .dot file
+		if(!inputFileName.toLowerCase().endsWith(".dot")){
+			System.out.println("Please input a .dot file");
+			printUsage(parser);
+			throw new InvalidInputException();
+		}
+
 		System.out.println(inputFileName);
 		outputFileName = options.outputFile;
 		System.out.println(outputFileName);

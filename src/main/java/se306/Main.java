@@ -11,7 +11,7 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        
+
         // Example cases
         // "src/resources/Nodes_7_OutTree.dot"
         // "src/resources/Nodes_8_Random.dot"
@@ -34,10 +34,21 @@ public class Main {
             return;
         }
 
-        InputStream in = Main.class.getResourceAsStream(parser.getInputFileName());
-        InputStreamReader isr = new InputStreamReader(in);
-        InputFileReader inputFileReader = new InputFileReader();
-        inputFileReader.readInput(isr);
+        //Temporary fix to catch egregious file names
+        //TODO
+        //Preferably try to move this out of main
+        InputStream in = null;
+        try {
+            in = Main.class.getResourceAsStream(parser.getInputFileName());
+            if(in != null){
+                InputStreamReader isr = new InputStreamReader(in);
+                InputFileReader inputFileReader = new InputFileReader();
+                inputFileReader.readInput(isr);
+            }
+        } catch (IOException e) {
+           throw new IllegalArgumentException("Invalid filename");
+        }
+
         long executionEndTime = System.nanoTime();
         long executionTIme = executionEndTime-executionStartTime;
         System.out.println("Execution Time in milliseconds: " + executionTIme/1000000);
