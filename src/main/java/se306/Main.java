@@ -21,16 +21,20 @@ public class Main {
         // "src/resources/Nodes_11_OutTree.dot"
         long executionStartTime = System.nanoTime();
         CommandLineParser parser = CommandLineParser.getInstance();
+
         try {
             parser.parseCommandLineArguments(args);
-        }catch(InputMissingException e){
-                if(e.checkProcessInput(parser)){ //This exception checks if the Processor input was missing
+
+        } catch (InputMissingException e) {
+                if (e.checkProcessInput(parser)) { //This exception checks if the Processor input was missing
                     System.out.println("Please enter a valid processor input");
                     return;
                 }
-            System.out.println("Please check ur command line inputs");
+
+            System.out.println("Please check your command line inputs");
             return;
         }
+
         InputStream in = Main.class.getResourceAsStream(parser.getInputFileName());
 
         InputStreamReader isr = new InputStreamReader(in);
