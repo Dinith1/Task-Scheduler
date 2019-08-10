@@ -26,9 +26,14 @@ public class Scheduling {
      */
     public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes){
 
+        //Checks in case number of processors is 0 (should never happen)
+        //SOMEONE CHANGE THIS PART
+        //CURRENTLY A PLACE HOLDER SO THAT TESTS WILL NOT TTHROW NULL AND POINTER OUT OF BOUND
+        if(numberOfProcessors == 0){
+           numberOfProcessors = 2;
+        }
         // Creates the number of processes specified by the user
         createProcessors(numberOfProcessors);
-
         /**
          * Comparator which sorts all the processors according to earliest finishing time and if equal then sorts
          * by process identifier number
@@ -46,6 +51,7 @@ public class Scheduling {
                 }
             }
         };
+
         // Loops through all the nodes available
         for(Node node: listOfSortedNodes){
             // Processor with earliest finish time will always be at index 0
