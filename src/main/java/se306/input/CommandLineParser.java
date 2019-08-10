@@ -61,7 +61,11 @@ public class CommandLineParser {
             throw(new InvalidInputException());
 		}
 
-		numberOfProcesses = Integer.parseInt(input[1]);
+		try {
+            numberOfProcesses = Integer.parseInt(input[1]);
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException();
+        }
 		System.out.println(numberOfProcesses);
 		inputFileName = "/" + input[0];
 		System.out.println(inputFileName);

@@ -30,9 +30,12 @@ public class Main {
 
         } catch (InvalidInputException e) {
                 if (e.checkProcessInput(parser)) { // This exception checks if the Processor input was missing
-                    System.out.println("Please enter a valid processor input.)");
+                    System.out.println("Please enter a valid processor input.");
                     return;
                 }
+            return;
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a number for the processors to be used.");
             return;
         }
 
