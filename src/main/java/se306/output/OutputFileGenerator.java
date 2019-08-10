@@ -27,7 +27,7 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			Iterator it = processor.getStartTimes().entrySet().iterator();
+			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
 				Node node = (Node) pair.getKey();
