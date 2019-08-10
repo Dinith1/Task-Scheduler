@@ -12,7 +12,7 @@ public class CommandLineArguments extends OptionsBase{
             name = "help",
             abbrev = 'h',
             help = "Prints usage info.",
-            defaultValue = "true"
+            defaultValue = "false"
     )
     public boolean help;
 
@@ -31,4 +31,12 @@ public class CommandLineArguments extends OptionsBase{
 			defaultValue = "output.dot"
 	)
 	public String outputFile;
+
+	@Option(
+			name = "visualise",
+			abbrev = 'v',
+			help = "visualise the search",
+			defaultValue = "false"
+	)
+	public boolean visualise;
 }
