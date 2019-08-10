@@ -83,7 +83,7 @@ public class CommandLineParser {
 
 		// Check that the file is a .dot file
 		if (!this.inputFileName.toLowerCase().endsWith(".dot")) {
-			throw new InvalidInputException("Please enter a valid .dot file");
+			throw new InvalidInputException("Please enter a file with the .dot extension");
 		}
 
 		this.outputFileName = options.outputFile;

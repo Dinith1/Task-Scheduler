@@ -26,7 +26,6 @@ public class Main {
         // "src/resources/Nodes_10_Random.dot"
         // "src/resources/Nodes_11_OutTree.dot"
 
-        long executionStartTime = System.nanoTime();
         CommandLineParser parser = CommandLineParser.getInstance();
 
         try {
@@ -38,24 +37,25 @@ public class Main {
             return;
         }
 
-        // Temporary fix to catch egregious file names
-        // TODO
-        // Preferably try to move this out of main
-        InputStream in = null;
-        in = Main.class.getResourceAsStream("/" + parser.getInputFileName());
-        // System.out.println(in);
+        InputStream in = Main.class.getResourceAsStream("/" + parser.getInputFileName());
 
-        if (in != null) {
-            InputStreamReader isr = new InputStreamReader(in);
-            InputFileReader inputFileReader = new InputFileReader();
-            inputFileReader.readInput(isr);
-
-        } else {
-            throw new IllegalArgumentException("invalid filename");
+        if (in == null) {
+            Log.error("Invalid input filename (please check the spelling)");
+            return;
         }
 
-        long executionEndTime = System.nanoTime();
-        long executionTIme = executionEndTime - executionStartTime;
-        System.out.printf("Execution Time: %dms", executionTIme / 1000000);
+        InputStreamReader isr = new InputStreamReader(in);
+        InputFileReader ifr = new InputFileReader();
+
+        Log.info("-- Starting scheduling --");
+        long startTime = System.nanoTime();
+
+        ifr.readInput(isr); // Start scheduling
+
+        long endTime = System.nanoTime();
+        Log.info("-- Finished scheduling --");
+
+        long executionTime = endTime - startTime;
+        Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
     }
 }
