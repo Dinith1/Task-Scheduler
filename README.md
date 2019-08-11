@@ -25,7 +25,9 @@ Inputs: <INPUT.dot> <NUMBER OF PROCESSES> <OPTIONAL-FLAGS>
 Optional Flags:
 
 -o     OUTPUTNAME Specify output name of choice. Default output name is INPUT-output.dot
+
 -p     NUMCORES   Number of cores (processes) to use to produce/parallelise the schedule
+
 --help HELP       prints usage info
 
 ## Build Maven project
