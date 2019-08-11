@@ -1,8 +1,7 @@
 package se306;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -36,20 +35,17 @@ public class Main {
             return;
         }
 
-        InputStream in = Main.class.getResourceAsStream("/" + parser.getInputFileName());
-
-        if (in == null) {
-            Log.error("Invalid input filename (please check the spelling)");
-            return;
-        }
-
-        InputStreamReader isr = new InputStreamReader(in);
         InputFileReader ifr = new InputFileReader();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-        ifr.readInput(isr); // Start scheduling
+        try {
+            ifr.readInput(new FileReader(parser.getInputFileName())); // Start scheduling
+        } catch (FileNotFoundException e) {
+            Log.error("Invalid input filename (please check the spelling)");
+            return;
+        }
 
         long endTime = System.nanoTime();
         Log.info("-- Finished scheduling --");
@@ -57,6 +53,5 @@ public class Main {
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
 
-        isr.close();
     }
 }
