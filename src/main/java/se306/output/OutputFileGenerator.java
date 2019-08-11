@@ -4,8 +4,6 @@ import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
-import se306.logging.Log;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
