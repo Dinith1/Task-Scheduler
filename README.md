@@ -4,6 +4,7 @@
 1. Move all resources into the same directory as
 2. Open up terminal/command line
 3. `cd <path to where scheduler.jar is located> `
+4. `java -jar scheduler.jar INPUT.dot P [OPTIONS]`
 
 ## Run from IntelliJ
 1. Keep .dot files on the top project directory.
