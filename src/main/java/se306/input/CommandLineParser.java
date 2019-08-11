@@ -131,8 +131,8 @@ public class CommandLineParser {
 	 */
 	public void printUsage() {
 		System.out.println("\nUsage: java -jar scheduler.jar <INPUT-FILE> <NUMBER-OF-PROCESSORS> [OPTIONS]\n");
-		System.out.println("\t- <input-file> should be a .dot file");
-		System.out.println("\t- <number-of-processes> should be an integer greater than 0\n");
+		System.out.println("\t- <INPUT-FILE> should be a .dot file");
+		System.out.println("\t- <NUMBER-OF-PROCESSORS> should be an integer greater than 0\n");
 		System.out.println(
 				optParser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
 	}
