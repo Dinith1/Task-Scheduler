@@ -16,6 +16,9 @@ public class NodesTest {
 
     }
 
+    /**
+     * Check node methods for a single node
+     */
     @Test
     public void testSingleNode() {
         List<Node> emptyList = new ArrayList<>();
@@ -31,6 +34,9 @@ public class NodesTest {
 
     }
 
+    /**
+     * Check parent nodes and relevant method functionality
+     */
     @Test
     public void testParentNode() {
         List<Node> parentNodes = new ArrayList<>();

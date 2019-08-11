@@ -6,36 +6,17 @@ import com.google.devtools.common.options.OptionsBase;
 /**
  * This class is used to store information on command line arguments only
  */
-public class CommandLineArguments extends OptionsBase{
-	@Option(
-			name = "input-file",
-			abbrev = 'i',
-			help = "a task graph with integer weights in dot format.",
-			defaultValue = "Nodes_10_Random.dot"
-	)
-	public String inputFile;
+public class CommandLineArguments extends OptionsBase {
 
-	@Option(
-			name = "processors",
-			abbrev = 'p',
-			help = "number of processors to schedule the input graph on.",
-			defaultValue = "2"
-	)
-	public int numberOfProcessors;
+	@Option(name = "help", abbrev = 'h', help = "Prints usage info", category = "Startup", defaultValue = "false")
+	public boolean help;
 
-	@Option(
-			name = "cores",
-			abbrev = 'n',
-			help = "use N cores for execution in parallel (default is sequential).",
-			defaultValue = "1"
-	)
-	public int numberOfCores;
+	@Option(name = "cores", abbrev = 'p', help = "Number of cores (processors) to use to produce the schedule", category = "Startup", defaultValue = "1")
+	public int numCores;
 
-	@Option(
-			name = "output-file",
-			abbrev = 'o',
-			help = "output file name",
-			defaultValue = "output.dot"
-	)
+	@Option(name = "output-file", abbrev = 'o', help = "Output file name", category = "Startup", defaultValue = "output.dot")
 	public String outputFile;
+
+	@Option(name = "visualise", abbrev = 'v', help = "Visualise the search", category = "Startup", defaultValue = "false")
+	public boolean visualise;
 }

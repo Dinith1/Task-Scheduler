@@ -27,13 +27,18 @@ public class EdgesTest {
     Node endNodeMock;
 
 
-
+    /**
+     * Initialises the objects annotated with Mockito annotations.
+     */
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
     }
 
 
+    /**
+     * Tests the Edge class methods with a mock Node object
+     */
     @Test
     public void testSingleEdge() {
         int weight = 4;
@@ -42,6 +47,8 @@ public class EdgesTest {
         assertEquals(endNodeMock,edge.getNodeEnd());
         assertEquals(weight,edge.getEdgeWeight());
 
+
+        //Verify that these methods have been called
         startNodeMock.addOutGoingEdges(edge);
         endNodeMock.addIncomingEdges(edge);
         verify(startNodeMock).addOutGoingEdges(edge);
