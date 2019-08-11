@@ -25,7 +25,7 @@
 ## Overview:
 This program takes in an input graph via a .dot file, this directed acyclic graph has nodes and edges with weights that represent processing time and communication costs between processors respectively. Each node represents a task which can be scheduled on a processor. This scheduler will find a valid schedule to return.
 
-Inputs: `<INPUT.dot>` `<P>` `<[OPTION]>`
+- Run JAR: `java -jar scheduler.jar <INPUT.dot> <P> [OPTIONS]`
 
 | Required | Description | 
 |---|---|
@@ -38,13 +38,9 @@ Inputs: `<INPUT.dot>` `<P>` `<[OPTION]>`
 | `-v` | Visualize the search |
 | `-o <OUTPUT.dot>` | Name of file to save output schedule to |
 
-Optional Flags:
-
--o &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OUTPUTNAME &nbsp; &nbsp; Specify output name of choice. Default output name is INPUT-output.dot
-
--p &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NUMCORES &nbsp; &nbsp; &nbsp; &nbsp; Number of cores (processes) to use to produce/parallelise the schedule
-
---help &nbsp; &nbsp; HELP  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Prints usage info
+- To get help:
+  - `java -jar scheduler.jar --help`
+  - This will prints information on how to use the JAR file
 
 ## Build Maven project
 
