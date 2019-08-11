@@ -1,5 +1,8 @@
 package se306.input;
 
+import se306.algorithm.Scheduling;
+import se306.output.OutputFileGenerator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,9 +12,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import se306.algorithm.Scheduling;
-import se306.output.OutputFileGenerator;
 
 public class InputFileReader {
 
@@ -118,9 +118,6 @@ public class InputFileReader {
         endNode.addIncomingEdges(currentEdge);
         outputFileGenerator.readLine(currentEdge);
         listOfEdges.add(currentEdge);
-        System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
-                + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()
-                + " to edge list");
     }
 
     /**
