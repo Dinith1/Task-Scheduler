@@ -170,7 +170,7 @@ public class InputFileReader {
         }
 
         Scheduling scheduling = new Scheduling();
-        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcesses(), listOfSortedNodes);
+        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcessors(), listOfSortedNodes);
         outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 

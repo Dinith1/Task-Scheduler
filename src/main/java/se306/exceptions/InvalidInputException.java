@@ -14,7 +14,7 @@ public class InvalidInputException extends Exception {
      * @return boolean to see if process input was missing or invalid
      */
     public boolean checkProcessInput(CommandLineParser parser) {
-        return (parser.getNumberOfProcesses() <= 0);
+        return (parser.getNumberOfProcessors() <= 0);
     }
     
 }

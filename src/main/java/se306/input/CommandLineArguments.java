@@ -8,15 +8,15 @@ import com.google.devtools.common.options.OptionsBase;
  */
 public class CommandLineArguments extends OptionsBase {
 
-	@Option(name = "help", abbrev = 'h', help = "Prints usage info", category = "Startup", defaultValue = "false")
+	@Option(name = "HELP", abbrev = 'h', help = "Prints usage info", category = "Startup", defaultValue = "false")
 	public boolean help;
 
-	@Option(name = "cores", abbrev = 'p', help = "Number of cores (processors) to use to produce the schedule", category = "Startup", defaultValue = "1")
+	@Option(name = "NUMCORES", abbrev = 'p', help = "Number of cores (process) to use to produce the schedule", category = "Startup", defaultValue = "1")
 	public int numCores;
 
-	@Option(name = "output-file", abbrev = 'o', help = "Output file name", category = "Startup", defaultValue = "output.dot")
+	@Option(name = "OUTPUT", abbrev = 'o', help = "output file is named OUTPUT (default is INPUT-output.dot)", category = "Startup", defaultValue = "output.dot")
 	public String outputFile;
 
-	@Option(name = "visualise", abbrev = 'v', help = "Visualise the search", category = "Startup", defaultValue = "false")
+	@Option(name = "VISUALISE", abbrev = 'v', help = "Visualise the search", category = "Startup", defaultValue = "false")
 	public boolean visualise;
 }
