@@ -4,6 +4,8 @@ import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
+import se306.logging.Log;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -16,6 +18,17 @@ public class OutputFileGenerator {
 	private PrintWriter writer;
 	private List<Line> lineInformation = new ArrayList<>();
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
+
+	/**
+	 * Steps to generate the file after gathering data from inputs. This method
+	 * assigns processors to the nodes to be printed
+	 *
+	 */
+	public void generateFile(List<Processor> processorList) {
+		addProcessorsToLines(processorList);
+		printLinesToFile();
+		closeWriter();
+	}
 
 	/**
 	 * Adds information on the process and start time to each line with node
@@ -31,26 +44,17 @@ public class OutputFileGenerator {
 			while (it.hasNext()) {
 				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
 				Node node = (Node) pair.getKey();
-				for (Line line : lineInformation) {
+
+				for (Line line : this.lineInformation) {
 					if (node.equals(line.node)) {
 						line.setProcessor(processor);
 						line.setNodeStartTime(processor.getStartTimes().get(node));
 					}
 				}
+
 				it.remove(); // avoids a ConcurrentModificationException
 			}
 		}
-	}
-
-	/**
-	 * Steps to generate the file after gathering data from inputs. This method
-	 * assigns processors to the nodes to be printed
-	 *
-	 */
-	public void generateFile(List<Processor> processorList) {
-		addProcessorsToLines(processorList);
-		printLinesToFile();
-		closeWriter();
 	}
 
 	/**
@@ -59,13 +63,20 @@ public class OutputFileGenerator {
 	private void printLinesToFile() {
 		try {
 			writer = new PrintWriter(OUTPUT_FILE_NAME);
-			for (Line line : lineInformation) {
+			for (Line line : this.lineInformation) {
 				writer.println(line.getStringLine());
 			}
 			writer.println("}");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Closes the writer, so nothing breaks
+	 */
+	private void closeWriter() {
+		writer.close();
 	}
 
 	/**
@@ -84,14 +95,7 @@ public class OutputFileGenerator {
 			newLine.recordLine((String) lineInfo);
 		}
 
-		lineInformation.add(newLine);
-	}
-
-	/**
-	 * Closes the writer, so nothing breaks
-	 */
-	private void closeWriter() {
-		writer.close();
+		this.lineInformation.add(newLine);
 	}
 
 	/**
@@ -160,7 +164,6 @@ public class OutputFileGenerator {
 
 			return this.nonNodeLine;
 		}
-
 	}
 
 }

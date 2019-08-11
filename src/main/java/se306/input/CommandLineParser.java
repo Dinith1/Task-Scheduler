@@ -31,7 +31,7 @@ public class CommandLineParser {
 	 * @return The single CommandLineParser object
 	 */
 	public static CommandLineParser getInstance() {
-		return (cmdLineParser == null) ? new CommandLineParser() : cmdLineParser;
+		return (cmdLineParser == null) ? (cmdLineParser = new CommandLineParser()) : cmdLineParser;
 	}
 
 	/**
@@ -45,6 +45,7 @@ public class CommandLineParser {
 
 		Log.info("Input file entered: " + this.inputFileName);
 		Log.info("Output will be saved to: " + this.outputFileName);
+		Log.info("Number of processes to use: " + this.numProcesses);
 	}
 
 	/**
