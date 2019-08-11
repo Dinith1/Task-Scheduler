@@ -4,7 +4,6 @@
 1. Move all resources into the same directory as
 2. Open up terminal/command line
 3. `cd <path to where scheduler.jar is located> `
-4. `java -jar scheduler.jar INPUT.dot P [OPTIONS]`
 
 ## Run from IntelliJ
 1. Keep .dot files on the top project directory.
@@ -13,7 +12,7 @@
 4. The output file should be in your top level directory of project
 
 ## Team:
-| Name | UPI  | ID no.  |
+| Name | UPI | ID no. |
 |---|---|---|
 | Allen Nian | ania716 | 958920712 |
 | Dinith Wannigama | dwan609 | 834713594 |
@@ -26,19 +25,22 @@
 ## Overview:
 This program takes in an input graph via a .dot file, this directed acyclic graph has nodes and edges with weights that represent processing time and communication costs between processors respectively. Each node represents a task which can be scheduled on a processor. This scheduler will find a valid schedule to return.
 
-Inputs: `<INPUT.dot>` `<P>` `<[OPTION]>`
-| Name | UPI  | 
+- Run JAR: `java -jar scheduler.jar <INPUT.dot> <P> [OPTIONS]`
+
+| Required | Description | 
 |---|---|
-| `<INPUT.dot>` | a task graph with integer weights in dot format |
-| `<P>` | number of processors to schedule the INPUT graph on |
+| `<INPUT.dot>` | A task graph with integer weights in dot format |
+| `<P>` | Number of processors to schedule the INPUT graph on |
 
-Optional Flags:
+| Options | Description |
+|---|---|
+| `-p <NUMBER-OF-CORES>` | Use the specified number of cores to compute schedule in parallel |
+| `-v` | Visualize the search |
+| `-o <OUTPUT.dot>` | Name of file to save output schedule to |
 
--o &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OUTPUTNAME &nbsp; &nbsp; Specify output name of choice. Default output name is INPUT-output.dot
-
--p &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NUMCORES &nbsp; &nbsp; &nbsp; &nbsp; Number of cores (processes) to use to produce/parallelise the schedule
-
---help &nbsp; &nbsp; HELP  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Prints usage info
+- To get help:
+  - `java -jar scheduler.jar --help`
+  - This will prints information on how to use the JAR file
 
 ## Build Maven project
 
@@ -51,4 +53,3 @@ Optional Flags:
 ## For IntelliJ or eclipse users
 
 Make sure to enable auto imports, as a maven project might mess with importing otherwise.
-
