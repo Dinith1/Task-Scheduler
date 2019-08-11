@@ -1,6 +1,6 @@
-package se306.Algorithm;
+package se306.algorithm;
 
-import se306.Input.Node;
+import se306.input.Node;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +10,12 @@ import java.util.List;
 public class Scheduling {
 
     // User defined available processors placed in a list
-    private List<Processor> processorList = new ArrayList<>();
+    private List<se306.algorithm.Processor> processorList = new ArrayList<>();
 
     private void createProcessors(int numberOfProcessors){
         for(int i = 0; i < numberOfProcessors;i++){
             String processorIdentifier = Integer.toString(i);
-            processorList.add(new Processor(processorIdentifier));
+            processorList.add(new se306.algorithm.Processor(processorIdentifier));
         }
     }
     /**
@@ -25,6 +25,8 @@ public class Scheduling {
      * @param listOfSortedNodes - the list of nodes that are in sorted order from InputReader class
      */
     public void createSchedule(int numberOfProcessors, List<Node> listOfSortedNodes){
+
+        // Creates the number of processes specified by the user
         createProcessors(numberOfProcessors);
 
         /**
@@ -42,7 +44,6 @@ public class Scheduling {
                 else {
                     return 1;
                 }
-
             }
         };
         // Loops through all the nodes available
@@ -56,7 +57,7 @@ public class Scheduling {
     /**
      * Returns list of Processor objects that have the nodes scheduled in order of the processor identifier number
      */
-    public List<Processor> getProcessorList(){
+    public List<se306.algorithm.Processor> getProcessorList(){
         Collections.sort(processorList, sortByIdentifierNumber);
         return processorList;
     }
@@ -64,7 +65,7 @@ public class Scheduling {
     /**
      * Comparator to be used with resorting the processor list back into the process identifier number order
      */
-    private Comparator<Processor> sortByIdentifierNumber = new Comparator<Processor>() {
+    private Comparator<se306.algorithm.Processor> sortByIdentifierNumber = new Comparator<se306.algorithm.Processor>() {
         public int compare(Processor p1, Processor p2) {
             if (Integer.parseInt(p1.getProcessorIdentifier()) < Integer.parseInt(p2.getProcessorIdentifier())) {
                 return -1;

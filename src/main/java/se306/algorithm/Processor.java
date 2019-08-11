@@ -1,19 +1,20 @@
-package se306.Algorithm;
+package se306.algorithm;
 
-import se306.Input.Node;
+import se306.input.Node;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Processor {
 
     private int currentCost;
     private HashMap<Node, Integer> scheduledNodes;
+    private HashMap<Node, Integer> startTimes;
     private String processorIdentifier;
 
     public Processor(String processorIdentifier) {
         scheduledNodes = new HashMap<>();
+        startTimes = new HashMap<>();
         currentCost = 0;
         this.processorIdentifier = processorIdentifier;
     }
@@ -44,6 +45,13 @@ public class Processor {
         return this.scheduledNodes;
     }
 
+    /**
+     * Gets the current start times of the processor through a hashmap where the key is the Node itself
+     * and the value is an Integer that represents the starting time that it has been scheduled in the processor
+     *
+     */
+    public HashMap<Node, Integer> getStartTimes() { return this.startTimes; }
+
 
     /**
      * Takes a Node parameter as the node to be added to the processor, ensuring that communication costs are
@@ -54,6 +62,7 @@ public class Processor {
 
         // Add node into the hashmap schedule, where the value is calculated by
         // (weight of the node + current cost of this processor + any communication costs)
+        startTimes.put(node, currentCost);
         scheduledNodes.put(node, node.getNodeWeight() + currentCost + calculateCommunicationCosts(node));
         node.assignProcessor(this);
 
@@ -106,16 +115,4 @@ public class Processor {
 
         } else { return 0; }
     }
-
-//    public getContents() {
-//
-//        for (Map.Entry<Node, Integer> entry : scheduledNodes.entrySet()) {
-//            Node node = entry.getKey();
-//            Integer finishingCost = entry.getValue();
-//
-//            // TODO for @Allen's Output
-//        }
-//    }
-
-
 }

@@ -2,9 +2,12 @@
 bin/
 .idea/
 .vscode/
-target
+target/
 out/
 .iml
 .classpath
 .settings/
 .project
+output.dot
+Nodes_*
+*.dot

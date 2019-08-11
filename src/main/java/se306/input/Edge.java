@@ -1,4 +1,4 @@
-package se306.Input;
+package se306.input;
 
 public class Edge {
 
@@ -10,6 +10,10 @@ public class Edge {
         this.nodeStart = nodeStart;
         this.nodeEnd = nodeEnd;
         this.edgeWeight = edgeWeight;
+    }
+
+    public Edge(){
+
     }
 
     public Node getNodeStart(){
