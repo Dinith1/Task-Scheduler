@@ -20,15 +20,15 @@
 ## Overview:
 This program takes in an input graph via a .dot file, this directed acyclic graph has nodes and edges with weights that represent processing time and communication costs between processors respectively. Each node represents a task which can be scheduled on a processor. This scheduler will find a valid schedule to return.
 
-Inputs: <INPUT.dot> <NUMBER OF PROCESSES> <OPTIONAL-FLAGS>
+Inputs: <INPUT.dot>  <NUMBER OF PROCESSES>  <OPTIONAL-FLAGS>
 
 Optional Flags:
 
--o     OUTPUTNAME Specify output name of choice. Default output name is INPUT-output.dot
+-o     OUTPUTNAME     Specify output name of choice. Default output name is INPUT-output.dot
 
--p     NUMCORES   Number of cores (processes) to use to produce/parallelise the schedule
+-p     NUMCORES       Number of cores (processes) to use to produce/parallelise the schedule
 
---help HELP       prints usage info
+--help HELP           prints usage info
 
 ## Build Maven project
 
