@@ -27,6 +27,7 @@ public class OutputFileGenerator {
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
 			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
+
 			while (it.hasNext()) {
 				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
 				Node node = (Node) pair.getKey();
@@ -68,7 +69,7 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * checks the object type of input line, if its a node, edge, or other redundant
+	 * Checks the object type of input line, if its a node, edge, or other redundant
 	 * data Store the information appropriately, handled by the Line class
 	 * 
 	 * @param lineInfo
@@ -94,15 +95,14 @@ public class OutputFileGenerator {
 	}
 
 	/**
-	 * Stores information of lines, may need to change later since its a data class,
-	 * but I cannot think of any ways to do it another way.
+	 * Stores information of lines
 	 */
 	private class Line {
 		private Node node;
 		private Edge edge;
-		private Processor processor; // processor that the node represented in the line
-		private String nonNodeLine; // directly copy any strings that are not node information
-		private int nodeStartTime; // start time of node represented in this line
+		private Processor processor; // Processor that the node represented in the line
+		private String nonNodeLine; // Directly copy any strings that are not node information
+		private int nodeStartTime; // Start time of node represented in this line
 
 		void setNode(Node node) {
 			this.node = node;
@@ -125,23 +125,42 @@ public class OutputFileGenerator {
 		}
 
 		/**
-		 * Outputs the line if its not a node line (if its an edge line or redundant
-		 * data line) Otherwise combine the node data to be formatted to the output.
+		 * Outputs the line if its not a node line (i.e. if it's an edge line or
+		 * redundant data line). Otherwise combine the node data to be formatted to the
+		 * output.
 		 * 
-		 * @return
+		 * @return The line
 		 */
 		String getStringLine() {
-			if (node != null) {
-				String lineToOutput = "\t" + node.getNodeIdentifier() + "\t\t[Weight=" + node.getNodeWeight()
-						+ ",Start=" + this.nodeStartTime + ",Processor=" + processor.getProcessorIdentifier() + "];";
-				return lineToOutput;
-			} else if (edge != null) {
-				String lineToOutput = "\t" + edge.getNodeStart().getNodeIdentifier() + " -> "
-						+ edge.getNodeEnd().getNodeIdentifier() + "\t[Weight=" + edge.getEdgeWeight() + "];";
-				return lineToOutput;
-			} else {
-				return this.nonNodeLine;
+			if (this.node != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("\t");
+				sb.append(node.getNodeIdentifier());
+				sb.append("\t\t[Weight=");
+				sb.append(node.getNodeWeight());
+				sb.append(",Start=");
+				sb.append(this.nodeStartTime);
+				sb.append(",Processor=");
+				sb.append(processor.getProcessorIdentifier());
+				sb.append("];");
+				return sb.toString();
 			}
+
+			if (this.edge != null) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("\t");
+				sb.append(edge.getNodeStart().getNodeIdentifier());
+				sb.append(" -> ");
+				sb.append(edge.getNodeEnd().getNodeIdentifier());
+				sb.append("\t[Weight=");
+				sb.append(edge.getEdgeWeight());
+				sb.append("];");
+				return sb.toString();
+			}
+
+			return this.nonNodeLine;
 		}
+
 	}
+
 }
