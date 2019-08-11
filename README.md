@@ -12,14 +12,14 @@
 4. The output file should be in your top level directory of project
 
 ## Team:
-| Name | UPI | ID no. |
-|---|---|---|
-| Allen Nian | ania716 | 958920712 |
-| Dinith Wannigama | dwan609 | 834713594 |
-| Hong Shi | hshi952 | 314381442 |
-| Michelle Tan | mtan264 | 186674282 |
-| Richard Ng | rng448 | 169182120 |
-| Vanessa Ciputra | vcip451 | 804079209 |
+| Name | UPI | ID no. | GitHub Username |
+|---|---|---|---|
+| Allen Nian | ania716 | 958920712 | anian100 |
+| Dinith Wannigama | dwan609 | 834713594 | Dinith1 |
+| Hong Shi | hshi952 | 314381442 | HongShi10 |
+| Michelle Tan | mtan264 | 186674282 | michellemtan |
+| Richard Ng | rng448 | 169182120 | Richardng12 |
+| Vanessa Ciputra | vcip451 | 804079209 | vee-christella |
 
 
 ## Overview:
