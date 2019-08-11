@@ -29,8 +29,8 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 
 | Required | Description | 
 |---|---|
-| `<INPUT.dot>` | a task graph with integer weights in dot format |
-| `<P>` | number of processors to schedule the INPUT graph on |
+| `<INPUT.dot>` | A task graph with integer weights in dot format |
+| `<P>` | Number of processors to schedule the INPUT graph on |
 
 | Options | Description |
 |---|---|
