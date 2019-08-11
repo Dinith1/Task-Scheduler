@@ -57,19 +57,19 @@ public class CommandLineParser {
 	private void checkInvalidArgs(String[] input) throws InvalidInputException {
 		// Check that all compulsory inputs have been entered (2 inputs)
 		if (input.length < 2) {
-			throw new InvalidInputException("Please enter the .dot input file AND number of processes to be used");
+			throw new InvalidInputException("Please enter the .dot input file AND number of processors to be used");
 		}
 
 		// Parse the number of processors to be used
 		try {
 			this.numProcessors = Integer.parseInt(input[1]);
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException("Please enter an integer for the number of processes to be used");
+			throw new NumberFormatException("Please enter an integer for the number of processors to be used");
 		}
 
 		// Check that at least one process has been entered
 		if (this.numProcessors < 1) {
-			throw new InvalidInputException("Please enter a valid number of processes (at least 1)");
+			throw new InvalidInputException("Please enter a valid number of processors (at least 1)");
 		}
 
 		CommandLineArguments options = optParser.getOptions(CommandLineArguments.class);
@@ -91,11 +91,11 @@ public class CommandLineParser {
 	}
 
 	/**
-	 * Get the input number of processes
+	 * Get the input number of processors
 	 * 
-	 * @return The number of processes
+	 * @return The number of processors
 	 */
-	public int getNumberOfProcesses() {
+	public int getNumberOfProcessors() {
 		return numProcessors;
 	}
 

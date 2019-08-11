@@ -38,7 +38,7 @@ public class IOTest {
 			InputStreamReader isr = new InputStreamReader(in);
 
 			InputFileReader inputFileReader = new InputFileReader();
-			CommandLineParser.getInstance().getNumberOfProcesses();
+			CommandLineParser.getInstance().getNumberOfProcessors();
 
 			try {
 				inputFileReader.readInput(isr);
