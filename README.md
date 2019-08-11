@@ -1,5 +1,10 @@
 # SE306.Project1
 
+## Run from the Command Line
+1. Move all resources into the same directory as
+2. Open up terminal/command line
+3. `cd <path to where scheduler.jar is located> `
+
 ## Run from IntelliJ
 1. Keep .dot files on the top project directory.
 2. Change run configuration to include command line inputs to your liking
@@ -20,7 +25,11 @@
 ## Overview:
 This program takes in an input graph via a .dot file, this directed acyclic graph has nodes and edges with weights that represent processing time and communication costs between processors respectively. Each node represents a task which can be scheduled on a processor. This scheduler will find a valid schedule to return.
 
-Inputs: `<INPUT.dot>` `<NUMBER OF PROCESSES>` `<OPTIONAL-FLAGS>`
+Inputs: `<INPUT.dot>` `<P>` `<[OPTION]>`
+| Name | UPI  | 
+|---|---|
+| `<INPUT.dot>` | a task graph with integer weights in dot format |
+| `<P>` | number of processors to schedule the INPUT graph on |
 
 Optional Flags:
 
