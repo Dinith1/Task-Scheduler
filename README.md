@@ -26,9 +26,9 @@ Optional Flags:
 
 -o &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OUTPUTNAME &nbsp; &nbsp; Specify output name of choice. Default output name is INPUT-output.dot
 
--p &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NUMCORES &nbsp; &nbsp; Number of cores (processes) to use to produce/parallelise the schedule
+-p &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NUMCORES &nbsp; &nbsp; &nbsp; Number of cores (processes) to use to produce/parallelise the schedule
 
---help &nbsp; &nbsp; HELP  &nbsp; &nbsp; &nbsp; Prints usage info
+--help &nbsp; &nbsp; HELP  &nbsp; &nbsp; &nbsp; &nbsp; Prints usage info
 
 ## Build Maven project
 
