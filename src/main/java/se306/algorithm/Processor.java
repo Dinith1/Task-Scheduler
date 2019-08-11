@@ -62,7 +62,7 @@ public class Processor {
 
         // Add node into the hashmap schedule, where the value is calculated by
         // (weight of the node + current cost of this processor + any communication costs)
-        startTimes.put(node, currentCost);
+        startTimes.put(node, currentCost + calculateCommunicationCosts(node));
         scheduledNodes.put(node, node.getNodeWeight() + currentCost + calculateCommunicationCosts(node));
         node.assignProcessor(this);
 
