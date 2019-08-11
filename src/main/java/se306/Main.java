@@ -35,17 +35,20 @@ public class Main {
             return;
         }
 
+        InputStreamReader isr;
+        try {
+            isr = new FileReader(parser.getInputFileName());
+        } catch (FileNotFoundException e) {
+            Log.error("Invalid input filename (please check the spelling)");
+            return;
+        }
+
         InputFileReader ifr = new InputFileReader();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-        try {
-            ifr.readInput(new FileReader(parser.getInputFileName())); // Start scheduling
-        } catch (FileNotFoundException e) {
-            Log.error("Invalid input filename (please check the spelling)");
-            return;
-        }
+        ifr.readInput(isr); // Start scheduling
 
         long endTime = System.nanoTime();
         Log.info("-- Finished scheduling --");
