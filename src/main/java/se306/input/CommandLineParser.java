@@ -13,14 +13,14 @@ public class CommandLineParser {
 	private static CommandLineParser cmdLineParser = null;
 	private String inputFileName;
 	private String outputFileName;
-	private int numProcesses;
+	private int numProcessors;
 	private OptionsParser optParser;
 
 	/**
 	 * Private constructor only called by this class
 	 */
 	private CommandLineParser() {
-		numProcesses = 1;
+		numProcessors = 1;
 		outputFileName = "output.dot";
 		optParser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 	}
@@ -45,7 +45,7 @@ public class CommandLineParser {
 
 		Log.info("Input file entered: " + this.inputFileName);
 		Log.info("Output will be saved to: " + this.outputFileName);
-		Log.info("Number of processes to use: " + this.numProcesses);
+		Log.info("Number of processors to use: " + this.numProcessors);
 	}
 
 	/**
@@ -62,13 +62,13 @@ public class CommandLineParser {
 
 		// Parse the number of processors to be used
 		try {
-			this.numProcesses = Integer.parseInt(input[1]);
+			this.numProcessors = Integer.parseInt(input[1]);
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException("Please enter an integer for the number of processes to be used");
 		}
 
 		// Check that at least one process has been entered
-		if (this.numProcesses < 1) {
+		if (this.numProcessors < 1) {
 			throw new InvalidInputException("Please enter a valid number of processes (at least 1)");
 		}
 
@@ -96,7 +96,7 @@ public class CommandLineParser {
 	 * @return The number of processes
 	 */
 	public int getNumberOfProcesses() {
-		return numProcesses;
+		return numProcessors;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class CommandLineParser {
 	 * Prints out how the user should run the program with appropriate arguments
 	 */
 	public void printUsage() {
-		System.out.println("\nUsage: java -jar scheduler.jar <input-file> <number-of-processes> [options]\n");
+		System.out.println("\nUsage: java -jar scheduler.jar <INPUT-FILE> <NUMBER-OF-PROCESSORS> [OPTIONS]\n");
 		System.out.println("\t- <input-file> should be a .dot file");
 		System.out.println("\t- <number-of-processes> should be an integer greater than 0\n");
 		System.out.println(
