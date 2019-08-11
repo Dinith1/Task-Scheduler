@@ -52,6 +52,5 @@ public class Main {
 
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
-
     }
 }

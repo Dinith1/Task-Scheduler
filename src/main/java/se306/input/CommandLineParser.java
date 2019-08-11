@@ -87,7 +87,14 @@ public class CommandLineParser {
 			throw new InvalidInputException("Please enter a file with the .dot extension");
 		}
 
-		this.outputFileName = options.outputFile;
+		// If the user does not specify an output, then set default to be INPUT-output.dot
+		//else set the output file to be what the user specifies
+		if (options.outputFile.equals("output.dot")) {
+			String inputFileName = this.inputFileName;
+			this.outputFileName = inputFileName.replace(".dot", "") + "-output.dot";
+		} else {
+			this.outputFileName = options.outputFile;
+		}
 	}
 
 	/**
