@@ -3,7 +3,9 @@ package se306.input;
 import se306.algorithm.Scheduling;
 import se306.output.OutputFileGenerator;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,9 @@ public class InputFileReader {
     private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
     /**
-     * Takes in a dot file, and parses it into Nodes and Edges, which are added into their respective ArrayLists
+     * Takes in a dot file, and parses it into Nodes and Edges, which are added into
+     * their respective ArrayLists
+     * 
      * @param isr
      * @throws IOException
      */
@@ -56,16 +60,15 @@ public class InputFileReader {
             } else { // Handle edges
                 // Get start node of edge
                 String startNode = line.substring(0, line.indexOf("-"));
-                startNode = startNode.replaceAll("\\s+","");
+                startNode = startNode.replaceAll("\\s+", "");
                 // Get end node of edge
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("["));
-                endNode = endNode.replaceAll("\\s+","");
+                endNode = endNode.replaceAll("\\s+", "");
                 int edgeWeight = findEdgeWeight(line);
                 makeEdge(startNode, endNode, edgeWeight);
             }
 
         }
-
 
         buffRead.close();
 
@@ -74,10 +77,10 @@ public class InputFileReader {
         addToSchedule(node);
     }
 
-
     /**
-     * Takes in parameters of the node weight and node identifier and creates a new node object, then add it
-     * to a list of nodes
+     * Takes in parameters of the node weight and node identifier and creates a new
+     * node object, then add it to a list of nodes
+     * 
      * @param weight
      * @param nodeIdentifier
      */
@@ -99,7 +102,8 @@ public class InputFileReader {
         Node startNode = null;
         Node endNode = null;
 
-        // Loop through nodes to find starting and ending nodes of the edge (assuming the two nodes already exist as objects)
+        // Loop through nodes to find starting and ending nodes of the edge (assuming
+        // the two nodes already exist as objects)
         for (Node tempNode : listOfNodes) {
             String tempNodeId = tempNode.getNodeIdentifier();
             startNode = (startNodeId.equals(tempNodeId)) ? tempNode : startNode;
@@ -114,9 +118,6 @@ public class InputFileReader {
         endNode.addIncomingEdges(currentEdge);
         outputFileGenerator.readLine(currentEdge);
         listOfEdges.add(currentEdge);
-        System.out.println("Added edge from node " + currentEdge.getNodeStart().getNodeIdentifier() + " to node "
-                + currentEdge.getNodeEnd().getNodeIdentifier() + " with edge weight = " + currentEdge.getEdgeWeight()
-                + " to edge list");
     }
 
     /**
@@ -145,14 +146,15 @@ public class InputFileReader {
         return nodeIdentifier;
     }
 
-
     /**
-     * Creates an order of nodes to be scheduled, only considering dependencies on parents.
+     * Creates an order of nodes to be scheduled, only considering dependencies on
+     * parents.
      *
      * @param currentNode
      */
     private void addToSchedule(Node currentNode) {
-        // Iterate through all input nodes WITHOUT assuming the first node is the root node
+        // Iterate through all input nodes WITHOUT assuming the first node is the root
+        // node
         while (!(listOfNodes.isEmpty())) {
             if (currentNode.getParentNodes().isEmpty() || isAllParentsVisited(currentNode)) {
                 listOfSortedNodes.add(currentNode);
@@ -168,12 +170,13 @@ public class InputFileReader {
         }
 
         Scheduling scheduling = new Scheduling();
-        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcesses(), listOfSortedNodes);
+        scheduling.createSchedule(CommandLineParser.getInstance().getNumberOfProcessors(), listOfSortedNodes);
         outputFileGenerator.generateFile(scheduling.getProcessorList());
     }
 
     /**
-     * Checks if all the parents of a node have been visited and returns true or false
+     * Checks if all the parents of a node have been visited and returns true or
+     * false
      *
      * @param child
      * @return boolean
@@ -189,8 +192,8 @@ public class InputFileReader {
     }
 
     /**
-     * Finds the parents of a node and returns either an unvisited parent (in no particular order) or null if all have
-     * been visited
+     * Finds the parents of a node and returns either an unvisited parent (in no
+     * particular order) or null if all have been visited
      *
      * @param child
      * @return
@@ -203,5 +206,5 @@ public class InputFileReader {
         }
         return null;
     }
-}
 
+}

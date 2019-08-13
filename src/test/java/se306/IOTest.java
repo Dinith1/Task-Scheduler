@@ -16,10 +16,10 @@ import static junit.framework.TestCase.fail;
 
 public class IOTest {
 	/**
-	 * This "test" should be run to check any changes do not affect any examples
+     * This test should be run to check any changes do not affect reading any given examples
 	 */
 	@Test
-	public void testAllResources() {
+    public void testReadResources() {
 
 		// Resources provided as example input graphs
 		List<String> pathNames = new ArrayList<>();
@@ -38,7 +38,7 @@ public class IOTest {
 			InputStreamReader isr = new InputStreamReader(in);
 
 			InputFileReader inputFileReader = new InputFileReader();
-			CommandLineParser.getInstance().getNumberOfProcesses();
+			CommandLineParser.getInstance().getNumberOfProcessors();
 
 			try {
 				inputFileReader.readInput(isr);

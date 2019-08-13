@@ -1,9 +1,10 @@
 # SE306.Project1
 
 ## Run from the Command Line
-1. Move all resources into the same directory as
+1. Move all resources/input files into the same directory as where `scheduler-basic-T4.jar` exists
 2. Open up terminal/command line
-3. `cd <path to where scheduler.jar is located> `
+3. Run `cd <path to where scheduler-basic-T4.jar is located> `
+4. Run `java -jar scheduler.jar <INPUT.dot> <P> [OPTIONS]`
 
 ## Run from IntelliJ
 1. Keep .dot files on the top project directory.
@@ -41,6 +42,7 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 - To get help:
   - `java -jar scheduler.jar --help`
   - This will prints information on how to use the JAR file
+  - *DISCLAIMER: -p and -v have NOT been implemented in this current release*
 
 ## Build Maven project
 
@@ -53,4 +55,3 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 ## For IntelliJ or eclipse users
 
 Make sure to enable auto imports, as a maven project might mess with importing otherwise.
-

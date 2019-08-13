@@ -122,8 +122,8 @@ public class SchedulerTest {
         assertEquals((Integer) 0, p1.getStartTimes().get(a));
         assertEquals((Integer) 5, p1.getStartTimes().get(c));
         assertEquals((Integer) 10, p1.getStartTimes().get(d));
-        assertEquals((Integer) 16, p1.getStartTimes().get(e));
-        assertEquals((Integer) 0, p2.getStartTimes().get(b));
+        assertEquals((Integer) 45, p1.getStartTimes().get(e));
+        assertEquals((Integer) 20, p2.getStartTimes().get(b));
         assertEquals((Integer) 26, p2.getStartTimes().get(f));
         assertEquals((Integer) 33, p2.getStartTimes().get(g));
     }
