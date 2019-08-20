@@ -1,6 +1,10 @@
 package se306;
 
 import java.io.*;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -63,5 +67,13 @@ public class Main extends Application {
         primaryStage.setTitle("Visualisation");
         primaryStage.setResizable(false);
 
+        // Load the scene of the Player fxml file
+        FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("./visualisation/frontend/MainMenu.fxml"));
+        Parent menuPane = menuLoader.load();
+
+        Scene menuScene = new Scene(menuPane);
+        primaryStage.setScene(menuScene);
+        primaryStage.show();
+        System.out.println("HELLO");
 	}
 }
