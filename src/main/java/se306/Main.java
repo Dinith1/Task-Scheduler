@@ -71,14 +71,14 @@ public class Main extends Application {
         primaryStage.setResizable(false);
 
         // Load the scene of the Player fxml file
-        FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("./main/java/se306/visualisation/frontend/MainMenu.fxml"));
+        FXMLLoader menuLoader = new FXMLLoader(getClass().getClassLoader().getResource("MainMenu.fxml"));
         Parent menuPane = menuLoader.load();
 
-        BaseController controller = menuLoader.getController();
+        // BaseController controller = menuLoader.getController();
 
         // Passes required data to controllers
-        controller.setup(primaryStage);
-        controller.init();
+        // controller.setup(primaryStage);
+        // controller.init();
 
 
         Scene menuScene = new Scene(menuPane);
