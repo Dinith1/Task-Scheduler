@@ -12,6 +12,10 @@ import se306.logging.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import se306.visualisation.backend.BaseController;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.DefaultGraph;
+import org.graphstream.stream.file.FileSource;
+import org.graphstream.stream.file.FileSourceFactory;
 
 /**
  * Main class to test InputFileReader functionality
@@ -62,6 +66,33 @@ public class Main extends Application {
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
 
+        String filePath = parser.getInputFileName();
+        Graph g = new DefaultGraph("g");
+        FileSource fs = FileSourceFactory.sourceFor(filePath);
+
+        // GraphStream
+        fs.addSink(g);
+
+        try {
+            fs.begin(filePath);
+
+            while (fs.nextEvents()) {
+                // Optionally some code here ...
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            fs.end();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            fs.removeSink(g);
+        }
+
+        g.display();
+
         launch(args);
     }
 
@@ -80,11 +111,10 @@ public class Main extends Application {
         // controller.setup(primaryStage);
         // controller.init();
 
-
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
         primaryStage.show();
         System.out.println("HELLO");
-	}
+    }
 }
