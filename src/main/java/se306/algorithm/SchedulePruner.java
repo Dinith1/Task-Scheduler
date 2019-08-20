@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SchedulePruner {
 
-    public void duplicationDetection() {
+    public void duplicationDetection(PartialSchedule schedule1, PartialSchedule schedule2) {
 
     }
 
@@ -20,5 +20,9 @@ public class SchedulePruner {
                 }
             }
         }
+    }
+
+    public void identicalTasks(PartialSchedule schedule) {
+        List<Processor> processorList = schedule.getProcessorList();
     }
 }
