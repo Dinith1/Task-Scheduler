@@ -45,10 +45,8 @@ public class AStarScheduler {
                 List<PartialSchedule> expandedCurrentSchedule = currentSchedule.expandNewStates();
 
                 for (PartialSchedule s : expandedCurrentSchedule) {
-                    // s.setCostFunction(s.calculateCostFunction);
-                    if (!isDuplicate(s)) {
-                        open.add(s);
-                    }
+                     s.setCostFunction(s.calculateCostFunction());
+                     open.add(s);
                 }
                 open.remove();
                 closed.add(currentSchedule);
@@ -63,7 +61,7 @@ public class AStarScheduler {
     public void findOptimalSchedule(){
         try {
             PartialSchedule optimalSchedule = aStarAlgorithm(CommandLineParser.getInstance().getNumberOfProcessors());
-            new OutputFileGenerator().generateFile(optimalSchedule.getProcessorList());
+            OutputFileGenerator.getInstance().generateFile(optimalSchedule.getProcessorList());
         }
         catch (Exception e){
             e.getMessage();

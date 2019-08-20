@@ -122,6 +122,20 @@ public class PartialSchedule {
         return processorList;
     }
 
+    public int getFinishTime() {
+        int finishTime = 0;
+        for (Processor p : processorList) {
+            if (p.getCurrentCost() > finishTime) {
+                finishTime = p.getCurrentCost();
+            }
+        }
+        return finishTime;
+    }
+
+    public int calculateCostFunction() {
+        return getFinishTime();
+    }
+
     public int getCostFunction(){
         return costFunction;
     }

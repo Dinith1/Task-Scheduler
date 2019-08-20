@@ -16,7 +16,7 @@ public class InputFileReader {
 
     public static Queue<Node> listOfAvailableNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
-    private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
+    private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into

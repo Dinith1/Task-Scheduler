@@ -1,9 +1,12 @@
 package se306.output;
 
 import se306.algorithm.Processor;
+import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
+import se306.logging.Log;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -14,8 +17,17 @@ import java.util.Map;
 public class OutputFileGenerator {
 
 	private PrintWriter writer;
+	private static OutputFileGenerator outputFileGenerator = null;
 	private List<Line> lineInformation = new ArrayList<>();
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
+
+	private OutputFileGenerator() {
+
+	}
+
+	public static OutputFileGenerator getInstance() {
+		return (outputFileGenerator == null) ? (outputFileGenerator = new OutputFileGenerator()) : outputFileGenerator;
+	}
 
 	/**
 	 * Steps to generate the file after gathering data from inputs. This method
