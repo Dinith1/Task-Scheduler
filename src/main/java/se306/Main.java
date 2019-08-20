@@ -1,11 +1,11 @@
 package se306;
 
 import java.io.*;
-
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 import se306.logging.Log;
+import javafx.application.application;
 
 /**
  * Main class to test InputFileReader functionality
@@ -13,7 +13,7 @@ import se306.logging.Log;
  * @param args
  * @throws IOException
  */
-public class Main {
+public class Main extends Applica {
 
     public static void main(String[] args) throws IOException {
 
