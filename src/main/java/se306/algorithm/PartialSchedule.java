@@ -1,9 +1,9 @@
 package se306.algorithm;
 
+import se306.input.InputFileReader;
 import se306.input.Node;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+
+import java.util.*;
 
 public class PartialSchedule {
 
@@ -11,7 +11,7 @@ public class PartialSchedule {
     private List<Processor> processorList = new ArrayList<>();
     private int costFunction;
 
-    public PartialSchedule(int processorNumber){
+    public PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
 
@@ -28,10 +28,23 @@ public class PartialSchedule {
         }
     };
 
+    /**
+     * This method finds the nodes that already have been scheduled in this schedule
+     * @return scheduledNodes
+     */
+    public Set<Node> getUsedNodes(){
+        Set<Node> scheduledNodes = new HashSet<>();
+        for (Processor p: processorList) {
+            //For each processor node map turn it into a hashSet of keys
+            scheduledNodes.addAll(p.getSchedule().keySet());
+        }
+        return scheduledNodes;
+    }
+
     public List<PartialSchedule> expandNewStates(){
         List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
         //FIND HOW MANY NODES NEED TO BE SCHEDULED FOR THE EXPANSION
-        List<Node> nodes = new AStarScheduler().findSchedueableNodes();
+        List<Node> nodes = findSchedulableNodes();
         for(int i = 0;i<nodes.size();i++){
             //Get each node that needs to be scheduled
             for(int j = 0; j<processorList.size(); j++){
@@ -44,12 +57,35 @@ public class PartialSchedule {
         }
         return newExpandedSchedule;
     }
+    /**
+     *  This method iterates through the list of available nodes and finds nodes in which all the parents of that node
+     *  have already been used into a schedule and updates the list
+     * @return freeNodes
+     */
 
+    private List<Node> findSchedulableNodes(){
+        List<Node> freeNodes = new ArrayList<>();
+        //Loops through all nodes
+        for (Node currentNode : InputFileReader.listOfAvailableNodes) {
+            //Checks if the node is in used nodes already
+            if(!this.getUsedNodes().contains(currentNode)){
+                //if no parents then add to list
+                if(currentNode.getParentNodes().size() == 0){
+                    freeNodes.add(currentNode);
+                }
+                //if all parents are used add to list
+                else if(this.getUsedNodes().containsAll(currentNode.getParentNodes())){
+                    freeNodes.add(currentNode);
+                }
+            }
+        }
+        return freeNodes;
+    }
     /**
      * This method adds the node into the specified processor number
      *
-     * @param processorNumber
-     * @param node
+     * @param processorNumber - the processor for the node to be added to
+     * @param node - the node to be added
      */
     private void addToProcessor(int processorNumber, Node node){
         //Adds the node into the corresponding processor
@@ -67,11 +103,14 @@ public class PartialSchedule {
         }
     }
 
-    public boolean isComplete(){
-
-        //THIS METHOD SHOULD CHECK IF ALL NODES HAVE BEEN SCHEDULED
-        //(MIGHT CALL A METHOD IN PROCESSOR CLASS TO CHECK THE MAPS)
-        return false;
+    /**
+     * Method that checks that every node in listOfAvailableNodes are in used nodes for this
+     * current schedule
+     *
+     * @return true if all nodes used or else false
+     */
+     boolean isComplete(){
+        return (getUsedNodes().containsAll(InputFileReader.listOfAvailableNodes));
     }
 
     /**

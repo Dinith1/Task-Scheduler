@@ -1,8 +1,6 @@
 package se306.algorithm;
 
 import se306.input.CommandLineParser;
-import se306.input.InputFileReader;
-import se306.input.Node;
 import se306.output.OutputFileGenerator;
 
 import java.util.ArrayList;
@@ -11,9 +9,8 @@ import java.util.PriorityQueue;
 
 public class AStarScheduler {
 
-    PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
-    List<PartialSchedule> closed = new ArrayList<>();
-    public static List<Node> usedNodes = new ArrayList<>();
+    private PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
+    private List<PartialSchedule> closed = new ArrayList<>();
 
     private boolean isDuplicate(PartialSchedule schedule){
 
@@ -29,33 +26,34 @@ public class AStarScheduler {
      * and creates each schedule by expanding the current one in the queue until a complete state schedule
      * is first in the queue.
      *
-     * @param numberOfProcessors
+     * @param numberOfProcessors - number of processors specified by user
      * @return the optimal partial exception
      * @throws Exception place holder exception
      */
     private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception{
         // OPEN <-- S init
-        open.add(getPartialScheduleInit());
-        while(!open.isEmpty()){
+        open.add(getPartialScheduleInital(numberOfProcessors));
+        while(!open.isEmpty()) {
             //Retrieves head and removes it from the queue
             PartialSchedule currentSchedule = open.peek();
-
-            if(currentSchedule.isComplete()){
-                return currentSchedule;
-            }
-            //EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
-            List<PartialSchedule> expandedCurrentSchedule = currentSchedule.expandNewStates();
-
-            for (PartialSchedule s:expandedCurrentSchedule) {
-               // s.setCostFunction(s.calculateCostFunction);
-                if(!isDuplicate(s)){
-                    open.add(s);
+            if (currentSchedule != null) {
+                if (currentSchedule.isComplete()) {
+                    return currentSchedule;
                 }
-            }
-            open.remove();
-            closed.add(currentSchedule);
-        }
 
+                //EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
+                List<PartialSchedule> expandedCurrentSchedule = currentSchedule.expandNewStates();
+
+                for (PartialSchedule s : expandedCurrentSchedule) {
+                    // s.setCostFunction(s.calculateCostFunction);
+                    if (!isDuplicate(s)) {
+                        open.add(s);
+                    }
+                }
+                open.remove();
+                closed.add(currentSchedule);
+            }
+        }
         throw new Exception();
     }
 
@@ -75,29 +73,16 @@ public class AStarScheduler {
         }
 
     /**
-     *  This method iterates through the list of available nodes and finds nodes in which all the parents of that node
-     *  have already been used into a schedule and updates the list
-     * @return freeNodes
+     * Initialisation method that finds the best initial schedule to expand with
+     *
+     * @param numberOfProcessors - number of processors specified by user
+     * @return a partialSchedule which has the lowest cost function to start out with
      */
-
-    public List<Node> findSchedueableNodes(){
-        List<Node> freeNodes = new ArrayList<>();
-        for (Node currentNode : InputFileReader.listOfAvailableNodes) {
-            if(!usedNodes.contains(currentNode)){
-                if(currentNode.getParentNodes().size() == 0){
-                    freeNodes.add(currentNode);
-                    InputFileReader.listOfAvailableNodes.remove(currentNode);
-                }
-                else if(usedNodes.containsAll(currentNode.getParentNodes())){
-                        freeNodes.add(currentNode);
-                        InputFileReader.listOfAvailableNodes.remove(currentNode);
-                }
-            }
-        }
-        return freeNodes;
-    }
-
-    public PartialSchedule getPartialScheduleInit(){
-        return null;
+    public PartialSchedule getPartialScheduleInital(int numberOfProcessors){
+        //Creates a schedule with the correct number of processors
+        PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
+        List<PartialSchedule> newScheduleList = schedule.expandNewStates();
+        newScheduleList.sort(new CostFunctionComparator());
+        return newScheduleList.get(0);
     }
 }
