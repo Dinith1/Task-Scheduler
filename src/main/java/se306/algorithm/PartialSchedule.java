@@ -34,7 +34,7 @@ public class PartialSchedule {
             Node nodeThatNeedsToBeScheduled = new Node();
             for(int j = 0; j<processorList.size(); j++){
                 //Add it to each processor and make that many corresponding schedules
-                addToProcessor(j, nodeThatNeedsToBeScheduled);
+                currentSchedule.addToProcessor(j, nodeThatNeedsToBeScheduled);
             }
             //Add it to each processor and make that many corresponding schedules
             newExpandedSchedule.add(currentSchedule);

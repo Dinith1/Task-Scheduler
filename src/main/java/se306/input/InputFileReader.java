@@ -1,5 +1,6 @@
 package se306.input;
 
+import se306.algorithm.AStarScheduler;
 import se306.algorithm.PartialSchedule;
 import se306.output.OutputFileGenerator;
 
@@ -15,15 +16,14 @@ import java.util.regex.Pattern;
 
 public class InputFileReader {
 
-    private Queue<Node> listOfNodes = new ArrayDeque<>();
+    public static Queue<Node> listOfNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
-    private List<Node> listOfSortedNodes = new ArrayList<>();
     private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
      * their respective ArrayLists
-     * 
+     *
      * @param isr
      * @throws IOException
      */
@@ -71,16 +71,12 @@ public class InputFileReader {
         }
 
         buffRead.close();
-
-        Node node = (listOfNodes.size() > 0) ? listOfNodes.peek() : null;
-
-        addToSchedule(node);
     }
 
     /**
      * Takes in parameters of the node weight and node identifier and creates a new
      * node object, then add it to a list of nodes
-     * 
+     *
      * @param weight
      * @param nodeIdentifier
      */
@@ -93,7 +89,7 @@ public class InputFileReader {
     /**
      * Takes in parameters of the start node, end node and edge weight and creates a
      * new edge object, then add it to a list of edges
-     * 
+     *
      * @param startNodeId
      * @param endNodeId
      * @param edgeWeight
@@ -122,7 +118,7 @@ public class InputFileReader {
 
     /**
      * Takes in a line from the file and gets the weight of the edge.
-     * 
+     *
      * @param line
      * @return
      */
@@ -135,7 +131,7 @@ public class InputFileReader {
 
     /**
      * Takes in a line from the file and gets the node identifier.
-     * 
+     *
      * @param line
      * @return
      */
@@ -145,66 +141,4 @@ public class InputFileReader {
         String nodeIdentifier = line.substring(0, iEnd);
         return nodeIdentifier;
     }
-
-    /**
-     * Creates an order of nodes to be scheduled, only considering dependencies on
-     * parents.
-     *
-     * @param currentNode
-     */
-    private void addToSchedule(Node currentNode) {
-        // Iterate through all input nodes WITHOUT assuming the first node is the root
-        // node
-        while (!(listOfNodes.isEmpty())) {
-            if (currentNode.getParentNodes().isEmpty() || isAllParentsVisited(currentNode)) {
-                listOfSortedNodes.add(currentNode);
-                listOfNodes.remove(currentNode);
-                // Stop ordering once there are no more input nodes to iterate through
-                if (!(listOfNodes.isEmpty())) {
-                    currentNode = listOfNodes.element();
-                }
-            } else {
-                // Parent node must be ordered before the child
-                currentNode = getNextUnvisitedParent(currentNode);
-            }
-        }
-
-        PartialSchedule schedule = new PartialSchedule();
-        schedule.createSchedule(CommandLineParser.getInstance().getNumberOfProcessors(), listOfSortedNodes);
-        outputFileGenerator.generateFile(schedule.getProcessorList());
-    }
-
-    /**
-     * Checks if all the parents of a node have been visited and returns true or
-     * false
-     *
-     * @param child
-     * @return boolean
-     */
-    private boolean isAllParentsVisited(Node child) {
-        boolean isAllVisited = true;
-        for (Node parent : child.getParentNodes()) {
-            if (!listOfSortedNodes.contains(parent)) {
-                isAllVisited = false;
-            }
-        }
-        return isAllVisited;
-    }
-
-    /**
-     * Finds the parents of a node and returns either an unvisited parent (in no
-     * particular order) or null if all have been visited
-     *
-     * @param child
-     * @return
-     */
-    private Node getNextUnvisitedParent(Node child) {
-        for (Node parent : child.getParentNodes()) {
-            if (!listOfSortedNodes.contains(parent)) {
-                return parent;
-            }
-        }
-        return null;
-    }
-
 }
