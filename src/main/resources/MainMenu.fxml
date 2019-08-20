@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.MainController">
    <children>
-      <HBox prefHeight="400.0" prefWidth="600.0">
+      <HBox prefHeight="400.0" prefWidth="1200.0">
          <children>
-            <VBox prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: #37f6ed;">
+            <VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37f6ed;">
                <children>
-                  <ImageView fx:id="graph" fitHeight="449.0" fitWidth="303.0" pickOnBounds="true" />
+                  <ImageView fx:id="graph" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
                </children></VBox>
-            <VBox prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: #8e4b35;">
+            <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #8e4b35;">
                <children>
                   <LineChart prefHeight="145.0" prefWidth="217.0">
                     <xAxis>
@@ -28,7 +28,7 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <ScatterChart prefHeight="74.0" prefWidth="200.0">
+                  <ScatterChart prefHeight="122.0" prefWidth="523.0">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -36,7 +36,7 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </ScatterChart>
-                  <PieChart />
+                  <PieChart prefHeight="393.0" prefWidth="267.0" />
                </children></VBox>
          </children>
       </HBox>
