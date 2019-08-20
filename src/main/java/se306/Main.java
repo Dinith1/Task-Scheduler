@@ -11,6 +11,7 @@ import se306.input.InputFileReader;
 import se306.logging.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import se306.visualisation.backend.BaseController;
 
 /**
  * Main class to test InputFileReader functionality
@@ -26,7 +27,7 @@ public class Main extends Application {
         // "src/resources/Nodes_7_OutTree.dot"
         // "src/resources/Nodes_8_Random.dot"
         // "src/resources/Nodes_9_SeriesParallel.dot"
-        // "src/resources/Nodes_10_Random.dot"
+        // "src/resources/Nodes_10_Random.dot" 
         // "src/resources/Nodes_11_OutTree.dot"
 
         CommandLineParser parser = CommandLineParser.getInstance();
@@ -60,6 +61,8 @@ public class Main extends Application {
 
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
+
+        launch(args);
     }
 
     @Override
@@ -68,11 +71,19 @@ public class Main extends Application {
         primaryStage.setResizable(false);
 
         // Load the scene of the Player fxml file
-        FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("./visualisation/frontend/MainMenu.fxml"));
+        FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("./main/java/se306/visualisation/frontend/MainMenu.fxml"));
         Parent menuPane = menuLoader.load();
+
+        BaseController controller = menuLoader.getController();
+
+        // Passes required data to controllers
+        controller.setup(primaryStage);
+        controller.init();
+
 
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
+        primaryStage.sizeToScene();
         primaryStage.show();
         System.out.println("HELLO");
 	}
