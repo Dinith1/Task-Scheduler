@@ -14,7 +14,10 @@ public class PartialSchedule {
     public PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
-
+    public PartialSchedule(PartialSchedule ps){
+        this.processorList = ps.processorList;
+        this.costFunction = ps.costFunction;
+    }
     /**
      * Comparator to be used with resorting the processor list back into the process
      * identifier number order
@@ -48,11 +51,12 @@ public class PartialSchedule {
         for(int i = 0;i<nodes.size();i++){
             //Get each node that needs to be scheduled
             for(int j = 0; j<processorList.size(); j++){
-                PartialSchedule currentSchedule = this;
+                    PartialSchedule newSchedule = new PartialSchedule(this);
+
                 //Add it to each processor and make that many corresponding schedules
-                currentSchedule.addToProcessor(j, nodes.get(i));
+                newSchedule.addToProcessor(j, nodes.get(i));
                 //Add the schedule to overall expanded list
-                newExpandedSchedule.add(currentSchedule);
+                newExpandedSchedule.add(newSchedule);
             }
         }
         return newExpandedSchedule;
