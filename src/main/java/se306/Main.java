@@ -63,6 +63,5 @@ public class Main extends Application {
         primaryStage.setTitle("Visualisation");
         primaryStage.setResizable(false);
 
-        menuLoad
 	}
 }
