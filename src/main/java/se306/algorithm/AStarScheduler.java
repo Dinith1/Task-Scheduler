@@ -13,7 +13,6 @@ public class AStarScheduler {
 
     PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
     List<PartialSchedule> closed = new ArrayList<>();
-    public static List<Node> freeNodes = new ArrayList<>();
     public static List<Node> usedNodes = new ArrayList<>();
 
     private boolean isDuplicate(PartialSchedule schedule){
@@ -75,16 +74,26 @@ public class AStarScheduler {
 
         }
 
-    public void findScheduleableNodes(){
-
-        for (Node n : InputFileReader.listOfNodes) {
-            if(!usedNodes.contains(n)){
-
+    /**
+     *  This method iterates through the list of available nodes and finds nodes in which all the parents of that node
+     *  have already been used into a schedule and updates the list
+     * @return freeNodes
+     */
+    public List<Node> findScheduleableNodes(){
+        List<Node> freeNodes = new ArrayList<>();
+        for (Node currentNode : InputFileReader.listOfAvailableNodes) {
+            if(!usedNodes.contains(currentNode)){
+                if(currentNode.getParentNodes().size() == 0){
+                    freeNodes.add(currentNode);
+                    InputFileReader.listOfAvailableNodes.remove(currentNode);
+                }
+                else if(usedNodes.containsAll(currentNode.getParentNodes())){
+                        freeNodes.add(currentNode);
+                        InputFileReader.listOfAvailableNodes.remove(currentNode);
+                }
             }
-
-
         }
-        InputFileReader.listOfNodes
+        return freeNodes;
     }
 
     public PartialSchedule getPartialScheduleInit(){

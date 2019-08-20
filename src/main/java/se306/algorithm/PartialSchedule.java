@@ -12,6 +12,10 @@ public class PartialSchedule {
     private List<Processor> processorList = new ArrayList<>();
     private int costFunction;
 
+    public PartialSchedule(int ){
+        createProcessors();
+    }
+
     /**
      * Comparator to be used with resorting the processor list back into the process
      * identifier number order
@@ -24,29 +28,35 @@ public class PartialSchedule {
             return 1;
         }
     };
+
     public List<PartialSchedule> expandNewStates(){
         List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
         //FIND HOW MANY NODES NEED TO BE SCHEDULED FOR THE EXPANSION
-        int numberOfNodesThatNeedToBeScheduled = 1;
-        for(int i = 0;i<numberOfNodesThatNeedToBeScheduled;i++){
-            PartialSchedule currentSchedule = this;
+        List<Node> nodes = new AStarScheduler().findScheduleableNodes();
+        for(int i = 0;i<nodes.size();i++){
             //Get each node that needs to be scheduled
-            Node nodeThatNeedsToBeScheduled = new Node();
             for(int j = 0; j<processorList.size(); j++){
+                PartialSchedule currentSchedule = this;
                 //Add it to each processor and make that many corresponding schedules
-                currentSchedule.addToProcessor(j, nodeThatNeedsToBeScheduled);
+                currentSchedule.addToProcessor(j, nodes.get(i));
+                //Add the schedule to overall expanded list
+                newExpandedSchedule.add(currentSchedule);
             }
-            //Add it to each processor and make that many corresponding schedules
-            newExpandedSchedule.add(currentSchedule);
         }
     }
 
+    /**
+     * This method adds the node into the specified processor number
+     *
+     * @param processorNumber
+     * @param node
+     */
     private void addToProcessor(int processorNumber, Node node){
         //Adds the node into the corresponding processor
         this.getProcessorList().get(processorNumber).addNode(node);
     }
     /**
-     * Add processors to the program
+     * Creates processors and adds it to the list
      *
      * @param numProcessors - Number of processors to add
      */

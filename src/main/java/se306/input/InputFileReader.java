@@ -1,7 +1,5 @@
 package se306.input;
 
-import se306.algorithm.AStarScheduler;
-import se306.algorithm.PartialSchedule;
 import se306.output.OutputFileGenerator;
 
 import java.io.BufferedReader;
@@ -16,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class InputFileReader {
 
-    public static Queue<Node> listOfNodes = new ArrayDeque<>();
+    public static Queue<Node> listOfAvailableNodes = new ArrayDeque<>();
     private List<Edge> listOfEdges = new ArrayList<>();
     private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
 
@@ -82,7 +80,7 @@ public class InputFileReader {
      */
     private void makeNode(int weight, String nodeIdentifier) {
         Node currentNode = new Node(weight, nodeIdentifier);
-        listOfNodes.add(currentNode);
+        listOfAvailableNodes.add(currentNode);
         outputFileGenerator.readLine(currentNode);
     }
 
@@ -100,7 +98,7 @@ public class InputFileReader {
 
         // Loop through nodes to find starting and ending nodes of the edge (assuming
         // the two nodes already exist as objects)
-        for (Node tempNode : listOfNodes) {
+        for (Node tempNode : listOfAvailableNodes) {
             String tempNodeId = tempNode.getNodeIdentifier();
             startNode = (startNodeId.equals(tempNodeId)) ? tempNode : startNode;
             endNode = (endNodeId.equals(tempNodeId)) ? tempNode : endNode;
