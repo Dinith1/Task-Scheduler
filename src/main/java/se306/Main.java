@@ -5,7 +5,8 @@ import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 import se306.logging.Log;
-import javafx.application.application;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Main class to test InputFileReader functionality
@@ -13,7 +14,7 @@ import javafx.application.application;
  * @param args
  * @throws IOException
  */
-public class Main extends Applica {
+public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
 
@@ -56,4 +57,12 @@ public class Main extends Applica {
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
     }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Visualisation");
+        primaryStage.setResizable(false);
+
+        menuLoad
+	}
 }
