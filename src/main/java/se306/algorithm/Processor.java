@@ -58,7 +58,7 @@ public class Processor {
      * also taken into consideration
      * @param node - the node to add to the schedule
      */
-    public void addToSchedule(Node node) {
+    public void addNode(Node node) {
 
         // Add node into the hashmap schedule, where the value is calculated by
         // (weight of the node + current cost of this processor + any communication costs)

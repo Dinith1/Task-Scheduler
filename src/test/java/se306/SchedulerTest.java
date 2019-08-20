@@ -3,7 +3,7 @@ package se306;
 import org.junit.Before;
 import org.junit.Test;
 import se306.algorithm.Processor;
-import se306.algorithm.Schedule;
+import se306.algorithm.PartialSchedule;
 import se306.input.Edge;
 import se306.input.Node;
 
@@ -87,7 +87,7 @@ public class SchedulerTest {
 
     @Test
     public void testCreateSchedulerWithNodes_7_OutTree_2Processors() {
-        Schedule scheduler = new Schedule();
+        PartialSchedule scheduler = new PartialSchedule();
 
         scheduler.createSchedule(2, orderedListNode);
         List<Processor> processList = scheduler.getProcessorList();
@@ -111,7 +111,7 @@ public class SchedulerTest {
      */
     @Test
     public void testStartTimes() {
-        Schedule scheduler = new Schedule();
+        PartialSchedule scheduler = new PartialSchedule();
 
         scheduler.createSchedule(2, orderedListNode);
         List<Processor> processList = scheduler.getProcessorList();
@@ -134,7 +134,7 @@ public class SchedulerTest {
      */
     @Test
     public void testGetProcessList() {
-        Schedule scheduler = new Schedule();
+        PartialSchedule scheduler = new PartialSchedule();
 
         scheduler.createSchedule(4, orderedListNode);
         List<Processor> processList = scheduler.getProcessorList();

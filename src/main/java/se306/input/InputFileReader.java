@@ -1,6 +1,6 @@
 package se306.input;
 
-import se306.algorithm.Schedule;
+import se306.algorithm.PartialSchedule;
 import se306.output.OutputFileGenerator;
 
 import java.io.BufferedReader;
@@ -169,7 +169,7 @@ public class InputFileReader {
             }
         }
 
-        Schedule schedule = new Schedule();
+        PartialSchedule schedule = new PartialSchedule();
         schedule.createSchedule(CommandLineParser.getInstance().getNumberOfProcessors(), listOfSortedNodes);
         outputFileGenerator.generateFile(schedule.getProcessorList());
     }
