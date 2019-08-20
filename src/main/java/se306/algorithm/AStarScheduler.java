@@ -27,7 +27,7 @@ public class AStarScheduler {
      * is first in the queue.
      *
      * @param numberOfProcessors - number of processors specified by user
-     * @return the optimal partial exception
+     * @return the optimal partial Schedule
      * @throws Exception place holder exception
      */
     private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception{
