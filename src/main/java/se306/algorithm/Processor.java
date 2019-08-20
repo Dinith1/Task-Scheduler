@@ -18,6 +18,12 @@ public class Processor {
         currentCost = 0;
         this.processorIdentifier = processorIdentifier;
     }
+    public Processor(Processor p){
+        this.scheduledNodes = new HashMap<>(p.scheduledNodes);
+        this.startTimes = new HashMap<>(p.startTimes);
+        this.processorIdentifier = p.processorIdentifier;
+        this.currentCost = p.currentCost;
+    }
 
     /**
      * Gets the identifier for the processor
