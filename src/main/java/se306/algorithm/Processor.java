@@ -115,4 +115,26 @@ public class Processor {
 
         } else { return 0; }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Processor secondProcessor = (Processor) o;
+
+        // Check if all scheduled nodes are in second processor
+        if (!scheduledNodes.keySet().containsAll(secondProcessor.scheduledNodes.keySet())) {
+            return false;
+        }
+
+        // Check start times
+        if (!startTimes.equals(secondProcessor.startTimes)) {
+            return false;
+        }
+
+        // Check finish times
+        if (!scheduledNodes.equals(secondProcessor.scheduledNodes)) {
+            return false;
+        }
+
+        return true;
+    }
 }
