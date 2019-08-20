@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class Scheduling {
+public class Schedule {
 
     // User defined available processors placed in a list
     private List<Processor> processorList = new ArrayList<>();
