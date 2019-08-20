@@ -1,10 +1,15 @@
 package se306;
 
+import java.awt.*;
 import java.io.*;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import org.graphstream.stream.file.FileSinkImages;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -16,6 +21,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
+import se306.visualisation.backend.MainController;
 
 /**
  * Main class to test InputFileReader functionality
@@ -24,6 +30,9 @@ import org.graphstream.stream.file.FileSourceFactory;
  * @throws IOException
  */
 public class Main extends Application {
+
+    @FXML
+    private ImageView graph;
 
     public static void main(String[] args) throws IOException {
 
@@ -35,6 +44,9 @@ public class Main extends Application {
         // "src/resources/Nodes_11_OutTree.dot"
 
         CommandLineParser parser = CommandLineParser.getInstance();
+
+        // For visualisation
+        ImageView imageview = new ImageView();
 
         try {
             parser.parseCommandLineArguments(args);
@@ -70,28 +82,6 @@ public class Main extends Application {
         Graph g = new DefaultGraph("g");
         FileSource fs = FileSourceFactory.sourceFor(filePath);
 
-        // GraphStream
-        fs.addSink(g);
-
-        try {
-            fs.begin(filePath);
-
-            while (fs.nextEvents()) {
-                // Optionally some code here ...
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            fs.end();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            fs.removeSink(g);
-        }
-
-        g.display();
 
         launch(args);
     }
@@ -105,16 +95,20 @@ public class Main extends Application {
         FXMLLoader menuLoader = new FXMLLoader(getClass().getClassLoader().getResource("MainMenu.fxml"));
         Parent menuPane = menuLoader.load();
 
-        // BaseController controller = menuLoader.getController();
-
-        // Passes required data to controllers
-        // controller.setup(primaryStage);
-        // controller.init();
+         // Passes required data to controllers
+        MainController ctrl = menuLoader.getController();
+        ctrl.createGraph();
 
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
         primaryStage.show();
-        System.out.println("HELLO");
+    }
+
+    private void createGraph(String fileName) {
+
+
+
+
     }
 }
