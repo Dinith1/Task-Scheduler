@@ -2,7 +2,6 @@ package se306.algorithm;
 
 import se306.input.Node;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -12,8 +11,8 @@ public class PartialSchedule {
     private List<Processor> processorList = new ArrayList<>();
     private int costFunction;
 
-    public PartialSchedule(int ){
-        createProcessors();
+    public PartialSchedule(int processorNumber){
+        createProcessors(processorNumber);
     }
 
     /**
@@ -32,7 +31,7 @@ public class PartialSchedule {
     public List<PartialSchedule> expandNewStates(){
         List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
         //FIND HOW MANY NODES NEED TO BE SCHEDULED FOR THE EXPANSION
-        List<Node> nodes = new AStarScheduler().findScheduleableNodes();
+        List<Node> nodes = new AStarScheduler().findSchedueableNodes();
         for(int i = 0;i<nodes.size();i++){
             //Get each node that needs to be scheduled
             for(int j = 0; j<processorList.size(); j++){
@@ -43,6 +42,7 @@ public class PartialSchedule {
                 newExpandedSchedule.add(currentSchedule);
             }
         }
+        return newExpandedSchedule;
     }
 
     /**
@@ -79,7 +79,7 @@ public class PartialSchedule {
      * the processor identifier number
      */
     public List<Processor> getProcessorList() {
-        Collections.sort(processorList, sortByIdentifierNumber);
+        processorList.sort(sortByIdentifierNumber);
         return processorList;
     }
 
@@ -90,5 +90,4 @@ public class PartialSchedule {
     public void setCostFunction(int costFunction){
         this.costFunction = costFunction;
     }
-
 }

@@ -47,7 +47,7 @@ public class AStarScheduler {
             List<PartialSchedule> expandedCurrentSchedule = currentSchedule.expandNewStates();
 
             for (PartialSchedule s:expandedCurrentSchedule) {
-                s.setCostFunction(s.calculateCostFunction);
+               // s.setCostFunction(s.calculateCostFunction);
                 if(!isDuplicate(s)){
                     open.add(s);
                 }
@@ -79,7 +79,8 @@ public class AStarScheduler {
      *  have already been used into a schedule and updates the list
      * @return freeNodes
      */
-    public List<Node> findScheduleableNodes(){
+
+    public List<Node> findSchedueableNodes(){
         List<Node> freeNodes = new ArrayList<>();
         for (Node currentNode : InputFileReader.listOfAvailableNodes) {
             if(!usedNodes.contains(currentNode)){
