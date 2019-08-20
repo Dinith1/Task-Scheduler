@@ -8,7 +8,9 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSinkImages;
 import org.graphstream.stream.file.FileSource;
+import org.graphstream.ui.layout.*;
 import org.graphstream.stream.file.FileSourceFactory;
+import org.graphstream.ui.swingViewer.Viewer;
 import se306.input.CommandLineParser;
 
 import java.io.File;
@@ -50,8 +52,12 @@ public class MainController {
             fs.removeSink(g);
         }
 
-        FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
+        Viewer viewer = g.display();
+        viewer.disableAutoLayout();
 
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
+        pic.setRenderer(FileSinkImages.RendererType.SCALA);
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
 
         try {
@@ -84,11 +90,11 @@ public class MainController {
             + ""
             + "node {"
             + "	shape: freeplane;"
-            + "	size: 10px;"
+            + "	size: 100px;"
             + "	size-mode: fit;"
             + "	fill-mode: none;"
             + "	stroke-mode: plain;"
-            + "	stroke-color: grey;"
+            + "	stroke-color: blue;"
             + "	stroke-width: 3px;"
             + "	padding: 5px, 1px;"
             + "	shadow-mode: none;"
@@ -107,9 +113,13 @@ public class MainController {
             + "	stroke-color: blue;"
             + "}"
             + ""
+            + "sprite {"
+            + " sprite-orientation: "
+            + "}"
+            + ""
             + "edge {"
             + "	shape: freeplane;"
-            + "	size: 3px;"
+            + "	size: 10px;"
             + "	fill-color: grey;"
             + "	fill-mode: plain;"
             + "	shadow-mode: none;"
@@ -117,6 +127,7 @@ public class MainController {
             + "	shadow-offset: 3px, -3px;"
             + "	shadow-width: 0px;"
             + "	arrow-shape: arrow;"
-            + "	arrow-size: 20px, 6px;"
-            + "}";
+            + "	arrow-size: 100px, 20px;"
+            + "}"
+            ;
 }
