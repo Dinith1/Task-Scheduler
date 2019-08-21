@@ -1,0 +1,24 @@
+package se306.algorithm;
+
+import java.util.Comparator;
+
+public class CostFunctionComparator implements Comparator<PartialSchedule> {
+
+    public int compare(PartialSchedule s1, PartialSchedule s2){
+        if(s1.getCostFunction()<s2.getCostFunction()){
+            return -1;
+        }
+        else if(s1.getCostFunction() == s2.getCostFunction()){
+            if (s1.getUsedNodes().size() > s2.getUsedNodes().size()) {
+                return -1;
+            } else if (s1.getUsedNodes().size() < s2.getUsedNodes().size()){
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        else{
+            return 1;
+        }
+    }
+}

@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import se306.algorithm.AStarScheduler;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -41,9 +42,6 @@ public class Main extends Application {
 
         CommandLineParser parser = CommandLineParser.getInstance();
 
-        // For visualisation
-        ImageView imageview = new ImageView();
-
         try {
             parser.parseCommandLineArguments(args);
 
@@ -66,7 +64,9 @@ public class Main extends Application {
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-        ifr.readInput(isr); // Start scheduling
+        ifr.readInput(isr);
+        AStarScheduler scheduler = new AStarScheduler();
+        scheduler.findOptimalSchedule();// Start scheduling
 
         long endTime = System.nanoTime();
         Log.info("-- Finished scheduling --");
