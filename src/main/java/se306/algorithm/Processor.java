@@ -25,15 +25,16 @@ public class Processor {
     }
     //Gets the ending time of the current process
     public int getCurrentCost(){
-        if(startTimes.size() == 0 || scheduledNodes.size() == 0){
+        if(scheduledNodes.size() ==0 || startTimes.size() == 0){
             return 0;
         }
-        return startTimes.get(startTimes.size()-1) + scheduledNodes.get(scheduledNodes.size()-1).getNodeWeight();
+        return startTimes.get(startTimes.size()-1)+scheduledNodes.get(scheduledNodes.size()-1).getNodeWeight();
     }
 
-    public void addNode(Node node, PartialSchedule partialSchedule, int processorNumber){
+    public void addNode(Node node,PartialSchedule schedule ,int processorNumber){
+        //adds node into the list
+        startTimes.add(schedule.calculateStartTime(node,processorNumber));
         scheduledNodes.add(node);
-        startTimes.add(partialSchedule.calculateCommunicationCosts(node,processorNumber)+ getCurrentCost() );
     }
 
     public List<Node> getScheduledNodes(){

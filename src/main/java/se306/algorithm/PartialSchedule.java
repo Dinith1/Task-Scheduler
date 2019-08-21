@@ -154,26 +154,34 @@ public class PartialSchedule {
         this.costFunction = costFunction;
     }
 
-    public int calculateCommunicationCosts(Node node, int processorNumber){
-        int maxParentCost = 0;
+    public int calculateStartTime(Node node, int processorNumber){
+        int maxStartTime = 0;
+        //Best starting time of current node if no communication costs
+        int currentStartTime = processorList.get(processorNumber).getCurrentCost();
         List<Node> parentNodes = node.getParentNodes();
         for (Processor p:processorList) {
             for (Node n: parentNodes) {
-                //If current processor contains a parent of node n then calculate the cost
+                //If current processor contains a parent of "node" then calculate the the start time needed
                 if(p.getScheduledNodes().contains(n)){
                     //If parent node is not scheduled in same processor
                     if(p.getProcessorID() != processorNumber){
-                        //Gets communication cost of the parent to current node
+
+                        //Find end time of the parent node
+                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(n)) + n.getNodeWeight();
                         int communicationCost = node.getIncomingEdge(n).getEdgeWeight();
-                        //Gets endTime of parent node
-                        // parentNodeENdTIme + communicationCost = startTIme of node that is added
-                        if(maxParentCost <  communicationCost){
-                            maxParentCost = communicationCost;
+
+                        if(endTimeOfParent > currentStartTime){
+                            currentStartTime = endTimeOfParent + communicationCost;
                         }
+
+
+                    }
+                    if(maxStartTime < currentStartTime){
+                        maxStartTime = currentStartTime;
                     }
                 }
             }
         }
-        return maxParentCost;
+        return maxStartTime;
     }
 }
