@@ -66,6 +66,13 @@ public class GraphController {
             Node node = g.addNode(n.getNodeIdentifier());
             node.setAttribute("label", n.getNodeIdentifier());
             node.setAttribute("xyx", new double[]{x, y, z});
+            node.setAttribute("shape", "freeplane");
+            node.setAttribute("size", "100px");
+            node.setAttribute("size-mode", "fit");
+
+            // + "	shape: freeplane;"
+            // + "	size: 100px;"
+            // + "	size-mode: fit;"
             x += 1;
             y += 1;
             // z += 1;
@@ -77,25 +84,13 @@ public class GraphController {
             g.addEdge(startNode + endNode, startNode, endNode, true);
         }
 
-        Iterable<Node> ite = (Iterable<Node>) g.getEachNode();
-
-        for (Node n : ite) {
-            Iterable<String> attr = n.getAttributeKeySet();
-
-            for (String s : attr) {
-                Object o = n.getAttribute(s);
-                System.out.println(s + ": " + o + "\n");
-            }
-
-        }
-
 //        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 //        pic.setRenderer(FileSinkImages.RendererType.SCALA);
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
 
         try {
-            // g.setAttribute("ui.stylesheet", styleSheet);
+            g.setAttribute("ui.stylesheet", styleSheet);
             pic.writeAll(g, "sample.png");
             File file = new File("sample.png");
             Image image = new Image(file.toURI().toString());
@@ -113,6 +108,20 @@ public class GraphController {
         }
 
         setNumberOfNodes(Integer.toString(InputFileReader.numNodes));
+
+
+        Iterable<Node> ite = (Iterable<Node>) g.getEachNode();
+
+        for (Node n : ite) {
+            Iterable<String> attr = n.getAttributeKeySet();
+
+            for (String s : attr) {
+                Object o = n.getAttribute(s);
+                System.out.println(s + ": " + o + "\n");
+            }
+        }
+
+
     }
 
     public void setTimeElapsed(String newText) {
@@ -136,18 +145,22 @@ public class GraphController {
             + "}"
             + ""
             + "node {"
-            + "	shape: freeplane;"
+            // + "	shape: freeplane;"
             + "	size: 100px;"
-            + "	size-mode: fit;"
-            + "	fill-mode: none;"
-            + "	stroke-mode: plain;"
-            + "	stroke-color: blue;"
-            + "	stroke-width: 3px;"
-            + "	padding: 5px, 1px;"
-            + "	shadow-mode: none;"
-            + "	icon-mode: at-left;"
-            + "	text-style: normal;"
-            + "	text-font: 'Droid Sans';"
+            // + "	size-mode: fit;"
+            + "	fill-mode: plain;"
+            + " fill-color: rgba(255,0,0,128);"
+            + " text-mode: normal;"
+            + " text-alignment: center;"
+            + " text-size: 50px;"
+            // + "	stroke-mode: plain;"
+            // + "	stroke-color: blue;"
+            // + "	stroke-width: 3px;"
+            // + "	padding: 5px, 1px;"
+            // + "	shadow-mode: none;"
+            // + "	icon-mode: at-left;"
+            // + "	text-style: normal;"
+            // + "	text-font: 'Droid Sans';"
             + "}"
             + ""
             + "node:clicked {"

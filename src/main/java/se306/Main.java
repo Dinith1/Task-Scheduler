@@ -32,7 +32,6 @@ public class Main extends Application {
     private ImageView graph;
 
     public static void main(String[] args) throws IOException {
-
         // Example cases:
         // "src/resources/Nodes_7_OutTree.dot"
         // "src/resources/Nodes_8_Random.dot"
