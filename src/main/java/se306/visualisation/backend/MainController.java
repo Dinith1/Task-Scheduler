@@ -52,9 +52,6 @@ public class MainController {
             fs.removeSink(g);
         }
 
-        Viewer viewer = g.display();
-        viewer.disableAutoLayout();
-
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
         pic.setRenderer(FileSinkImages.RendererType.SCALA);

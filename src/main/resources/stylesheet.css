@@ -1,0 +1,17 @@
+.progress-indicator .percentage {
+    -fx-fill: #ffffff ;
+    -fx-font-family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 20px;
+}
+
+.progress-indicator {
+	-fx-progress-color:  #1ed8f0;
+}
+
+.title {
+	-fx-font-family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #1ed8f0;
+    -fx-border-radius: 5px;
+}
