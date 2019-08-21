@@ -20,6 +20,8 @@ public class InputFileReader {
     private List<Node> listOfSortedNodes = new ArrayList<>();
     private OutputFileGenerator outputFileGenerator = new OutputFileGenerator();
     public static int numNodes;
+    public static List<Node> listOfSortedNodesStatic;
+    public static List<Edge> listOfEdgesStatic;
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
@@ -76,6 +78,8 @@ public class InputFileReader {
         Node node = (listOfNodes.size() > 0) ? listOfNodes.peek() : null;
 
         numNodes = listOfNodes.size();
+        listOfSortedNodesStatic = listOfSortedNodes;
+        listOfEdgesStatic = listOfEdges;
 
         addToSchedule(node);
     }
@@ -209,5 +213,4 @@ public class InputFileReader {
         }
         return null;
     }
-
 }

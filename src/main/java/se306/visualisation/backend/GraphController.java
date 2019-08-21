@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSinkImages;
 import org.graphstream.stream.file.FileSource;
@@ -28,34 +29,64 @@ public class GraphController {
     Label timeElapsed, numberOfNodes, nodesToSchedule;
 
     public void createGraph() throws IOException {
-        System.out.println(graph);
+        // System.out.println(graph);
 
         CommandLineParser parser = CommandLineParser.getInstance();
 
-
-        String filePath = parser.getInputFileName();
-        Graph g = new DefaultGraph("g");
-        FileSource fs = FileSourceFactory.sourceFor(filePath);
+        // String filePath = parser.getInputFileName();
+        // Graph g = new DefaultGraph("g");
+        // FileSource fs = FileSourceFactory.sourceFor(filePath);
 
         // GraphStream
-        fs.addSink(g);
+        // fs.addSink(g);
 
-        try {
-            fs.begin(filePath);
+        // try {
+        //     fs.begin(filePath);
 
-            while (fs.nextEvents()) {
-                // Optionally some code here ...
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        //     while (fs.nextEvents()) {
+        //         // Optionally some code here ...
+        //     }
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
+
+        // try {
+        //     fs.end();
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // } finally {
+        //     fs.removeSink(g);
+        // }
+
+        Graph g = new DefaultGraph("g");
+
+        double x = 0, y = 0, z = 0;
+
+        for (se306.input.Node n : InputFileReader.listOfSortedNodesStatic) {
+            Node node = g.addNode(n.getNodeIdentifier());
+            node.setAttribute("label", n.getNodeIdentifier());
+            node.setAttribute("xyx", new double[]{x, y, z});
+            x += 1;
+            y += 1;
+            // z += 1;
         }
 
-        try {
-            fs.end();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            fs.removeSink(g);
+        for (se306.input.Edge e : InputFileReader.listOfEdgesStatic) {
+            String startNode = e.getNodeStart().getNodeIdentifier();
+            String endNode = e.getNodeEnd().getNodeIdentifier();
+            g.addEdge(startNode + endNode, startNode, endNode, true);
+        }
+
+        Iterable<Node> ite = (Iterable<Node>) g.getEachNode();
+
+        for (Node n : ite) {
+            Iterable<String> attr = n.getAttributeKeySet();
+
+            for (String s : attr) {
+                Object o = n.getAttribute(s);
+                System.out.println(s + ": " + o + "\n");
+            }
+
         }
 
 //        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
@@ -64,7 +95,7 @@ public class GraphController {
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
 
         try {
-            g.setAttribute("ui.stylesheet", styleSheet);
+            // g.setAttribute("ui.stylesheet", styleSheet);
             pic.writeAll(g, "sample.png");
             File file = new File("sample.png");
             Image image = new Image(file.toURI().toString());
