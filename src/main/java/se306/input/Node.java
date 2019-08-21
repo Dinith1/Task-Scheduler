@@ -13,7 +13,6 @@ public class Node {
     private int nodeWeight;
     private String nodeIdentifier;
     private List<Node> parentNodes = new ArrayList<>();
-    private Processor procScheduledInto;
 
 
 
@@ -74,10 +73,4 @@ public class Node {
     public void addParent(Node parent) {
         this.parentNodes.add(parent);
     }
-
-    public void assignProcessor(Processor proc) { this.procScheduledInto = proc; }
-
-    public Processor getProcessor() { return this.procScheduledInto; }
-
-
 }

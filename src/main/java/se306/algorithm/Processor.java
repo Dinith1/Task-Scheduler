@@ -9,6 +9,7 @@ public class Processor {
 
     private List<Node> scheduledNodes = new ArrayList<>();
     private List<Integer> startTimes = new ArrayList<>();
+    int currentCost = 0;
     private int id;
 
     Processor(int pid){
@@ -34,6 +35,7 @@ public class Processor {
     public void addNode(Node node, PartialSchedule partialSchedule, int processorNumber){
         scheduledNodes.add(node);
         startTimes.add(partialSchedule.calculateStartTime(node,processorNumber));
+        currentCost = startTimes.get(startTimes.size()-1);
     }
 
     public List<Node> getScheduledNodes(){

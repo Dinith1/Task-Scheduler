@@ -155,11 +155,11 @@ public class PartialSchedule {
     }
 
     public int calculateStartTime(Node node, int processorNumber){
-        int startTime = 0;
+        int maxParentCost = 0;
         List<Node> parentNodes = node.getParentNodes();
-
         for (Processor p:processorList) {
             for (Node n: parentNodes) {
+                 maxParentCost = 0;
                 //If current processor contains a parent of node n then calculate the cost
                 if(p.getScheduledNodes().contains(n)){
                     //If parent node is not scheduled in same processor
@@ -167,16 +167,16 @@ public class PartialSchedule {
                         //Gets communication cost of the parent to current node
                         int communicationCost = node.getIncomingEdge(n).getEdgeWeight();
                         //Gets endTime of parent node
-                        int parentNodeEndTime = p.getStartTimes().indexOf(p.getScheduledNodes().indexOf(n))+
+                        int parentNodeEndTime = p.getStartTimes().get(p.getScheduledNodes().indexOf(n))+
                                 n.getNodeWeight();
-                        // parentNodeENdTIme + communicationCOst = startTIme of node that is added
-                        if(startTime < parentNodeEndTime + communicationCost){
-                            startTime = parentNodeEndTime + communicationCost;
+                        // parentNodeENdTIme + communicationCost = startTIme of node that is added
+                        if(maxParentCost < parentNodeEndTime + communicationCost){
+                            maxParentCost = parentNodeEndTime + communicationCost;
                         }
                     }
                 }
             }
         }
-        return startTime;
+        return maxParentCost;
     }
 }
