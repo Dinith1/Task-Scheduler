@@ -65,7 +65,7 @@ public class AStarScheduler {
         }
         catch (Exception e){
             e.getMessage();
-            System.out.print("FAILED");
+            e.printStackTrace();
             }
 
         }

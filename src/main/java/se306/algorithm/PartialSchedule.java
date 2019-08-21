@@ -31,7 +31,7 @@ public class PartialSchedule {
      */
     private Comparator<Processor> sortByIdentifierNumber = new Comparator<se306.algorithm.Processor>() {
         public int compare(Processor p1, Processor p2) {
-            if (Integer.parseInt(p1.getProcessorIdentifier()) < Integer.parseInt(p2.getProcessorIdentifier())) {
+            if (p1.getProcessorID() < p2.getProcessorID()) {
                 return -1;
             }
             return 1;
@@ -46,7 +46,7 @@ public class PartialSchedule {
         Set<Node> scheduledNodes = new HashSet<>();
         for (Processor p: processorList) {
             //For each processor node map turn it into a hashSet of keys
-            scheduledNodes.addAll(p.getSchedule().keySet());
+            scheduledNodes.addAll(p.getScheduledNodes());
         }
         return scheduledNodes;
     }
@@ -100,7 +100,7 @@ public class PartialSchedule {
      */
     private void addToProcessor(int processorNumber, Node node){
         //Adds the node into the corresponding processor
-        this.getProcessorList().get(processorNumber).addNode(node);
+        this.getProcessorList().get(processorNumber).addNode(node,this,processorNumber);
     }
     /**
      * Creates processors and adds it to the list
@@ -109,8 +109,7 @@ public class PartialSchedule {
      */
     private void createProcessors(int numProcessors) {
         for (int i = 0; i < numProcessors; i++) {
-            String processorIdentifier = Integer.toString(i);
-            processorList.add(new se306.algorithm.Processor(processorIdentifier));
+            processorList.add(new se306.algorithm.Processor(i));
         }
     }
 
@@ -153,5 +152,31 @@ public class PartialSchedule {
 
     public void setCostFunction(int costFunction){
         this.costFunction = costFunction;
+    }
+
+    public int calculateStartTime(Node node, int processorNumber){
+        int startTime = 0;
+        List<Node> parentNodes = node.getParentNodes();
+
+        for (Processor p:processorList) {
+            for (Node n: parentNodes) {
+                //If current processor contains a parent of node n then calculate the cost
+                if(p.getScheduledNodes().contains(n)){
+                    //If parent node is not scheduled in same processor
+                    if(p.getProcessorID() != processorNumber){
+                        //Gets communication cost of the parent to current node
+                        int communicationCost = node.getIncomingEdge(n).getEdgeWeight();
+                        //Gets endTime of parent node
+                        int parentNodeEndTime = p.getStartTimes().indexOf(p.getScheduledNodes().indexOf(n))+
+                                n.getNodeWeight();
+                        // parentNodeENdTIme + communicationCOst = startTIme of node that is added
+                        if(startTime < parentNodeEndTime + communicationCost){
+                            startTime = parentNodeEndTime + communicationCost;
+                        }
+                    }
+                }
+            }
+        }
+        return startTime;
     }
 }

@@ -49,20 +49,14 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
-
-			while (it.hasNext()) {
-				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
-				Node node = (Node) pair.getKey();
+			for(Node n: processor.getScheduledNodes()) {
 
 				for (Line line : this.lineInformation) {
-					if (node.equals(line.node)) {
+					if (n.equals(line.node)) {
 						line.setProcessor(processor);
-						line.setNodeStartTime(processor.getStartTimes().get(node));
+						line.setNodeStartTime(processor.getStartTimes().get(processor.getScheduledNodes().indexOf(n)));
 					}
 				}
-
-				it.remove(); // avoids a ConcurrentModificationException
 			}
 		}
 	}
@@ -155,7 +149,7 @@ public class OutputFileGenerator {
 				sb.append(",Start=");
 				sb.append(this.nodeStartTime);
 				sb.append(",Processor=");
-				sb.append(processor.getProcessorIdentifier());
+				sb.append(processor.getProcessorID());
 				sb.append("];");
 				return sb.toString();
 			}
