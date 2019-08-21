@@ -1,6 +1,7 @@
 package se306.algorithm;
 
 import se306.input.Node;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -81,4 +82,31 @@ public class PartialSchedule {
         this.costFunction = costFunction;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        PartialSchedule secondSchedule = (PartialSchedule) obj;
+
+        // Check if all the processors in the second partial schedule are the same
+        if (!processorList.containsAll(secondSchedule.getProcessorList())) {
+            return false;
+        }
+//        // Check for process normalisation
+//        if (!processNormalisation(secondSchedule.getProcessorList())){
+//            return false;
+//        }
+        return true;
+    }
+
+    private boolean processNormalisation() {
+        return true;
+    }
 }

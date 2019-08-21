@@ -4,6 +4,7 @@ import se306.input.Node;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Processor {
 
@@ -116,25 +117,54 @@ public class Processor {
         } else { return 0; }
     }
 
+    /**
+     * The equal method takes an Object o as an argument and checks if o is equivalent to this Processor. This equivalence
+     * comparison is done by comparing the scheduled nodes' starting and finishing times and the current cost.
+     *
+     * @param o - the object to compare with this Processor object
+     */
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+
         Processor secondProcessor = (Processor) o;
 
-        // Check if all scheduled nodes are in second processor
-        if (!scheduledNodes.keySet().containsAll(secondProcessor.scheduledNodes.keySet())) {
+        // Check if the current cost of the second processor is the same
+        if (currentCost != secondProcessor.getCurrentCost()) {
             return false;
         }
 
-        // Check start times
-        if (!startTimes.equals(secondProcessor.startTimes)) {
-            return false;
+        // Check if all scheduled nodes in second processor have the same start time
+        for (Map.Entry<Node, Integer> entry : secondProcessor.getStartTimes().entrySet()) {
+            Node secondNode = entry.getKey();
+            Integer secondNodeStartTime = entry.getValue();
+            if (!startTimes.containsKey(secondNode)) {
+                return false;
+            }
+            if (!startTimes.get(secondNode).equals(secondNodeStartTime)) {
+                return false;
+            }
         }
 
-        // Check finish times
-        if (!scheduledNodes.equals(secondProcessor.scheduledNodes)) {
-            return false;
+        // Check if all scheduled nodes in second processor have the same finishing time
+        for (Map.Entry<Node, Integer> entry : secondProcessor.getSchedule().entrySet()) {
+            Node secondNode = entry.getKey();
+            Integer secondNodeFinishTime = entry.getValue();
+            if (!scheduledNodes.containsKey(secondNode)) {
+                return false;
+            }
+            if (!scheduledNodes.get(secondNode).equals(secondNodeFinishTime)) {
+                return false;
+            }
         }
-
         return true;
     }
 }
