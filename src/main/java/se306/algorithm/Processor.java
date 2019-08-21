@@ -29,7 +29,7 @@ public class Processor {
      * @return finishing time
      */
     public int getCurrentCost(){
-        if(scheduledNodes.size() ==0 || startTimes.size() == 0){
+        if(scheduledNodes.size() == 0 || startTimes.size() == 0){
             return 0;
         }
         return startTimes.get(startTimes.size()-1)+scheduledNodes.get(scheduledNodes.size()-1).getNodeWeight();

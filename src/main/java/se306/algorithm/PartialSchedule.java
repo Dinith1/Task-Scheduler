@@ -164,26 +164,24 @@ public class PartialSchedule {
     public int calculateStartTime(Node node, int processorNumber){
         int maxStartTime = 0;
         //Best starting time of current node if no communication costs
-        int currentStartTime = processorList.get(processorNumber).getCurrentCost();
         List<Node> parentNodes = node.getParentNodes();
+        processorList.sort(sortByIdentifierNumber);
         for (Processor p:processorList) {
             for (Node n: parentNodes) {
+                int currentStartTime = processorList.get(processorNumber).getCurrentCost();
                 //If current processor contains a parent of "node" then calculate the the start time needed
                 if(p.getScheduledNodes().contains(n)){
                     //If parent node is not scheduled in same processor
                     if(p.getProcessorID() != processorNumber){
-
                         //Find end time of the parent node
                         int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(n)) + n.getNodeWeight();
                         // Gets communication cost of the parent
                         int communicationCost = node.getIncomingEdge(n).getEdgeWeight();
                         // If end time of parent is longer than that means we need to schedule when parent is finished
                         // instead of right when processor is free
-                        if(endTimeOfParent > currentStartTime){
+                        if(endTimeOfParent >= currentStartTime || endTimeOfParent + communicationCost >= currentStartTime ) {
                             currentStartTime = endTimeOfParent + communicationCost;
                         }
-
-
                     }
                     // Finds the most start time as it is dependent on all parents
                     if(maxStartTime < currentStartTime){
