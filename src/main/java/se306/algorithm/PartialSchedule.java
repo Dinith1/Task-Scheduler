@@ -154,6 +154,13 @@ public class PartialSchedule {
         this.costFunction = costFunction;
     }
 
+    /**
+     * Method calculates the start time of the current node by finding the latest parent that has been scheduled, as well
+     * as the communication costs
+     * @param node
+     * @param processorNumber
+     * @return
+     */
     public int calculateStartTime(Node node, int processorNumber){
         int maxStartTime = 0;
         //Best starting time of current node if no communication costs
