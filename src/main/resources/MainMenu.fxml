@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.MainController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
    <children>
       <HBox prefHeight="400.0" prefWidth="1200.0">
          <children>
@@ -50,7 +50,7 @@
                               <Label fx:id="timeElapsed" layoutX="236.0" layoutY="203.0" text="Label" textFill="WHITE" />
                            </children>
                         </Pane>
-                        <ProgressIndicator minWidth="-Infinity" prefHeight="250.0" prefWidth="297.0" progress="0.28" stylesheets="@stylesheet.css" />
+                        <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="297.0" progress="0.28" stylesheets="@stylesheet.css" />
                      </children>
                      <VBox.margin>
                         <Insets top="30.0" />

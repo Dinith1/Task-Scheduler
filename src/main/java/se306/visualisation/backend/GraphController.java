@@ -2,6 +2,7 @@ package se306.visualisation.backend;
 
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.graphstream.graph.Graph;
@@ -12,14 +13,19 @@ import org.graphstream.ui.layout.*;
 import org.graphstream.stream.file.FileSourceFactory;
 import org.graphstream.ui.swingViewer.Viewer;
 import se306.input.CommandLineParser;
+import se306.input.InputFileReader;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class MainController {
+public class GraphController {
 
     @FXML
     ImageView graph;
+
+    @FXML
+    Label timeElapsed, numberOfNodes, nodesToSchedule;
 
     public void createGraph() throws IOException {
         System.out.println(graph);
@@ -52,9 +58,9 @@ public class MainController {
             fs.removeSink(g);
         }
 
-        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+//        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
-        pic.setRenderer(FileSinkImages.RendererType.SCALA);
+//        pic.setRenderer(FileSinkImages.RendererType.SCALA);
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
 
         try {
@@ -75,6 +81,20 @@ public class MainController {
             //e.printStackTrace();
         }
 
+        setNumberOfNodes(Integer.toString(InputFileReader.numNodes));
+
+    }
+
+    public void setTimeElapsed(String newText) {
+        timeElapsed.setText(newText);
+    }
+
+    public void setNumberOfNodes(String s) {
+        numberOfNodes.setText(s);
+    }
+
+    public void setNodesToSchedule(String newText) {
+        nodesToSchedule.setText(newText);
     }
 
     private String styleSheet = ""
@@ -110,10 +130,10 @@ public class MainController {
             + "	stroke-color: blue;"
             + "}"
             + ""
-            + "sprite {"
-            + " sprite-orientation: "
-            + "}"
-            + ""
+//            + "sprite {"
+//            + " sprite-orientation: "
+//            + "}"
+//            + ""
             + "edge {"
             + "	shape: freeplane;"
             + "	size: 10px;"

@@ -1,27 +1,23 @@
 package se306;
 
-import java.awt.*;
 import java.io.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
-import org.graphstream.stream.file.FileSinkImages;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 import se306.logging.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import se306.visualisation.backend.BaseController;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
-import se306.visualisation.backend.MainController;
+import se306.visualisation.backend.GraphController;
 
 /**
  * Main class to test InputFileReader functionality
@@ -96,8 +92,9 @@ public class Main extends Application {
         Parent menuPane = menuLoader.load();
 
          // Passes required data to controllers
-        MainController ctrl = menuLoader.getController();
+        GraphController ctrl = menuLoader.getController();
         ctrl.createGraph();
+        ctrl.setTimeElapsed("3 seconds");
 
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
