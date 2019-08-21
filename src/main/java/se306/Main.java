@@ -2,6 +2,7 @@ package se306;
 
 import java.io.*;
 
+import se306.algorithm.AStarScheduler;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
@@ -48,7 +49,9 @@ public class Main {
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-        ifr.readInput(isr); // Start scheduling
+        ifr.readInput(isr);
+        AStarScheduler scheduler = new AStarScheduler();
+        scheduler.findOptimalSchedule();// Start scheduling
 
         long endTime = System.nanoTime();
         Log.info("-- Finished scheduling --");

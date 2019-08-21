@@ -1,4 +1,4 @@
-digraph "OutTree-Balanced-MaxBf-3_Nodes_11_CCR_0.1_WeightType_Random" {
+-digraph "OutTree-Balanced-MaxBf-3_Nodes_11_CCR_0.1_WeightType_Random" {
 	0	 [Weight=50];
 	1	 [Weight=70];
 	0 -> 1	 [Weight=9];

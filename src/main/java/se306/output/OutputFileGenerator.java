@@ -1,9 +1,12 @@
 package se306.output;
 
 import se306.algorithm.Processor;
+import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.Edge;
 import se306.input.Node;
+import se306.logging.Log;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -14,8 +17,17 @@ import java.util.Map;
 public class OutputFileGenerator {
 
 	private PrintWriter writer;
+	private static OutputFileGenerator outputFileGenerator = null;
 	private List<Line> lineInformation = new ArrayList<>();
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
+
+	private OutputFileGenerator() {
+
+	}
+
+	public static OutputFileGenerator getInstance() {
+		return (outputFileGenerator == null) ? (outputFileGenerator = new OutputFileGenerator()) : outputFileGenerator;
+	}
 
 	/**
 	 * Steps to generate the file after gathering data from inputs. This method
@@ -37,20 +49,14 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
-
-			while (it.hasNext()) {
-				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
-				Node node = (Node) pair.getKey();
+			for(Node n: processor.getScheduledNodes()) {
 
 				for (Line line : this.lineInformation) {
-					if (node.equals(line.node)) {
+					if (n.equals(line.node)) {
 						line.setProcessor(processor);
-						line.setNodeStartTime(processor.getStartTimes().get(node));
+						line.setNodeStartTime(processor.getStartTimes().get(processor.getScheduledNodes().indexOf(n)));
 					}
 				}
-
-				it.remove(); // avoids a ConcurrentModificationException
 			}
 		}
 	}
@@ -143,7 +149,7 @@ public class OutputFileGenerator {
 				sb.append(",Start=");
 				sb.append(this.nodeStartTime);
 				sb.append(",Processor=");
-				sb.append(processor.getProcessorIdentifier());
+				sb.append(processor.getProcessorID());
 				sb.append("];");
 				return sb.toString();
 			}
