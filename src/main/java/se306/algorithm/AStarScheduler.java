@@ -3,23 +3,14 @@ package se306.algorithm;
 import se306.input.CommandLineParser;
 import se306.output.OutputFileGenerator;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class AStarScheduler {
 
     private PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
-    private List<PartialSchedule> closed = new ArrayList<>();
-
-    private boolean isDuplicate(PartialSchedule schedule){
-
-        //Should check for duplicates.. Should be more complicated than this
-        if(closed.contains(schedule) || open.contains(schedule)){
-            return true;
-        }
-        return false;
-    }
+    private HashSet<PartialSchedule> closed = new HashSet<>();
 
     /**
      * This function uses the a star algorithm to find the most optimal schedule. It uses a priority queue

@@ -1,16 +1,8 @@
 package se306.algorithm;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import se306.input.InputFileReader;
 import se306.input.Node;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import java.util.*;
 
@@ -162,29 +154,29 @@ public class PartialSchedule {
     public void setCostFunction(int costFunction){
         this.costFunction = costFunction;
     }
-    
-        @Override
+
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (obj == null) {
             return false;
         }
-        if (this.getClass() != obj.getClass()) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(processorList, secondSchedule.processorList)
+                .append(costFunction, secondSchedule.costFunction)
+                .isEquals();
 
-        // Check if all the processors in the second partial schedule are the same
-        if (!processorList.containsAll(secondSchedule.getProcessorList())) {
-            return false;
-        }
 //        // Check for process normalisation
 //        if (!processNormalisation(secondSchedule.getProcessorList())){
 //            return false;
 //        }
-        return true;
     }
 
     private boolean processNormalisation() {
@@ -231,32 +223,5 @@ public class PartialSchedule {
             }
         }
         return maxStartTime;
-    }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        PartialSchedule secondSchedule = (PartialSchedule) obj;
-
-        // Check if all the processors in the second partial schedule are the same
-        if (!processorList.containsAll(secondSchedule.getProcessorList())) {
-            return false;
-        }
-//        // Check for process normalisation
-//        if (!processNormalisation(secondSchedule.getProcessorList())){
-//            return false;
-//        }
-        return true;
-    }
-
-    private boolean processNormalisation() {
-        return true;
     }
 }

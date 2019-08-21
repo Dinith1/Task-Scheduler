@@ -1,10 +1,10 @@
 package se306.algorithm;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import se306.input.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Processor {
 
@@ -67,53 +67,31 @@ public class Processor {
 
 
     /**
-     * The equal method takes an Object o as an argument and checks if o is equivalent to this Processor. This equivalence
+     * The equal method takes an Object obj as an argument and checks if obj is equivalent to this Processor. This equivalence
      * comparison is done by comparing the scheduled nodes' starting and finishing times and the current cost.
      *
-     * @param o - the object to compare with this Processor object
+     * @param obj - the object to compare with this Processor object
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
             return true;
         }
-        if (o == null) {
+        if (obj.getClass() != getClass()) {
             return false;
         }
-        if (this.getClass() != o.getClass()) {
-            return false;
-        }
+        Processor secondProcessor = (Processor) obj;
+        return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
+                .append(scheduledNodes, secondProcessor.scheduledNodes)
+                .append(startTimes, secondProcessor.startTimes)
+                .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
+    }
 
-        Processor secondProcessor = (Processor) o;
-
-        // Check if the current cost of the second processor is the same
-        if (currentCost != secondProcessor.getCurrentCost()) {
-            return false;
-        }
-
-        // Check if all scheduled nodes in second processor have the same start time
-        for (Map.Entry<Node, Integer> entry : secondProcessor.getStartTimes().entrySet()) {
-            Node secondNode = entry.getKey();
-            Integer secondNodeStartTime = entry.getValue();
-            if (!startTimes.containsKey(secondNode)) {
-                return false;
-            }
-            if (!startTimes.get(secondNode).equals(secondNodeStartTime)) {
-                return false;
-            }
-        }
-
-        // Check if all scheduled nodes in second processor have the same finishing time
-        for (Map.Entry<Node, Integer> entry : secondProcessor.getSchedule().entrySet()) {
-            Node secondNode = entry.getKey();
-            Integer secondNodeFinishTime = entry.getValue();
-            if (!scheduledNodes.containsKey(secondNode)) {
-                return false;
-            }
-            if (!scheduledNodes.get(secondNode).equals(secondNodeFinishTime)) {
-                return false;
-            }
-        }
-        return true;
+    private boolean checkCurrentCost(int currentCost) {
+        return (this.getCurrentCost() == currentCost) ? true : false;
     }
 }
