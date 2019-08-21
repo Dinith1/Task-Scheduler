@@ -37,7 +37,6 @@ public class AStarScheduler {
 
                 for (PartialSchedule s : expandedCurrentSchedule) {
                      s.setCostFunction(s.calculateCostFunction());
-                     open.add(s);
                 }
                 open.remove(currentSchedule);
                 closed.add(currentSchedule);

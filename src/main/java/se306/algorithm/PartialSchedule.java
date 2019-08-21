@@ -1,6 +1,7 @@
 package se306.algorithm;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 import se306.input.Node;
 
@@ -168,7 +169,6 @@ public class PartialSchedule {
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
         return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
                 .append(processorList, secondSchedule.processorList)
                 .append(costFunction, secondSchedule.costFunction)
                 .isEquals();
@@ -177,6 +177,18 @@ public class PartialSchedule {
 //        if (!processNormalisation(secondSchedule.getProcessorList())){
 //            return false;
 //        }
+    }
+
+    /**
+     * hashCode() must be overridden whenever equals() is overridden
+     **/
+    @Override
+    public int hashCode() {
+        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
+        return new HashCodeBuilder(805306457, 402653189).
+                append(processorList).
+                append(costFunction).
+                toHashCode();
     }
 
     private boolean processNormalisation() {

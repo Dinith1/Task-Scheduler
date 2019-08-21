@@ -1,6 +1,7 @@
 package se306.algorithm;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.Node;
 
 import java.util.ArrayList;
@@ -85,10 +86,22 @@ public class Processor {
         }
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
                 .append(scheduledNodes, secondProcessor.scheduledNodes)
                 .append(startTimes, secondProcessor.startTimes)
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
+    }
+
+    /**
+     * hashCode() must be overridden whenever equals() is overridden
+     **/
+    @Override
+    public int hashCode() {
+        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
+        return new HashCodeBuilder(805306457, 402653189).
+                append(scheduledNodes).
+                append(startTimes).
+                append(getCurrentCost()).
+                toHashCode();
     }
 
     private boolean checkCurrentCost(int currentCost) {
