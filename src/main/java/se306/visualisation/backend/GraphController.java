@@ -82,7 +82,6 @@ public class GraphController {
         }
 
         setNumberOfNodes(Integer.toString(InputFileReader.numNodes));
-
     }
 
     public void setTimeElapsed(String newText) {

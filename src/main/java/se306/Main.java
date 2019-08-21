@@ -74,10 +74,8 @@ public class Main extends Application {
         long executionTime = endTime - startTime;
         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
 
-        String filePath = parser.getInputFileName();
         Graph g = new DefaultGraph("g");
-        FileSource fs = FileSourceFactory.sourceFor(filePath);
-
+        FileSource fs = FileSourceFactory.sourceFor(parser.getInputFileName());
 
         launch(args);
     }
@@ -91,7 +89,7 @@ public class Main extends Application {
         FXMLLoader menuLoader = new FXMLLoader(getClass().getClassLoader().getResource("MainMenu.fxml"));
         Parent menuPane = menuLoader.load();
 
-         // Passes required data to controllers
+        // Passes required data to controllers
         GraphController ctrl = menuLoader.getController();
         ctrl.createGraph();
         ctrl.setTimeElapsed("3 seconds");
@@ -100,12 +98,5 @@ public class Main extends Application {
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
         primaryStage.show();
-    }
-
-    private void createGraph(String fileName) {
-
-
-
-
     }
 }
