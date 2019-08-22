@@ -20,15 +20,36 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+import com.sun.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
+
 public class GraphController {
 
     @FXML
-    ImageView graph;
+    ImageView graphImage;
 
     @FXML
     Label timeElapsed, numberOfNodes, nodesToSchedule;
 
     public void createGraph() throws IOException {
+
+
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        // What % CPU load this current JVM is taking, from 0.0-1.0
+        System.out.println(osBean.getProcessCpuLoad());
+
+        // What % load the overall system is at, from 0.0-1.0
+        System.out.println(osBean.getSystemCpuLoad());
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        System.out.println("CPU cores: " + processors);
+
+        // ------
+
+
+
+
+
         // System.out.println(graph);
 
         CommandLineParser parser = CommandLineParser.getInstance();
@@ -65,7 +86,10 @@ public class GraphController {
         for (se306.input.Node n : InputFileReader.listOfSortedNodesStatic) {
             Node node = g.addNode(n.getNodeIdentifier());
             node.setAttribute("label", n.getNodeIdentifier());
-            node.setAttribute("xyx", new double[]{x, y, z});
+            node.setAttribute("x", x);
+            node.setAttribute("y", y);
+            // node.setAttribute("z", z);
+            // System.out.println(x);
             node.setAttribute("shape", "freeplane");
             node.setAttribute("size", "100px");
             node.setAttribute("size-mode", "fit");
@@ -73,9 +97,9 @@ public class GraphController {
             // + "	shape: freeplane;"
             // + "	size: 100px;"
             // + "	size-mode: fit;"
-            x += 1;
-            y += 1;
-            // z += 1;
+            x += 2000;
+            y -= 4000;
+            // z += 400;
         }
 
         for (se306.input.Edge e : InputFileReader.listOfEdgesStatic) {
@@ -84,27 +108,23 @@ public class GraphController {
             g.addEdge(startNode + endNode, startNode, endNode, true);
         }
 
+        g.setAttribute("ui.stylesheet", styleSheet);
+
+
 //        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 //        pic.setRenderer(FileSinkImages.RendererType.SCALA);
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_AT_NEW_IMAGE);
 
         try {
-            g.setAttribute("ui.stylesheet", styleSheet);
             pic.writeAll(g, "sample.png");
             File file = new File("sample.png");
             Image image = new Image(file.toURI().toString());
-            System.out.println("\n\n\n");
-            System.out.println(image);
-
-            graph.setImage(image);
-            System.out.println("\n\n\n");
-
-
-            System.out.println(graph);
+            graphImage.setImage(image);
+            System.out.println(graphImage);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
 
         setNumberOfNodes(Integer.toString(InputFileReader.numNodes));
@@ -120,6 +140,9 @@ public class GraphController {
                 System.out.println(s + ": " + o + "\n");
             }
         }
+
+        Viewer v = g.display();
+        v.disableAutoLayout();
 
 
     }

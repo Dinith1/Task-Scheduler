@@ -18,7 +18,7 @@
          <children>
             <VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37f6ed;">
                <children>
-                  <ImageView fx:id="graph" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
+                  <ImageView fx:id="graphImage" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
                </children></VBox>
             <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
                <children>
