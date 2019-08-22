@@ -43,6 +43,21 @@ public class PartialSchedule {
         }
     };
 
+    /**
+     * This method finds the nodes that already have been scheduled in this schedule
+     * 
+     * @return scheduledNodes
+     */
+    public Set<Integer> getUsedNodes() {
+        Set<Integer> scheduledNodes = new HashSet<>();
+
+        for (Processor p : processorList) {
+            // For each processor node map turn it into a hashSet of keys
+            scheduledNodes.addAll(p.getScheduledNodes());
+        }
+        return scheduledNodes;
+    }
+
     public ArrayList<PartialSchedule> expandNewStates() {
         ArrayList<PartialSchedule> newExpandedSchedule = new ArrayList<PartialSchedule>();
 
@@ -79,31 +94,17 @@ public class PartialSchedule {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
 
-                // If no parents then add to list
-                if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
-                    freeNodes.add(node); // AUTOBOXING
+                if (!Arrays.asList(InputFileReader.parents[node]).contains(1)) {
+                    // if no parents then add to list
+                    freeNodes.add(node); // AUTOBOX
                 }
 
-                // If all parents are used add to list
-                else {
-                    boolean allParentsUsed = true; // Should be true even if the node has no parents
-
-                    for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
-                        int parent = InputFileReader.parents[node][i];
-
-                        if ((parent == 1) && !this.getUsedNodes().contains(i)) {
-                            allParentsUsed = false;
-                            break;
-                        }
-                    }
-
-                    if (allParentsUsed) {
-                        freeNodes.add(node);
-                    }
+                // if all parents are used add to list
+                else if (this.getUsedNodes().containsAll(currentNode.getParentNodes())) {
+                    freeNodes.add(currentNode);
                 }
             }
         }
-
         return freeNodes;
     }
 
@@ -137,21 +138,6 @@ public class PartialSchedule {
      */
     boolean isComplete() {
         return (getUsedNodes().containsAll(InputFileReader.listOfAvailableNodes));
-    }
-
-    /**
-     * This method finds the nodes that already have been scheduled in this schedule
-     * 
-     * @return scheduledNodes
-     */
-    public Set<Integer> getUsedNodes() {
-        Set<Integer> scheduledNodes = new HashSet<>();
-
-        for (Processor p : processorList) {
-            // For each processor node map turn it into a hashSet of keys
-            scheduledNodes.addAll(p.getScheduledNodes());
-        }
-        return scheduledNodes;
     }
 
     /**
