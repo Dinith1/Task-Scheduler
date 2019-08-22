@@ -1,7 +1,6 @@
 package se306.input;
 
 import se306.output.OutputFileGenerator;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,9 +10,9 @@ import java.util.regex.Pattern;
 
 public class InputFileReader {
     public static int NUM_NODES = 7; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
-                              // graph generator)
+                                     // graph generator)
     public static int NUM_EDGES = 6; // Testing with Nodes_7 (change later to read number of edges from GraphViz
-                              // graph generator)
+                                     // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
     // the id (not the name) of the node

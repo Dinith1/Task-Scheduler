@@ -1,17 +1,12 @@
 package se306.output;
 
 import se306.algorithm.Processor;
-import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
-import se306.logging.Log;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class OutputFileGenerator {
 
@@ -48,10 +43,9 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			for (Node n : processor.getScheduledNodes()) {
-
+			for (int n : processor.getScheduledNodes()) { // AUTOBOXING ================================================
 				for (Line line : this.lineInformation) {
-					if (n.equals(line.node)) {
+					if (n == line.node) {
 						line.setProcessor(processor);
 						line.setNodeStartTime(processor.getStartTimes().get(processor.getScheduledNodes().indexOf(n)));
 					}
