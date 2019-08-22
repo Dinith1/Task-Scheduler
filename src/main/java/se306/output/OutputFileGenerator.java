@@ -3,8 +3,7 @@ package se306.output;
 import se306.algorithm.Processor;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
-import se306.input.Edge;
-import se306.input.Node;
+import se306.input.InputFileReader;
 import se306.logging.Log;
 
 import java.io.FileNotFoundException;
@@ -49,7 +48,7 @@ public class OutputFileGenerator {
 	 */
 	private void addProcessorsToLines(List<Processor> processorList) {
 		for (Processor processor : processorList) {
-			for(Node n: processor.getScheduledNodes()) {
+			for (Node n : processor.getScheduledNodes()) {
 
 				for (Line line : this.lineInformation) {
 					if (n.equals(line.node)) {
@@ -91,10 +90,13 @@ public class OutputFileGenerator {
 	 */
 	public void readLine(Object lineInfo) {
 		Line newLine = new Line();
+
 		if (lineInfo instanceof Node) {
 			newLine.setNode((Node) lineInfo);
+
 		} else if (lineInfo instanceof Edge) {
 			newLine.setEdge((Edge) lineInfo);
+
 		} else if (lineInfo instanceof String) {
 			newLine.recordLine((String) lineInfo);
 		}
@@ -106,14 +108,22 @@ public class OutputFileGenerator {
 	 * Stores information of lines
 	 */
 	private class Line {
-		private Node node;
-		private Edge edge;
+		private int node = -1;
+		private int[] edge = { -1, -1, -1 };
 		private Processor processor; // Processor that the node represented in the line
 		private String nonNodeLine; // Directly copy any strings that are not node information
 		private int nodeStartTime; // Start time of node represented in this line
 
-		void setNode(Node node) {
+		void setNode(int node) {
 			this.node = node;
+		}
+
+		void setEdge(int[] edge) {
+			this.edge = edge;
+		}
+
+		void setNodeStartTime(int nodeStartTime) {
+			this.nodeStartTime = nodeStartTime;
 		}
 
 		void setProcessor(Processor processor) {
@@ -124,14 +134,6 @@ public class OutputFileGenerator {
 			this.nonNodeLine = line;
 		}
 
-		void setEdge(Edge edge) {
-			this.edge = edge;
-		}
-
-		void setNodeStartTime(int nodeStartTime) {
-			this.nodeStartTime = nodeStartTime;
-		}
-
 		/**
 		 * Outputs the line if its not a node line (i.e. if it's an edge line or
 		 * redundant data line). Otherwise combine the node data to be formatted to the
@@ -140,12 +142,12 @@ public class OutputFileGenerator {
 		 * @return The line
 		 */
 		String getStringLine() {
-			if (this.node != null) {
+			if (this.node != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(node.getNodeIdentifier());
+				sb.append(InputFileReader.nodeNames.get(this.node));
 				sb.append("\t\t[Weight=");
-				sb.append(node.getNodeWeight());
+				sb.append(InputFileReader.nodeWeights.get(this.node));
 				sb.append(",Start=");
 				sb.append(this.nodeStartTime);
 				sb.append(",Processor=");
@@ -154,14 +156,14 @@ public class OutputFileGenerator {
 				return sb.toString();
 			}
 
-			if (this.edge != null) {
+			if (this.edge[0] != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(edge.getNodeStart().getNodeIdentifier());
+				sb.append(InputFileReader.nodeNames.get(this.edge[0]));
 				sb.append(" -> ");
-				sb.append(edge.getNodeEnd().getNodeIdentifier());
+				sb.append(InputFileReader.nodeNames.get(this.edge[1]));
 				sb.append("\t[Weight=");
-				sb.append(edge.getEdgeWeight());
+				sb.append(this.edge[2]);
 				sb.append("];");
 				return sb.toString();
 			}

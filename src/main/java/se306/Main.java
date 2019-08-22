@@ -1,7 +1,9 @@
 package se306;
 
-import java.io.*;
-
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import se306.algorithm.AStarScheduler;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
