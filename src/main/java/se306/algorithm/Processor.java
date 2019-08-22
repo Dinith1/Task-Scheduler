@@ -2,6 +2,9 @@ package se306.algorithm;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import se306.input.InputFileReader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +42,9 @@ public class Processor {
         if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
             return 0;
         }
-        return startTimes.get(startTimes.size() - 1) + scheduledNodes.get(scheduledNodes.size() - 1).getNodeWeight();
+
+        return startTimes.get(startTimes.size() - 1)
+                + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
     }
 
     /**

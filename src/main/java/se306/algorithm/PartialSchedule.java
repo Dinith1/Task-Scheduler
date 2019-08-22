@@ -49,17 +49,17 @@ public class PartialSchedule {
         // Find how many nodes need to be scheduled for the expansion
         ArrayList<Integer> nodes = findSchedulableNodes();
 
-        for (int i = 0; i < nodes.size(); i++) {
-            Node currentNode = nodes.get(i);
+        for (Integer node : nodes) {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
                 PartialSchedule newSchedule = new PartialSchedule(this);
                 // Add it to each processor and make that many corresponding schedules
-                newSchedule.addToProcessor(j, currentNode);
+                newSchedule.addToProcessor(j, node);
                 // Add the schedule to overall expanded list
                 newExpandedSchedule.add(newSchedule);
             }
         }
+
         return newExpandedSchedule;
     }
 
@@ -113,7 +113,7 @@ public class PartialSchedule {
      * @param processorNumber - the processor for the node to be added to
      * @param node            - the node to be added
      */
-    private void addToProcessor(int processorNumber, Node node) {
+    private void addToProcessor(int processorNumber, Integer node) {
         // Adds the node into the corresponding processor
         this.getProcessorList().get(processorNumber).addNode(node, this, processorNumber);
     }
@@ -136,7 +136,13 @@ public class PartialSchedule {
      * @return true if all nodes used or else false
      */
     boolean isComplete() {
-        return (getUsedNodes().containsAll(InputFileReader.listOfAvailableNodes));
+        for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
+            if (!getUsedNodes().contains(i)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -229,33 +235,50 @@ public class PartialSchedule {
      * @param processorNumber
      * @return
      */
-    public int calculateStartTime(Node node, int processorNumber) {
+    public int calculateStartTime(int node, int processorNumber) {
         int maxStartTime = 0;
+
         // Best starting time of current node if no communication costs
-        List<Node> parentNodes = node.getParentNodes();
-        if (parentNodes.size() == 0) {
+        int[] parentNodes = InputFileReader.parents[node];
+
+        // If no parents
+        if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
-            ;
         }
+
         for (Processor p : processorList) {
-            for (Node n : parentNodes) {
+            for (int parent : parentNodes) {
+
+                // ========================
+                // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
+                // ========================
+
                 int currentStartTime = processorList.get(processorNumber).getCurrentCost();
 
                 // If current processor contains a parent of "node" then calculate the the start
                 // time needed
-                if (p.getScheduledNodes().contains(n)) {
+                if (p.getScheduledNodes().contains(parent)) {
                     // If parent node is not scheduled in same processor
                     if (p.getProcessorID() != processorNumber) {
+
                         // Find end time of the parent node
-                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(n))
-                                + n.getNodeWeight();
+                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parent))
+                                + InputFileReader.nodeWeights.get(parent);
+
                         // Gets communication cost of the parent
-                        int communicationCost = node.getIncomingEdge(n).getEdgeWeight();
+                        int communicationCost = 0; // NEED TO CHECK THIS ====================================
+                        for (int[] edge : InputFileReader.listOfEdges) {
+                            if ((edge[0] == parent) && (edge[1] == node)) {
+                                communicationCost = edge[2];
+                                break;
+                            }
+                        }
+
                         // If end time of parent is longer than that means we need to schedule when
                         // parent is finished
                         // instead of right when processor is free
-                        if (endTimeOfParent >= currentStartTime
-                                || endTimeOfParent + communicationCost >= currentStartTime) {
+                        if ((endTimeOfParent >= currentStartTime)
+                                || (endTimeOfParent + communicationCost >= currentStartTime)) {
                             currentStartTime = endTimeOfParent + communicationCost;
                         }
                     }
