@@ -1,11 +1,7 @@
 package se306.algorithm;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
@@ -43,20 +39,25 @@ public class PartialSchedule {
         }
     };
 
-    public ArrayList<PartialSchedule> expandNewStates() {
-        ArrayList<PartialSchedule> newExpandedSchedule = new ArrayList<PartialSchedule>();
+    public List<PartialSchedule> expandNewStates() {
+        List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
 
         // Find how many nodes need to be scheduled for the expansion
         ArrayList<Integer> nodes = findSchedulableNodes();
-
         for (Integer node : nodes) {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
                 PartialSchedule newSchedule = new PartialSchedule(this);
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
-                // Add the schedule to overall expanded list
-                newExpandedSchedule.add(newSchedule);
+
+                if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
+                    continue;
+                }
+                else {
+                    // Add the schedule to overall expanded list
+                    newExpandedSchedule.add(newSchedule);
+                }
             }
         }
 
@@ -243,7 +244,7 @@ public class PartialSchedule {
 
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
-            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
+//            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
 
@@ -255,7 +256,7 @@ public class PartialSchedule {
                 // ========================
 
                 int currentStartTime = processorList.get(processorNumber).getCurrentCost();
-                System.out.println("CURRENT START TIME : " + currentStartTime);
+//                System.out.println("CURRENT START TIME : " + currentStartTime);
 
                 // If current processor contains a parent of "node" then calculate the the start
                 // time needed
