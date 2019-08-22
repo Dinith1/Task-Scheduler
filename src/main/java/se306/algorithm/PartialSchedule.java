@@ -169,6 +169,7 @@ public class PartialSchedule {
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
         return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
                 .append(processorList, secondSchedule.processorList)
                 .append(costFunction, secondSchedule.costFunction)
                 .isEquals();

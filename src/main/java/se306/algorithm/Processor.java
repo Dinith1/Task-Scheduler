@@ -86,6 +86,7 @@ public class Processor {
         }
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
+                .appendSuper(super.equals(obj))
                 .append(scheduledNodes, secondProcessor.scheduledNodes)
                 .append(startTimes, secondProcessor.startTimes)
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
