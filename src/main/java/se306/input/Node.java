@@ -1,6 +1,7 @@
 package se306.input;
 
-import se306.algorithm.Processor;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,6 @@ public class Node {
     private int nodeWeight;
     private String nodeIdentifier;
     private List<Node> parentNodes = new ArrayList<>();
-
-
 
     public Node(int weight, String nodeIdentifier) {
         this.nodeWeight = weight;
@@ -72,5 +71,33 @@ public class Node {
 
     public void addParent(Node parent) {
         this.parentNodes.add(parent);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Node secondNode = (Node) obj;
+        return new EqualsBuilder()
+                .append(nodeIdentifier, secondNode.nodeIdentifier)
+                .isEquals();
+    }
+
+    /**
+     * hashCode() must be overridden whenever equals() is overridden
+     **/
+    @Override
+    public int hashCode() {
+        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
+        return new HashCodeBuilder(805306457, 402653189).
+                append(nodeIdentifier).
+                toHashCode();
     }
 }

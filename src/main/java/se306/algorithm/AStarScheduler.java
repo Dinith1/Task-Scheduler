@@ -33,11 +33,13 @@ public class AStarScheduler {
                 }
 
                 //EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
-                List<PartialSchedule> expandedCurrentSchedule = currentSchedule.expandNewStates();
+                HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
 
                 for (PartialSchedule s : expandedCurrentSchedule) {
                      s.setCostFunction(s.calculateCostFunction());
-                    open.add(s);
+                    if (!open.contains(s) && !closed.contains(s)) {
+                        open.add(s);
+                    }
                 }
                 open.remove(currentSchedule);
                 closed.add(currentSchedule);
