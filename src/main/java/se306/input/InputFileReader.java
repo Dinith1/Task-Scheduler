@@ -32,7 +32,7 @@ public class InputFileReader {
                                                                    // i.e. parents[0][1] = 1 means node with id = 1 is a
                                                                    // parent of node with id 0
 
-    public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {t, f, w}, ...} Each from/to is
+    public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
                                                                // the id of the node
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
