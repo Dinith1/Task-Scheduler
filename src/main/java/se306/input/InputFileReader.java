@@ -21,14 +21,19 @@ public class InputFileReader {
     // NODES INSTEAD -> KNOW THAT NODES WILL BE 0 to n-1)
 
     public static HashMap<Integer, String> nodeNames = new HashMap<Integer, String>(); // Map from id to name of node
-    
-    public static HashMap<String, Integer> nodeNamesReverse = new HashMap<String, Integer>(); // To find id for given node name
 
-    public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>(); // Map from id to weight of node ->
-                                                                                    // MIGHT NEED TO CHANGE WEIGHT TO
-                                                                                    // DOUBLE
+    public static HashMap<String, Integer> nodeNamesReverse = new HashMap<String, Integer>(); // To find id for given
+                                                                                              // node name
 
-    public static int[][] listOfEdges = new int[3][NUM_EDGES]; // {{from, to, weight}, {t, f, w}, ...} Each from/to is
+    public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>(); // Map from id to weight of
+                                                                                           // node -> MIGHT NEED TO
+                                                                                           // CHANGE WEIGHT TO DOUBLE
+
+    public static int[][] parents = new int[NUM_NODES][NUM_NODES]; // parents[0] stores parents of node with id = 0,
+                                                                   // i.e. parents[0][1] = 1 means node with id = 1 is a
+                                                                   // parent of node with id 0
+
+    public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {t, f, w}, ...} Each from/to is
                                                                // the id of the node
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
@@ -70,13 +75,16 @@ public class InputFileReader {
             // If "->" appears, it means it is an edge, otherwise it is a node.
             // Get the node identifier and weight then make a Node object
             if (line.indexOf("->") == -1) { // Handle nodes
+                Integer idInt = new Integer(id);
+
                 String name = findName(line);
-                nodeNames.put(new Integer(id), name);
-                nodeNamesReverse.put(name, new Integer(id));
+                nodeNames.put(idInt, name);
+                nodeNamesReverse.put(name, idInt);
 
-                int weight = findWeight(line);
-                nodeWeights.put(new Integer(id), new Integer(weight));
+                Integer weight = findWeight(line);
+                nodeWeights.put(idInt, weight);
 
+                outputFileGenerator.readLine(idInt);
                 id++;
 
             } else { // Handle edges
@@ -84,10 +92,14 @@ public class InputFileReader {
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("[")).replaceAll("\\s+", "");
                 int weight = findWeight(line);
 
-                listOfEdges[0][edgeNum] = nodeNamesReverse.get(startNode);
-                listOfEdges[1][edgeNum] = nodeNamesReverse.get(endNode);
-                listOfEdges[2][edgeNum] = weight;
+                listOfEdges[edgeNum][0] = nodeNamesReverse.get(startNode);
+                listOfEdges[edgeNum][1] = nodeNamesReverse.get(endNode);
+                listOfEdges[edgeNum][2] = weight;
 
+                // Store parent
+                parents[nodeNamesReverse.get(startNode)][nodeNamesReverse.get(endNode)] = 1;
+
+                outputFileGenerator.readLine(listOfEdges[edgeNum]);
                 edgeNum++;
             }
 

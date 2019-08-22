@@ -91,13 +91,13 @@ public class OutputFileGenerator {
 	public void readLine(Object lineInfo) {
 		Line newLine = new Line();
 
-		if (lineInfo instanceof Node) {
-			newLine.setNode((Node) lineInfo);
+		if (lineInfo instanceof Integer) { // Node
+			newLine.setNode((Integer) lineInfo);
 
-		} else if (lineInfo instanceof Edge) {
-			newLine.setEdge((Edge) lineInfo);
+		} else if (lineInfo instanceof int[]) { // Edge
+			newLine.setEdge((int[]) lineInfo);
 
-		} else if (lineInfo instanceof String) {
+		} else if (lineInfo instanceof String) { // Other
 			newLine.recordLine((String) lineInfo);
 		}
 

@@ -1,16 +1,19 @@
 package se306.algorithm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
-import se306.input.Node;
-
-import java.util.*;
+import se306.algorithm.Processor;
 
 public class PartialSchedule {
 
     // User defined available processors placed in a list
-    private List<Processor> processorList = new ArrayList<>();
+    private ArrayList<Processor> processorList = new ArrayList<>();
     private int costFunction;
 
     public PartialSchedule(int processorNumber) {
@@ -18,24 +21,23 @@ public class PartialSchedule {
     }
 
     public PartialSchedule(PartialSchedule ps) {
-        this.processorList = new ArrayList<>();
         for (Processor p : ps.getProcessorList()) {
-            Processor newProcessor = new Processor(p);
-            this.processorList.add(newProcessor);
+            this.processorList.add(new Processor(p));
         }
-        this.costFunction = ps.costFunction;
 
+        this.costFunction = ps.costFunction;
     }
 
     /**
      * Comparator to be used with resorting the processor list back into the process
      * identifier number order
      */
-    private Comparator<Processor> sortByIdentifierNumber = new Comparator<se306.algorithm.Processor>() {
+    private Comparator<Processor> sortByIdentifierNumber = new Comparator<Processor>() {
         public int compare(Processor p1, Processor p2) {
             if (p1.getProcessorID() < p2.getProcessorID()) {
                 return -1;
             }
+
             return 1;
         }
     };
@@ -45,8 +47,9 @@ public class PartialSchedule {
      * 
      * @return scheduledNodes
      */
-    public Set<Node> getUsedNodes() {
-        Set<Node> scheduledNodes = new HashSet<>();
+    public Set<Integer> getUsedNodes() {
+        Set<Integer> scheduledNodes = new HashSet<>();
+        
         for (Processor p : processorList) {
             // For each processor node map turn it into a hashSet of keys
             scheduledNodes.addAll(p.getScheduledNodes());
@@ -54,10 +57,11 @@ public class PartialSchedule {
         return scheduledNodes;
     }
 
-    public List<PartialSchedule> expandNewStates() {
-        List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
+    public ArrayList<PartialSchedule> expandNewStates() {
+        ArrayList<PartialSchedule> newExpandedSchedule = new ArrayList<PartialSchedule>();
+
         // FIND HOW MANY NODES NEED TO BE SCHEDULED FOR THE EXPANSION
-        List<Node> nodes = findSchedulableNodes();
+        ArrayList<Node> nodes = findSchedulableNodes();
         for (int i = 0; i < nodes.size(); i++) {
             Node currentNode = nodes.get(i);
             // Get each node that needs to be scheduled
@@ -117,7 +121,7 @@ public class PartialSchedule {
      */
     private void createProcessors(int numProcessors) {
         for (int i = 0; i < numProcessors; i++) {
-            processorList.add(new se306.algorithm.Processor(i));
+            processorList.add(new Processor(i));
         }
     }
 
@@ -135,7 +139,7 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-    public List<Processor> getProcessorList() {
+    public ArrayList<Processor> getProcessorList() {
         Collections.sort(processorList, sortByIdentifierNumber);
         return processorList;
     }
