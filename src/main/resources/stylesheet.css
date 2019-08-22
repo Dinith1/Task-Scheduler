@@ -1,17 +1,34 @@
 .progress-indicator .percentage {
-    -fx-fill: #ffffff ;
+    -fx-fill: #ffffff;
     -fx-font-family: 'Verdana', Arial, sans-serif;
     -fx-font-size: 20px;
 }
 
 .progress-indicator {
-	-fx-progress-color:  #1ed8f0;
+    -fx-progress-color: #1ed8f0;
 }
 
 .title {
-	-fx-font-family: 'Verdana', Arial, sans-serif;
+    -fx-font-family: 'Verdana', Arial, sans-serif;
     -fx-font-size: 15px;
     -fx-text-fill: #ffffff;
     -fx-border-color: #1ed8f0;
     -fx-border-radius: 5px;
+}
+
+#startBtn {
+    family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-text-fill: #FFFFFF;
+    -fx-color: #2E2C2F;
+    -fx-border-color: #1ed8f0;
+    -fx-border-radius: 5px;
+}
+
+#startBtn:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-text-fill: #2E2C2F;
+    -fx-color: #1ed8f0;
+    -fx-border-color: #2E2C2f;
 }

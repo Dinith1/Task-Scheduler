@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.image.ImageView?>
@@ -12,52 +13,63 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
    <children>
-      <HBox prefHeight="400.0" prefWidth="1200.0">
+      <VBox alignment="TOP_CENTER" style="-fx-background-color: #2E2C2F;">
          <children>
-            <VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37f6ed;">
+            <HBox prefHeight="400.0" prefWidth="1200.0">
                <children>
-                  <ImageView fx:id="graphImage" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
-               </children></VBox>
-            <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
-               <children>
-                  <LineChart prefHeight="250.0" prefWidth="600.0">
-                    <xAxis>
-                      <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis side="LEFT" />
-                    </yAxis>
-                  </LineChart>
-                  <ScatterChart prefHeight="250.0" prefWidth="600.0">
-                    <xAxis>
-                      <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis side="LEFT" />
-                    </yAxis>
-                  </ScatterChart>
-                  <HBox prefHeight="250.0" prefWidth="200.0">
+                  <VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37f6ed;">
                      <children>
-                        <Pane prefHeight="200.0" prefWidth="300.0">
-                           <children>
-                              <Label alignment="CENTER" layoutX="22.0" layoutY="14.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Total Number of Nodes:" />
-                              <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="22.0" layoutY="106.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Nodes Left:" />
-                              <Label alignment="CENTER" layoutX="22.0" layoutY="192.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Time Elapsed:" />
-                              <Label fx:id="numberOfNodes" layoutX="236.0" layoutY="25.0" text="Label" textFill="WHITE" />
-                              <Label fx:id="nodesToSchedule" layoutX="236.0" layoutY="117.0" text="Label" textFill="WHITE" />
-                              <Label fx:id="timeElapsed" layoutX="236.0" layoutY="203.0" text="Label" textFill="WHITE" />
-                           </children>
-                        </Pane>
-                        <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="297.0" progress="0.28" stylesheets="@stylesheet.css" />
+                        <ImageView fx:id="graphImage" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
                      </children>
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </HBox>
-               </children></VBox>
+                  </VBox>
+                  <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
+                     <children>
+                        <LineChart prefHeight="250.0" prefWidth="600.0">
+                           <xAxis>
+                              <CategoryAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </LineChart>
+                        <ScatterChart prefHeight="250.0" prefWidth="600.0">
+                           <xAxis>
+                              <CategoryAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </ScatterChart>
+                        <HBox prefHeight="250.0" prefWidth="200.0">
+                           <children>
+                              <Pane prefHeight="200.0" prefWidth="300.0">
+                                 <children>
+                                    <Label alignment="CENTER" layoutX="22.0" layoutY="14.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Total Number of Nodes:" />
+                                    <Label alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="22.0" layoutY="106.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Nodes Left:" />
+                                    <Label alignment="CENTER" layoutX="22.0" layoutY="192.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Time Elapsed:" />
+                                    <Label fx:id="numberOfNodes" layoutX="236.0" layoutY="25.0" text="Label" textFill="WHITE" />
+                                    <Label fx:id="nodesToSchedule" layoutX="236.0" layoutY="117.0" text="Label" textFill="WHITE" />
+                                    <Label fx:id="timeElapsed" layoutX="236.0" layoutY="203.0" text="Label" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="297.0" progress="0.28" stylesheets="@stylesheet.css" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Button fx:id="startBtn" mnemonicParsing="false" prefWidth="100.0" stylesheets="@stylesheet.css" text="Start">
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </Button>
          </children>
-      </HBox>
+      </VBox>
    </children>
 </Pane>

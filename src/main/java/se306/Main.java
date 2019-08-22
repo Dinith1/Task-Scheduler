@@ -50,33 +50,37 @@ public class Main extends Application {
             return;
         }
 
-        InputStreamReader isr;
-        try {
-            isr = new FileReader(parser.getInputFileName());
-        } catch (FileNotFoundException e) {
-            Log.error("Invalid input filename (please check the spelling)");
-            return;
+        // Check is visualisation is desired
+        if (parser.wantVisual()) {
+            launch(args);
         }
 
-        InputFileReader ifr = new InputFileReader();
+        // InputStreamReader isr;
+        // try {
+        //     isr = new FileReader(parser.getInputFileName());
+        // } catch (FileNotFoundException e) {
+        //     Log.error("Invalid input filename (please check the spelling)");
+        //     return;
+        // }
 
-        Log.info("-- Starting scheduling --");
-        long startTime = System.nanoTime();
+        // InputFileReader ifr = new InputFileReader();
 
-        ifr.readInput(isr);
-        AStarScheduler scheduler = new AStarScheduler();
-        scheduler.findOptimalSchedule();// Start scheduling
+        // Log.info("-- Starting scheduling --");
+        // long startTime = System.nanoTime();
 
-        long endTime = System.nanoTime();
-        Log.info("-- Finished scheduling --");
+        // ifr.readInput(isr);
+        // AStarScheduler scheduler = new AStarScheduler();
+        // scheduler.findOptimalSchedule();// Start scheduling
 
-        long executionTime = endTime - startTime;
-        Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
+        // long endTime = System.nanoTime();
+        // Log.info("-- Finished scheduling --");
 
-        Graph g = new DefaultGraph("g");
-        FileSource fs = FileSourceFactory.sourceFor(parser.getInputFileName());
+        // long executionTime = endTime - startTime;
+        // Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
 
-        launch(args);
+        // launch(args);
+
+        return;
     }
 
     @Override
