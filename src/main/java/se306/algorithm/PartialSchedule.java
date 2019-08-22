@@ -243,6 +243,7 @@ public class PartialSchedule {
 
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
+            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
 
@@ -254,6 +255,7 @@ public class PartialSchedule {
                 // ========================
 
                 int currentStartTime = processorList.get(processorNumber).getCurrentCost();
+                System.out.println("CURRENT START TIME : " + currentStartTime);
 
                 // If current processor contains a parent of "node" then calculate the the start
                 // time needed

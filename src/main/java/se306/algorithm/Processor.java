@@ -43,6 +43,9 @@ public class Processor {
             return 0;
         }
 
+        System.out.println("START : " + startTimes.get(startTimes.size() - 1));
+        System.out.println("WEIGHT: " + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)));
+
         return startTimes.get(startTimes.size() - 1)
                 + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
     }
@@ -72,7 +75,7 @@ public class Processor {
     }
 
     /**
-     * Returns lsit of start times where index of the list corresponds to the index
+     * Returns list of start times where index of the list corresponds to the index
      * of the scheduled nodes list
      * 
      * @return
@@ -100,6 +103,7 @@ public class Processor {
         if (obj.getClass() != getClass()) {
             return false;
         }
+        
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
                 // .appendSuper(super.equals(obj))

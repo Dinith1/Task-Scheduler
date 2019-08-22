@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputFileReader {
-    public static int NUM_NODES = 7; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
+    public static int NUM_NODES = 11; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
                                      // graph generator)
-    public static int NUM_EDGES = 6; // Testing with Nodes_7 (change later to read number of edges from GraphViz
+    public static int NUM_EDGES = 10; // Testing with Nodes_7 (change later to read number of edges from GraphViz
                                      // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
@@ -90,13 +90,13 @@ public class InputFileReader {
                 String startNode = line.substring(0, line.indexOf("-")).replaceAll("\\s+", "");
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("[")).replaceAll("\\s+", "");
                 int weight = findWeight(line);
-
+            
                 listOfEdges[edgeNum][0] = nodeNamesReverse.get(startNode);
                 listOfEdges[edgeNum][1] = nodeNamesReverse.get(endNode);
                 listOfEdges[edgeNum][2] = weight;
 
                 // Store parent
-                parents[nodeNamesReverse.get(startNode)][nodeNamesReverse.get(endNode)] = 1;
+                parents[nodeNamesReverse.get(endNode)][nodeNamesReverse.get(startNode)] = 1;
 
                 outputFileGenerator.readLine(listOfEdges[edgeNum]);
                 edgeNum++;
