@@ -1,19 +1,16 @@
 package se306;
 //
-import org.junit.Before;
-import org.junit.Test;
-import se306.algorithm.PartialSchedule;
-import se306.algorithm.Processor;
-import se306.input.Edge;
-import se306.input.Node;
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-//
+// import org.junit.Before;
+// import org.junit.Test;
+// import se306.algorithm.PartialSchedule;
+// import se306.algorithm.Processor;
+// import static junit.framework.TestCase.assertTrue;
+// import static org.junit.Assert.assertEquals;
+// //
 public class ProcessorTest {
 //
-    private Processor proc1,proc2;
-    private Node A, B, C;
+    // private Processor proc1,proc2;
+    // private Node A, B, C;
 
 //    @Before
 //    public void setup() {
@@ -64,30 +61,30 @@ public class ProcessorTest {
 //        assertEquals(10, proc2.getCurrentCost());
 //    }
 
-    @Test
-    public void checkProcessorHashCode() {
+    // @Test
+    // public void checkProcessorHashCode() {
 
-        // Create and setup nodes and processors
-        PartialSchedule ps = new PartialSchedule(2);
-        A = new Node(3, "1");
-        B = new Node(2, "2");
-        C = new Node(10, "3");
+    //     // Create and setup nodes and processors
+    //     PartialSchedule ps = new PartialSchedule(2);
+    //     A = new Node(3, "1");
+    //     B = new Node(2, "2");
+    //     C = new Node(10, "3");
 
-        // Add nodes to both processors
-        ps.getProcessorList().get(0).addNode(A,ps,0);
-        ps.getProcessorList().get(0).addNode(B,ps,0);
-        ps.getProcessorList().get(0).addNode(C,ps,0);
+    //     // Add nodes to both processors
+    //     ps.getProcessorList().get(0).addNode(A,ps,0);
+    //     ps.getProcessorList().get(0).addNode(B,ps,0);
+    //     ps.getProcessorList().get(0).addNode(C,ps,0);
 
-        ps.getProcessorList().get(1).addNode(A,ps,1);
-        ps.getProcessorList().get(1).addNode(B,ps,1);
-        ps.getProcessorList().get(1).addNode(C,ps,1);
+    //     ps.getProcessorList().get(1).addNode(A,ps,1);
+    //     ps.getProcessorList().get(1).addNode(B,ps,1);
+    //     ps.getProcessorList().get(1).addNode(C,ps,1);
 
-        System.out.println("Hash1: " + ps.getProcessorList().get(0).hashCode() + "Hash2" + ps.getProcessorList().get(1).hashCode());
-        if (ps.getProcessorList().get(0).equals(ps.getProcessorList().get(1))) {
-            assertTrue(true);
-        } else {
-            System.out.println("FAILED");
-        }
-    }
+    //     System.out.println("Hash1: " + ps.getProcessorList().get(0).hashCode() + "Hash2" + ps.getProcessorList().get(1).hashCode());
+    //     if (ps.getProcessorList().get(0).equals(ps.getProcessorList().get(1))) {
+    //         assertTrue(true);
+    //     } else {
+    //         System.out.println("FAILED");
+    //     }
+    // }
 }
 //}
