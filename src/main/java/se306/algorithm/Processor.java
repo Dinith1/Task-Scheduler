@@ -13,11 +13,13 @@ public class Processor {
     private List<Integer> startTimes = new ArrayList<>();
     private int id;
 
-    Processor(int pid){
+    public Processor(int pid){
         this.id = pid;
+        this.scheduledNodes = new ArrayList<>();
+        this.startTimes = new ArrayList<>();
     }
     //Copy constructor
-    Processor(Processor processor){
+    public Processor(Processor processor){
         this.scheduledNodes = new ArrayList<>(processor.scheduledNodes);
         this.startTimes = new ArrayList<>(processor.startTimes);
         this.id = processor.id;
@@ -86,7 +88,7 @@ public class Processor {
         }
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-                .appendSuper(super.equals(obj))
+//                .appendSuper(super.equals(obj))
                 .append(scheduledNodes, secondProcessor.scheduledNodes)
                 .append(startTimes, secondProcessor.startTimes)
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());

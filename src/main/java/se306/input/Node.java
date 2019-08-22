@@ -78,26 +78,25 @@ public class Node {
         if (obj == null) {
             return false;
         }
-        if (obj == this) {
-            return true;
-        }
         if (obj.getClass() != getClass()) {
             return false;
         }
         Node secondNode = (Node) obj;
+
         return new EqualsBuilder()
                 .append(nodeIdentifier, secondNode.nodeIdentifier)
                 .isEquals();
+
     }
 
     /**
      * hashCode() must be overridden whenever equals() is overridden
      **/
     @Override
-    public int hashCode() {
-        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        return new HashCodeBuilder(805306457, 402653189).
-                append(nodeIdentifier).
-                toHashCode();
-    }
+public int hashCode() {
+    // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
+    return new HashCodeBuilder(805306457, 402653189).
+            append(nodeIdentifier).
+            toHashCode();
+}
 }

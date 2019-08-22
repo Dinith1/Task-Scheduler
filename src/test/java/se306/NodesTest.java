@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class NodesTest {
 
@@ -49,5 +51,18 @@ public class NodesTest {
         child.addParent(parent);
 
         assertEquals(parentNodes, child.getParentNodes());
+    }
+
+    @Test
+    public void checkNodeHashCode(){
+        Node node1 = new Node(5,"a");
+        Node node2 = new Node(1,"a");
+        System.out.println("Hash1: "+ node1.hashCode() + "Hash2" + node2.hashCode());
+        if(node1.equals(node2)){
+            assertTrue(true);
+        }
+        else{
+            System.out.println("FAILED");
+        }
     }
 }
