@@ -45,7 +45,6 @@ public class Processor {
 
 //        System.out.println("START : " + startTimes.get(startTimes.size() - 1));
 //        System.out.println("WEIGHT: " + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)));
-
         return startTimes.get(startTimes.size() - 1)
                 + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
     }

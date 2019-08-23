@@ -2,15 +2,13 @@ package se306.algorithm;
 
 import java.util.*;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
-import se306.algorithm.Processor;
 
 public class PartialSchedule {
 
     // User defined available processors placed in a list
-    private ArrayList<Processor> processorList = new ArrayList<>();
+    private HashMap<Integer,Processor> processorList = new HashMap();
     private int costFunction;
 
     public PartialSchedule(int processorNumber) {
@@ -18,8 +16,9 @@ public class PartialSchedule {
     }
 
     public PartialSchedule(PartialSchedule ps) {
-        for (Processor p : ps.getProcessorList()) {
-            this.processorList.add(new Processor(p));
+        for (Integer i : ps.getProcessorList().keySet()) {
+            Processor p = ps.getProcessorList().get(i);
+            this.processorList.put(p.getProcessorID(),new Processor(p));
         }
 
         this.costFunction = ps.costFunction;
@@ -50,9 +49,7 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
                     // Add the schedule to overall expanded list
-                if(!AStarScheduler.createdSchedules.contains(newSchedule)) {
                     newExpandedSchedule.add(newSchedule);
-                }
             }
         }
 
@@ -121,7 +118,7 @@ public class PartialSchedule {
      */
     private void createProcessors(int numProcessors) {
         for (int i = 0; i < numProcessors; i++) {
-            processorList.add(new Processor(i));
+            processorList.put(i,new Processor(i));
         }
     }
 
@@ -149,7 +146,8 @@ public class PartialSchedule {
     public Set<Integer> getUsedNodes() {
         Set<Integer> scheduledNodes = new HashSet<>();
 
-        for (Processor p : processorList) {
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
             // For each processor node map turn it into a hashSet of keys
             scheduledNodes.addAll(p.getScheduledNodes());
         }
@@ -160,16 +158,15 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-    public ArrayList<Processor> getProcessorList() {
-        Collections.sort(processorList, sortByIdentifierNumber);
+    public HashMap<Integer,Processor> getProcessorList() {
         return processorList;
     }
 
     public int getFinishTime() {
         int finishTime = 0;
-        for (Processor p : processorList) {
-            if (p.getCurrentCost() > finishTime) {
-                finishTime = p.getCurrentCost();
+        for (Integer i : processorList.keySet()) {
+            if (processorList.get(i).getCurrentCost() > finishTime) {
+                finishTime = processorList.get(i).getCurrentCost();
             }
         }
         return finishTime;
@@ -199,20 +196,7 @@ public class PartialSchedule {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
-        List<Integer> tempProcessorList1 = new ArrayList<>();
-        List<Integer> tempProcessorList2 = new ArrayList<>();
-        for (Processor p: processorList
-             ) {
-            tempProcessorList1.add(p.hashCode());
-        }
-        for (Processor p: secondSchedule.processorList
-                ) {
-            tempProcessorList2.add(p.hashCode());
-        }
-        Collections.sort(tempProcessorList1);
-        Collections.sort(tempProcessorList2);
-        return new EqualsBuilder()
-                .append(tempProcessorList1, tempProcessorList2).build();
+        return(processorList.hashCode() == (secondSchedule.processorList.hashCode()));
         // // Check for process normalisation
         // if (!processNormalisation(secondSchedule.getProcessorList())){
         // return false;
@@ -225,12 +209,8 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        List<Integer> tempProcessorList1 = new ArrayList<>();
-        for (Processor p : processorList){
-            tempProcessorList1.add(p.hashCode());
-        }
-        Collections.sort(tempProcessorList1);
-        return new HashCodeBuilder(805306457, 402653189).append(tempProcessorList1).toHashCode();
+
+        return new HashCodeBuilder().append(processorList).toHashCode();
     }
 
     /**
@@ -253,7 +233,8 @@ public class PartialSchedule {
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
 
-        for (Processor p : processorList) {
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
             for (int parent : parentNodes) {
 
                 // ========================
