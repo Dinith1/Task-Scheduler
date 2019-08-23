@@ -199,19 +199,24 @@ public class PartialSchedule {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
-        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
-        List<Processor> tempProcessorList2 = new ArrayList<>(secondSchedule.processorList);
-        tempProcessorList1.sort(new ProcessorHashCodeComparator());
-        tempProcessorList2.sort(new ProcessorHashCodeComparator());
+        List<Integer> tempProcessorList1 = new ArrayList<>();
+        List<Integer> tempProcessorList2 = new ArrayList<>();
+        for (Processor p: processorList
+             ) {
+            tempProcessorList1.add(p.hashCode());
+        }
+        for (Processor p: secondSchedule.processorList
+                ) {
+            tempProcessorList2.add(p.hashCode());
+        }
+        Collections.sort(tempProcessorList1);
+        Collections.sort(tempProcessorList2);
         return new EqualsBuilder()
-                // .appendSuper(super.equals(obj))
-                .append(tempProcessorList1, tempProcessorList2).append(costFunction, secondSchedule.costFunction)
-                .isEquals();
-
+                .append(tempProcessorList1, tempProcessorList2).build();
         // // Check for process normalisation
         // if (!processNormalisation(secondSchedule.getProcessorList())){
         // return false;
-        // }
+        // }2
     }
 
     /**
@@ -220,9 +225,12 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
-        tempProcessorList1.sort(new ProcessorHashCodeComparator());
-        return new HashCodeBuilder(805306457, 402653189).append(tempProcessorList1).append(costFunction).toHashCode();
+        List<Integer> tempProcessorList1 = new ArrayList<>();
+        for (Processor p : processorList){
+            tempProcessorList1.add(p.hashCode());
+        }
+        Collections.sort(tempProcessorList1);
+        return new HashCodeBuilder(805306457, 402653189).append(tempProcessorList1).toHashCode();
     }
 
     /**
