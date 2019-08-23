@@ -132,11 +132,15 @@ public class Processor {
         // this only checks if there is more than one node scheduled. what if there is one node scheduled but still
         // has idle time?
 
+        // THIS INCLUDES THE NODE TO BE SCHEDULED (trial)
+
         if (this.scheduledNodes.size() == 1) {
             idleTime = this.startTimes.get(0);
         } else {
             for (int i = 1; i < this.scheduledNodes.size(); i++) {
 //            int finishingTime = InputFileReader.nodeWeights.get(this.scheduledNodes.get(i)) + this.startTimes.get(i);
+
+                int processorID = this.getProcessorID();
 
                 int startOfCurrentNode = this.startTimes.get(i);
                 int weightOfCurrentNode = InputFileReader.nodeWeights.get(scheduledNodes.get(i));
@@ -144,8 +148,8 @@ public class Processor {
                 int startOfLastNode = this.startTimes.get(i - 1);
 
 
-                if ((startOfCurrentNode - weightOfCurrentNode) != (startOfLastNode - weightOfLastNode)) {
-                    idleTime = idleTime + ((startOfCurrentNode - weightOfCurrentNode) - (startOfLastNode));
+                if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {
+                    idleTime = idleTime + ((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
                 }
             }
         }

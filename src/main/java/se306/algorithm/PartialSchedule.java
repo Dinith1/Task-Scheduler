@@ -293,13 +293,13 @@ public class PartialSchedule {
                     // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
                     // ========================
 
-
+                    // Find the latest start time in the processor @TODO + communication cost
+                    int currentStartTime = processorList.get(processorNumber).getCurrentCost();
 
                     // If current processor contains a parent of "node"
                     if (p.getScheduledNodes().contains(parentID)) {
 
-                        // Find the latest start time in the processor @TODO + communication cost
-                        int currentStartTime = processorList.get(p.getProcessorID()).getCurrentCost();
+
 
 
                         // If the processor ID is not the original processor number
