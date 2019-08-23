@@ -71,9 +71,7 @@ public class PartialSchedule {
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
-                System.out.println(node);
                 // If no parents then add to list
-                System.out.println(Arrays.toString(InputFileReader.parents[node]));
                 if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
                     freeNodes.add(node); // AUTOBOXING
                 }
@@ -244,10 +242,12 @@ public class PartialSchedule {
 
 //                System.out.println("CURRENT START TIME : " + currentStartTime);
 
+                    //best start time for the node being inserted to the specific processor
+                    int currentStartTime = processorList.get(processorNumber).getCurrentCost();
+
                     // If current processor contains a parent of "node" then calculate the the start
                     // time needed
                     if (p.getScheduledNodes().contains(parentID)) {
-                        int currentStartTime = processorList.get(p.getProcessorID()).getCurrentCost();
 
                         // If parent node is not scheduled in same processor
                         if (p.getProcessorID() != processorNumber) {
