@@ -88,7 +88,7 @@ public class Main extends Application {
         // Passes required data to controllers
         GraphController ctrl = menuLoader.getController();
         ctrl.createGraph();
-        ctrl.setTimeElapsed("3 seconds");
+        ctrl.startTimeElapsed();
 
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);

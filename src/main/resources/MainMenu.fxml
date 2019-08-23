@@ -4,7 +4,6 @@
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.ScatterChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
@@ -34,14 +33,7 @@
                             <NumberAxis fx:id="cpuId" side="LEFT" />
                           </yAxis>
                         </BarChart>
-                        <ScatterChart prefHeight="250.0" prefWidth="600.0">
-                           <xAxis>
-                              <CategoryAxis side="BOTTOM" />
-                           </xAxis>
-                           <yAxis>
-                              <NumberAxis side="LEFT" />
-                           </yAxis>
-                        </ScatterChart>
+                        <Pane fx:id="schedulePane" prefHeight="200.0" prefWidth="200.0" />
                         <HBox prefHeight="250.0" prefWidth="200.0">
                            <children>
                               <Pane prefHeight="200.0" prefWidth="300.0">
