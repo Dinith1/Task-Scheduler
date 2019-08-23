@@ -112,10 +112,10 @@ public class GraphController implements Initializable {
         machine = machines[2];
         XYChart.Series series3 = new XYChart.Series();
         series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
-        series3.getData().add(new XYChart.Data(1, machine, new SchedulesBar.ExtraData( 2, "status-red")));
         series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
 
         chart.getData().addAll(series1, series2, series3);
+        chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
 
         schedulePane.getChildren().add(chart);
     }
