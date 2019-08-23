@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import eu.hansolo.tilesfx.Tile?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -46,7 +46,7 @@
                                     <Label fx:id="timeElapsed" layoutX="236.0" layoutY="203.0" text="Label" textFill="WHITE" />
                                  </children>
                               </Pane>
-                              <ProgressIndicator maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="297.0" progress="0.28" stylesheets="@stylesheet.css" />
+                              <Tile fx:id="progressTile" />
                            </children>
                            <VBox.margin>
                               <Insets top="30.0" />

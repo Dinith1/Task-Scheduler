@@ -1,9 +1,17 @@
 package se306.visualisation.backend;
 
+import com.jezhumble.javasysmon.JavaSysMon;
+import com.sun.javafx.runtime.VersionInfo;
+import eu.hansolo.tilesfx.Tile;
+import javafx.animation.AnimationTimer;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -22,6 +30,7 @@ import se306.input.InputFileReader;
 import java.io.*;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +62,9 @@ public class GraphController implements Initializable {
 
     @FXML
     private Button startBtn;
+
+    @FXML
+    private Tile progressTile;
 
     private int totalNodes = 0, totalEdges = 0;
 
@@ -118,19 +130,60 @@ public class GraphController implements Initializable {
         series2.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 20, "status-red")));
 
         machine = machines[2];
-        XYChart.Series series3 = new XYChart.Series();
-        series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
-        series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
+//        XYChart.Series series3 = new XYChart.Series();
+//        series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
+//        series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
 
-        chart.getData().addAll(series1, series2, series3);
+        chart.getData().addAll(series1, series2);
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
 
         schedulePane.getChildren().add(chart);
     }
 
     public void startTimeElapsed() {
-        String newText = "";
-        timeElapsed.setText(newText);
+//        StopwatchTimer timer = new StopwatchTimer();
+//        timer.startTimer(timer.getTime());
+//        timer.getSspTime().addListener(new InvalidationListener() {
+//
+//            @Override
+//            public void invalidated(Observable observable) {
+//                timeElapsed.setText(timer.getSspTime().get());
+//            }
+//        });
+//        String newText = "";
+//        timeElapsed.setText(newText);
+        AnimationTimer timer = new AnimationTimer() {
+            private long timestamp;
+            private long time = 0;
+            private long fraction = 0;
+
+            @Override
+            public void start() {
+                // current time adjusted by remaining time from last run
+                timestamp = System.currentTimeMillis() - fraction;
+                super.start();
+            }
+
+            @Override
+            public void stop() {
+                super.stop();
+                // save leftover time not handled with the last update
+                fraction = System.currentTimeMillis() - timestamp;
+            }
+
+            @Override
+            public void handle(long now) {
+                long newTime = System.currentTimeMillis();
+                if (timestamp + 1000 <= newTime) {
+                    long deltaT = (newTime - timestamp) / 1000;
+                    time += deltaT;
+                    timestamp += 1000 * deltaT;
+                    timeElapsed.setText(Long.toString(time));
+                }
+            }
+        };
+
+        timer.start();
     }
 
     public void setNumberOfNodes(String s) {
@@ -143,26 +196,49 @@ public class GraphController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initCpuMonitor();
+        createSchedule(); //TODO remove later
+        startTimeElapsed();
+        populateTile();
+        CommandLineParser parser = CommandLineParser.getInstance();
+        if (!parser.wantVisual()) {
+            Main.startScheduling();
+        }
+    }
 
+    private void initCpuMonitor() {
         XYChart.Series<String, Number> series1 = new XYChart.Series<>();
         cpuMonitorBar.setTitle("cpu Monitor");
         cpu.setLabel("cateogory");
         cpu.setTickLabelRotation(90);
         cpuId.setLabel("num");
 
-        series1.setName("asdfasdf");
-        CommandLineParser parser = CommandLineParser.getInstance();
-        series1.getData().add(new XYChart.Data<>("five", 1));
-        series1.getData().add(new XYChart.Data<>("four", 1));
-        series1.getData().add(new XYChart.Data<>("three", 1));
-        series1.getData().add(new XYChart.Data<>("two", 1));
         cpuMonitorBar.setLegendVisible(false);
-        cpuMonitorBar.getData().addAll(series1);
-        createSchedule(); //TODO remove later
-        if (!parser.wantVisual()) {
-            Main.startScheduling();
-        }
+        series1.setName("asdfasdf");
+        JavaSysMon monitor = new JavaSysMon();
+//
+//        Task<Integer> task = new Task<Integer>() {
+//            @Override protected Integer call() throws Exception {
+//                while (true) {
+//                    if (isCancelled()) {
+//                        break;
+//                    }
+//                    System.out.println(monitor.cpuFrequencyInHz()/1000000);
+//                }
+//                return 0;
+//            }
+//        };
+//
+//        Thread thread = new Thread(task);
+//        thread.start();
 
+
+    }
+
+    private void populateTile() {
+        progressTile.setTitle("Schedule progress");
+        progressTile.setSkinType(Tile.SkinType.CIRCULAR_PROGRESS);
+        progressTile.setValue(new Random().nextDouble() * 120);
     }
 
     private void getNumberOfNodesAndEdges(InputStreamReader isr) {
