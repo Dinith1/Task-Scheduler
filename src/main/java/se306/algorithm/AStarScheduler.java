@@ -35,8 +35,8 @@ public class AStarScheduler {
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
 
                 for (PartialSchedule s : expandedCurrentSchedule) {
-                        s.setCostFunction(s.calculateCostFunction());
-                        open.add(s);
+//                    s.assignCostFunction((s.calculateCostFunction(newSchedule, node, processorList.size())), newSchedule);
+                    open.add(s);
                 }
                 open.remove(currentSchedule);
                 closed.add(currentSchedule);

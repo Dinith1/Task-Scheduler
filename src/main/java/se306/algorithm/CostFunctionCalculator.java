@@ -14,7 +14,7 @@ public class CostFunctionCalculator {
 
     private PartialSchedule ps;
 
-    public double getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors, ArrayList<Integer> free) {
+    public double getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors) {
 
 
         // Find all the free nodes AFTER node n has been scheduled
@@ -25,8 +25,12 @@ public class CostFunctionCalculator {
         // f(drt) =   max( all  data ready times + bottom level)
 
 
-        double maxDRT = 0;
-        maxDRT = getDRT(newPs, newestNode, free);
+//        double maxDRT = 0;
+
+        // Get the freeNodes for the particular partial schedule
+        ArrayList<Integer> free = newPs.getFreeNodes();
+
+        double maxDRT = getDRT(newPs, free);
 
         //Free var drt
 
@@ -56,13 +60,13 @@ public class CostFunctionCalculator {
         //If the supplied node has children
         if (InputFileReader.childrenOfParent.get(node) instanceof int[]) {
             int upperBound = 0;
-            //want to get those two children
-            int[] arrayofChildren = (int[]) childrenOfParent.get(node);
+            // Want to get those children
+            int[] arrayOfChildren = (int[]) childrenOfParent.get(node);
 
-
-            for (int i = 0; i < arrayofChildren.length; i++) {
-                // If node has child
-                if (arrayofChildren[i] == 1) {
+            // Iterate through each child
+            for (int i = 0; i < arrayOfChildren.length; i++) {
+                // Check if node has child
+                if (arrayOfChildren[i] == 1) {
 //                    upperBound += getBottomLevelRecursive(i);
                     int current = getBottomLevelRecursive(i);
                     this.bottomLevels[i] = current;
@@ -99,7 +103,16 @@ public class CostFunctionCalculator {
 //        }
 //    }
 
-        public double getDRT (PartialSchedule newPs, int nodeId, ArrayList<Integer> free){
+
+    /**
+     * This method calculates the Data Ready Time of each node. This is inclusive of the
+     * communication costs IF the node being scheduled is not on the same processor as
+     * the parent node.
+     * @param newPs
+     * @param free
+     * @return
+     */
+    public double getDRT (PartialSchedule newPs, ArrayList<Integer> free){
             double maxDRT = 0;
             int dataReady;
             double bottomLevel;
@@ -107,17 +120,22 @@ public class CostFunctionCalculator {
 
                 int minDRT = -1;
 
-
+                // Find the bottom level of the current free node that is being "applied"
                 bottomLevel = this.bottomLevels[freeNode];
 
+                // Trial every processor
                 for (Processor p : newPs.getProcessorList()) {
+
+                    // Find the earliest start time that the node can be scheduled onto the current processor
                     dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
+                    // Update the minimum T(dr)
                     if (minDRT > dataReady) {
                         minDRT = dataReady;
                     }
                 }
 
+                // Calculate the cost function DRT
                 double dataReadyCost = bottomLevel + minDRT;
 
                 if (dataReadyCost > maxDRT) {
@@ -162,11 +180,17 @@ public class CostFunctionCalculator {
 //		return drt;
 
 
+    /**
+     * This cost function returns the idle time + sum of each weight of every single node of the graph
+     * @param ps
+     * @param numberOfProcessors
+     * @return
+     */
         public double getIdleTime(PartialSchedule ps, int numberOfProcessors){
             //  int totalIdleTime = ps.getIdleTime();
             double totalIdleTime = 0;
 
-
+            // Iterate through each processor to find Idle Times
             for (Processor p : ps.getProcessorList()) {
                 totalIdleTime += p.calculateIdleTime();
             }
@@ -174,11 +198,13 @@ public class CostFunctionCalculator {
             //System.out.println(totalIdleTime);
             //  ps.setIdleTime(totalIdleTime);
 
+            // Calculate the total weight of the graph
             double totalWeight = 0;
             for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
                 totalWeight += InputFileReader.nodeWeights.get(i);
             }
 
+            // Calculate the cost function of Idle Time
             return (totalIdleTime + totalWeight) / (double)numberOfProcessors;
         }
     }

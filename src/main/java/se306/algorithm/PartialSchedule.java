@@ -11,7 +11,7 @@ public class PartialSchedule {
 
     // User defined available processors placed in a list
     private ArrayList<Processor> processorList = new ArrayList<>();
-    private int costFunction;
+    private double costFunction;
     private ArrayList<Integer> freeNodes = new ArrayList<>();
 
     public PartialSchedule(int processorNumber) {
@@ -52,6 +52,8 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
 
+                this.assignCostFunction((this.calculateCostFunction(newSchedule, node, processorList.size())), newSchedule);
+
                 if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
                     continue;
                 }
@@ -63,6 +65,10 @@ public class PartialSchedule {
         }
 
         return newExpandedSchedule;
+    }
+
+    public ArrayList<Integer> getFreeNodes() {
+        return this.freeNodes;
     }
 
     /**
@@ -118,6 +124,18 @@ public class PartialSchedule {
     private void addToProcessor(int processorNumber, Integer node) {
         // Adds the node into the corresponding processor
         this.getProcessorList().get(processorNumber).addNode(node, this, processorNumber);
+
+        //
+    }
+
+    private void assignCostFunction(double costFunction, PartialSchedule partialSchedule) {
+        partialSchedule.setCostFunction(costFunction);
+    }
+
+    private double calculateCostFunction(PartialSchedule ps, int nodeToAdd, int numOfProcessors) {
+        CostFunctionCalculator calculator = new CostFunctionCalculator();
+
+        return calculator.getCostFunction(ps, nodeToAdd, numOfProcessors);
     }
 
     /**
@@ -181,15 +199,15 @@ public class PartialSchedule {
         return finishTime;
     }
 
-    public int calculateCostFunction() {
-        return getFinishTime();
-    }
+//    public int calculateCostFunction() {
+//        return getFinishTime();
+//    }
 
-    public int getCostFunction() {
+    public double getCostFunction() {
         return costFunction;
     }
 
-    public void setCostFunction(int costFunction) {
+    public void setCostFunction(double costFunction) {
         this.costFunction = costFunction;
     }
 
