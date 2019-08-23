@@ -1,6 +1,5 @@
 package se306.input;
 
-import se306.algorithm.PartialSchedule;
 import se306.output.OutputFileGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +29,7 @@ public class InputFileReader {
                                                                                            // node -> MIGHT NEED TO
                                                                                            // CHANGE WEIGHT TO DOUBLE
 
-    public static HashMap<Integer, Object> childrenofParent = new HashMap<Integer, Object>();
+    public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
 
     public static int[][] parents = new int[NUM_NODES][NUM_NODES]; // parents[0] stores parents of node with id = 0,
                                                                    // i.e. parents[0][1] = 1 means node with id = 1 is a
@@ -161,9 +160,9 @@ public class InputFileReader {
        }
 
        if (Arrays.stream(childIds).anyMatch(i -> i != -1)) {
-            childrenofParent.put(node,childIds);
+            childrenOfParent.put(node,childIds);
         } else {
-           childrenofParent.put(node, new Integer(-1));
+           childrenOfParent.put(node, new Integer(-1));
        }
     }
 }

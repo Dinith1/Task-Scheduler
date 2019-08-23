@@ -3,10 +3,13 @@ package se306.algorithm;
 
 import se306.input.InputFileReader;
 
-import static se306.input.InputFileReader.childrenofParent;
-import static se306.input.InputFileReader.parents;
+import java.util.ArrayList;
+
+import static se306.input.InputFileReader.childrenOfParent;
 
 public class CostFunctionCalculator {
+
+    private double[] bottomLevels = new double[InputFileReader.NUM_NODES];
 
 
     private PartialSchedule ps;
@@ -51,18 +54,21 @@ public class CostFunctionCalculator {
 
 
         //If the supplied node has children
-        if (InputFileReader.childrenofParent.get(node) instanceof int[]) {
+        if (InputFileReader.childrenOfParent.get(node) instanceof int[]) {
             int upperBound = 0;
             //want to get those two children
-            int[] arrayofChildren = (int[]) childrenofParent.get(node);
+            int[] arrayofChildren = (int[]) childrenOfParent.get(node);
+
 
             for (int i = 0; i < arrayofChildren.length; i++) {
+                // If node has child
                 if (arrayofChildren[i] == 1) {
-                    upperBound += getBottomLevelRecursive(i);
-//                    int current = getBottomLevelRecursive(i);
-//                    if(upperBound < current){
-//                        upperBound = current;
-//                    }
+//                    upperBound += getBottomLevelRecursive(i);
+                    int current = getBottomLevelRecursive(i);
+                    this.bottomLevels[i] = current;
+                    if(upperBound < current){
+                        upperBound = current;
+                    }
                 }
             }
             return upperBound + InputFileReader.nodeWeights.get(node);
@@ -93,15 +99,16 @@ public class CostFunctionCalculator {
 //        }
 //    }
 
-        public int getDRT (PartialSchedule newPs, Node newestNode, List < Node > free){
-            int maxDRT = 0;
+        public double getDRT (PartialSchedule newPs, int nodeId, ArrayList<Integer> free){
+            double maxDRT = 0;
             int dataReady;
-            int bottomLevel;
-            for (Node freeNode : free) {
+            double bottomLevel;
+            for (Integer freeNode : free) {
 
                 int minDRT = -1;
 
-                bottomLevel = freeNode.getBottomLevel();
+
+                bottomLevel = this.bottomLevels[freeNode];
 
                 for (Processor p : newPs.getProcessorList()) {
                     dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
@@ -111,7 +118,7 @@ public class CostFunctionCalculator {
                     }
                 }
 
-                int dataReadyCost = bottomLevel + minDRT;
+                double dataReadyCost = bottomLevel + minDRT;
 
                 if (dataReadyCost > maxDRT) {
                     maxDRT = dataReadyCost;

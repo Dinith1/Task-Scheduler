@@ -12,6 +12,7 @@ public class PartialSchedule {
     // User defined available processors placed in a list
     private ArrayList<Processor> processorList = new ArrayList<>();
     private int costFunction;
+    private ArrayList<Integer> freeNodes = new ArrayList<>();
 
     public PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
@@ -73,7 +74,7 @@ public class PartialSchedule {
      */
 
     private ArrayList<Integer> findSchedulableNodes() {
-        ArrayList<Integer> freeNodes = new ArrayList<>();
+        freeNodes = new ArrayList<>();
 
         // Loops through all nodes
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
