@@ -4,14 +4,15 @@ import se306.output.OutputFileGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputFileReader {
-    public static int NUM_NODES = 10; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
+    public static int NUM_NODES = 7; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
                                      // graph generator)
-    public static int NUM_EDGES = 19; // Testing with Nodes_7 (change later to read number of edges from GraphViz
+    public static int NUM_EDGES = 6; // Testing with Nodes_7 (change later to read number of edges from GraphViz
                                      // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
@@ -19,18 +20,24 @@ public class InputFileReader {
     // (DON"T EVEN NEED THIS AS CAN STORE TOTAL NUMBER OF
     // NODES INSTEAD -> KNOW THAT NODES WILL BE 0 to n-1)
 
-    public static HashMap<Integer, String> nodeNames = new HashMap<Integer, String>(); // Map from id to name of node
+    // public static HashMap<Integer, String> nodeNames = new HashMap<Integer,
+    // String>(); // Map from id to name of node
 
-    public static HashMap<String, Integer> nodeNamesReverse = new HashMap<String, Integer>(); // To find id for given
-                                                                                              // node name
+    // public static HashMap<String, Integer> nodeNamesReverse = new HashMap<String,
+    // Integer>(); // To find id for given
+    // node name
 
     public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>(); // Map from id to weight of
                                                                                            // node -> MIGHT NEED TO
                                                                                            // CHANGE WEIGHT TO DOUBLE
 
+    public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
+
     public static int[][] parents = new int[NUM_NODES][NUM_NODES]; // parents[0] stores parents of node with id = 0,
                                                                    // i.e. parents[0][1] = 1 means node with id = 1 is a
                                                                    // parent of node with id 0
+
+    public static int[][] parentsReverse = new int[NUM_NODES][NUM_NODES];
 
     public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
                                                                // the id of the node
@@ -46,7 +53,7 @@ public class InputFileReader {
      */
     public void readInput(InputStreamReader isr) throws IOException {
 
-        int id = 0; // For node ids
+        // int id = 0; // For node ids
         int edgeNum = 0; // for adding to listOfEdges
 
         BufferedReader buffRead = new BufferedReader(isr);
@@ -74,29 +81,32 @@ public class InputFileReader {
             // If "->" appears, it means it is an edge, otherwise it is a node.
             // Get the node identifier and weight then make a Node object
             if (line.indexOf("->") == -1) { // Handle nodes
-                Integer idInt = new Integer(id);
+                // Integer idInt = new Integer(id);
 
                 String name = findName(line);
-                nodeNames.put(idInt, name);
-                nodeNamesReverse.put(name, idInt);
+                // nodeNames.put(idInt, name);
+                // nodeNamesReverse.put(name, idInt);
 
                 Integer weight = findWeight(line);
-                nodeWeights.put(idInt, weight);
+                nodeWeights.put(Integer.parseInt(name), weight);
 
-                outputFileGenerator.readLine(idInt);
-                id++;
+                outputFileGenerator.readLine(Integer.parseInt(name));
+                // id++;
 
             } else { // Handle edges
                 String startNode = line.substring(0, line.indexOf("-")).replaceAll("\\s+", "");
+                int startNodeInt = Integer.parseInt(startNode);
                 String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("[")).replaceAll("\\s+", "");
+                int endNodeInt = Integer.parseInt(endNode);
                 int weight = findWeight(line);
-            
-                listOfEdges[edgeNum][0] = nodeNamesReverse.get(startNode);
-                listOfEdges[edgeNum][1] = nodeNamesReverse.get(endNode);
+
+                listOfEdges[edgeNum][0] = Integer.parseInt(startNode); // nodeNamesReverse.get(startNode);
+                listOfEdges[edgeNum][1] = Integer.parseInt(endNode); // nodeNamesReverse.get(endNode);
                 listOfEdges[edgeNum][2] = weight;
 
                 // Store parent
-                parents[nodeNamesReverse.get(endNode)][nodeNamesReverse.get(startNode)] = 1;
+                parents[endNodeInt][startNodeInt] = 1;
+                parentsReverse[startNodeInt][endNodeInt] = 1;
 
                 outputFileGenerator.readLine(listOfEdges[edgeNum]);
                 edgeNum++;
@@ -105,6 +115,12 @@ public class InputFileReader {
         }
 
         buffRead.close();
+
+        // Loops through all nodes and gets all immediate children of that node
+        for (int i = 0; i < NUM_NODES; i++) {
+            createChildren(i);
+        }
+
     }
 
     /**
@@ -129,5 +145,27 @@ public class InputFileReader {
         line = line.replaceAll("\\s", "");
         int iEnd = line.indexOf("[");
         return line.substring(0, iEnd);
+    }
+
+    /**
+     * Takes a node, and generates all the immediate children of that node, putting
+     * it into a HashMap
+     * 
+     * @param node
+     */
+    private void createChildren(int node) {
+        int[] childIds = new int[NUM_NODES];
+
+        for (int i = 0; i < parentsReverse[node].length; i++) {
+            if (parentsReverse[node][i] == 1) {
+                childIds[i] = 1;
+            }
+        }
+
+        if (Arrays.stream(childIds).anyMatch(i -> i != -1)) {
+            childrenOfParent.put(node, childIds);
+        } else {
+            childrenOfParent.put(node, new Integer(-1));
+        }
     }
 }
