@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import se306.Main;
@@ -58,7 +59,7 @@ public class GraphController implements Initializable {
     NumberAxis cpuId;
 
     @FXML
-    private Pane schedulePane;
+    private AnchorPane schedulePane;
 
     @FXML
     private Button startBtn;
@@ -71,6 +72,7 @@ public class GraphController implements Initializable {
     @FXML
     void handleStart(MouseEvent event) {
         Main.startScheduling();
+        startTimeElapsed();
         startBtn.setDisable(true);
     }
 
@@ -130,28 +132,21 @@ public class GraphController implements Initializable {
         series2.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 20, "status-red")));
 
         machine = machines[2];
-//        XYChart.Series series3 = new XYChart.Series();
-//        series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
-//        series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
+        XYChart.Series series3 = new XYChart.Series();
+        series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
+        series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
 
-        chart.getData().addAll(series1, series2);
+        chart.getData().addAll(series1, series2, series3);
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
+        schedulePane.setLeftAnchor(chart, 0.0);
+        schedulePane.setRightAnchor(chart, 0.0);
+        schedulePane.setTopAnchor(chart, 0.0);
+        schedulePane.setBottomAnchor(chart, 0.0);
 
         schedulePane.getChildren().add(chart);
     }
 
     public void startTimeElapsed() {
-//        StopwatchTimer timer = new StopwatchTimer();
-//        timer.startTimer(timer.getTime());
-//        timer.getSspTime().addListener(new InvalidationListener() {
-//
-//            @Override
-//            public void invalidated(Observable observable) {
-//                timeElapsed.setText(timer.getSspTime().get());
-//            }
-//        });
-//        String newText = "";
-//        timeElapsed.setText(newText);
         AnimationTimer timer = new AnimationTimer() {
             private long timestamp;
             private long time = 0;
@@ -174,11 +169,11 @@ public class GraphController implements Initializable {
             @Override
             public void handle(long now) {
                 long newTime = System.currentTimeMillis();
-                if (timestamp + 1000 <= newTime) {
-                    long deltaT = (newTime - timestamp) / 1000;
+                if (timestamp <= newTime) {
+                    long deltaT = (newTime - timestamp) ;
                     time += deltaT;
-                    timestamp += 1000 * deltaT;
-                    timeElapsed.setText(Long.toString(time));
+                    timestamp += deltaT;
+                    timeElapsed.setText(Long.toString(time / 1000) + ":" + Long.toString(time % 1000));
                 }
             }
         };
@@ -198,7 +193,6 @@ public class GraphController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initCpuMonitor();
         createSchedule(); //TODO remove later
-        startTimeElapsed();
         populateTile();
         CommandLineParser parser = CommandLineParser.getInstance();
         if (!parser.wantVisual()) {
