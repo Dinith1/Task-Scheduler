@@ -111,6 +111,19 @@ public class Processor {
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
     }
 
+    public double calculateIdleTime(){
+        double idleTime = 0;
+
+        for(int i = 0;i<this.scheduledNodes.size() -1;i++){
+            int finishingTime = InputFileReader.nodeWeights.get(this.scheduledNodes.get(i)) + this.startTimes.get(i);
+
+            if(finishingTime != this.startTimes.get(i+1)){
+                idleTime = idleTime + this.startTimes.get(i+1) - finishingTime;
+            }
+        }
+        return idleTime;
+    }
+
     /**
      * hashCode() must be overridden whenever equals() is overridden
      **/

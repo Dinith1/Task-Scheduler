@@ -9,7 +9,7 @@ import static se306.input.InputFileReader.parents;
 public class CostFunctionCalculator {
 
 
-    private PartialSchedule _ps;
+    private PartialSchedule ps;
 
     public int getCostFunction(PartialSchedule newPs, Node newestNode, int numOfProcessors, List<Node> free) {
 
@@ -23,7 +23,7 @@ public class CostFunctionCalculator {
 
 
         int maxDRT = 0;
-        maxDRT = getDRT(newPs,newestNode,free);
+        maxDRT = getDRT(newPs, newestNode, free);
 
         //Free var drt
 
@@ -51,13 +51,13 @@ public class CostFunctionCalculator {
 
 
         //If the supplied node has children
-        if(InputFileReader.childrenofParent.get(node) instanceof int[]){
-           int upperBound = 0;
+        if (InputFileReader.childrenofParent.get(node) instanceof int[]) {
+            int upperBound = 0;
             //want to get those two children
-            int[] arrayofChildren = (int[])childrenofParent.get(node);
+            int[] arrayofChildren = (int[]) childrenofParent.get(node);
 
-            for(int i = 0;i<arrayofChildren.length;i++){
-                if(arrayofChildren[i] == 1){
+            for (int i = 0; i < arrayofChildren.length; i++) {
+                if (arrayofChildren[i] == 1) {
                     upperBound += getBottomLevelRecursive(i);
 //                    int current = getBottomLevelRecursive(i);
 //                    if(upperBound < current){
@@ -66,9 +66,10 @@ public class CostFunctionCalculator {
                 }
             }
             return upperBound + InputFileReader.nodeWeights.get(node);
-        }else{
+        } else {
             return InputFileReader.nodeWeights.get(node);
         }
+    }
 
 //
 //        if (node.getNumberOfOutGoingEdges() > 0) {
@@ -92,33 +93,33 @@ public class CostFunctionCalculator {
 //        }
 //    }
 
-    public int getDRT(PartialSchedule newPs, Node newestNode, List<Node> free) {
-        int maxDRT = 0;
-        int dataReady;
-        int bottomLevel;
-        for (Node freeNode : free) {
+        public int getDRT (PartialSchedule newPs, Node newestNode, List < Node > free){
+            int maxDRT = 0;
+            int dataReady;
+            int bottomLevel;
+            for (Node freeNode : free) {
 
-            int minDRT = -1;
+                int minDRT = -1;
 
-            bottomLevel = freeNode.getBottomLevel();
+                bottomLevel = freeNode.getBottomLevel();
 
-            for (Processor p : newPs.getProcessorList()) {
-                dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
+                for (Processor p : newPs.getProcessorList()) {
+                    dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
-                if (minDRT > dataReady) {
-                    minDRT = dataReady;
+                    if (minDRT > dataReady) {
+                        minDRT = dataReady;
+                    }
+                }
+
+                int dataReadyCost = bottomLevel + minDRT;
+
+                if (dataReadyCost > maxDRT) {
+                    maxDRT = dataReadyCost;
                 }
             }
+            return maxDRT;
 
-            int dataReadyCost = bottomLevel + minDRT;
-
-            if (dataReadyCost > maxDRT) {
-                maxDRT = dataReadyCost;
-            }
         }
-        return maxDRT;
-
-    }
 
 //	public int getDRT(Node node, PartialSchedule ps, Processor processor) {
 //		int upperBound = 0;
@@ -154,20 +155,24 @@ public class CostFunctionCalculator {
 //		return drt;
 
 
-    public int getIdleTime(PartialSchedule ps, int numberOfProcessors) {
+        public double getIdleTime(PartialSchedule ps, int numberOfProcessors){
+            //  int totalIdleTime = ps.getIdleTime();
+            double totalIdleTime = 0;
 
-            
-        int totalIdleTime = ps.getIdleTime();
 
-        for (Processor p : ps.getProcessorList()) {
-            totalIdleTime += p.calculateIdleTime();
+            for (Processor p : ps.getProcessorList()) {
+                totalIdleTime += p.calculateIdleTime();
+            }
+
+            //System.out.println(totalIdleTime);
+            //  ps.setIdleTime(totalIdleTime);
+
+            double totalWeight = 0;
+            for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
+                totalWeight += InputFileReader.nodeWeights.get(i);
+            }
+
+            return (totalIdleTime + totalWeight) / (double)numberOfProcessors;
         }
-        //System.out.println(totalIdleTime);
-        ps.setIdleTime(totalIdleTime);
-        int totalWeight = 0;
-        for (Node n : InputFileReader.listOfAvailableNodes) {
-            totalWeight += n.getNodeWeight();
-        }
-        return (totalIdleTime + totalWeight) / numberOfProcessors;
     }
-}
+
