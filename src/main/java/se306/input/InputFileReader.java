@@ -381,49 +381,49 @@ public class InputFileReader {
     private void chainIdenticalNodes(int[] sameOutgoingEdgeNodes) {
         // If reached, this means the nodes are identical
         // Set the parents and children of each identical node as each other
-
-        //from,to,weight
-
         int[] intermediateNodes = new int[sameOutgoingEdgeNodes.length - 2];
 
         //Iterate through all identical nodes and create an intermediate chain of nodes
         for (int i = 1; i < sameOutgoingEdgeNodes.length - 1; i++) {
-            setIntermediateChain(i);
+            createIntermediateChain(i);
         }
 
         // Set the first identical node to keep its parent and set child to head of the intermediate chain
-//        setChild(sameOutgoingEdgeNodes[0], intermediateNodes);
-//        setParent(sameOutgoingEdgeNodes[sameOutgoingEdgeNodes.length-1], intermediateNodes);
-
+        setChild(sameOutgoingEdgeNodes[0], intermediateNodes[0], true);
+        setParent(sameOutgoingEdgeNodes[sameOutgoingEdgeNodes.length - 1], intermediateNodes[intermediateNodes.length - 1], true);
     }
 
     private void setChild(int nodeId, int childId, boolean removeAll) {
+        // Update parents array
         if (removeAll) {
             removeChildrenNodes(parents, nodeId);
         } else {
-            parents[nodeId][childId] = 1;
+            parents[childId][nodeId] = 1;
         }
+
+        // TODO: Update edges
     }
 
     private void setParent(int nodeId, int parentId, boolean removeAll) {
+        // Update parents array
         if (removeAll) {
             // Set its parent to head of the intermediate chain
-//            parents[id] = new int[NUM_NODES];
+            parents[nodeId] = new int[NUM_NODES];
         } else {
-
+            parents[nodeId][parentId] = 1;
         }
+
+        // TODO: Update edges
+        // TODO: Double check id and index passing for all methods
     }
 
-    private void setIntermediateChain(int id) {
+    private void createIntermediateChain(int id) {
         // Remove all parents and children of the intermediate nodes (nodes that are not the head or tail of the chain)
         parents[id] = new int[NUM_NODES];
         int[] childrenNodes = removeChildrenNodes(parents, id);
 
         //Must also remove edges to and from children
-
-        // parents[0] stores parents of node with id = 0,
-        // i.e. parents[0][1] = 1 means node with id = 1 is a
-        // parent of node with id 0
+        // TODO: Update edges
     }
 
     private int[] removeChildrenNodes(int[][] array, int col) {
