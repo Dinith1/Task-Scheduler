@@ -44,6 +44,7 @@ public class CostFunctionCalculator {
         //	System.out.println("maxBl = " + maxBL);
         //	System.out.println("maxDRT = " + maxDRT);
 
+        System.out.println("Cost function is " + max);
         return max;
     }
 
