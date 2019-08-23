@@ -28,9 +28,6 @@ import se306.visualisation.backend.GraphController;
  */
 public class Main extends Application {
 
-    @FXML
-    private ImageView graph;
-
     public static void main(String[] args) throws IOException {
         // Example cases:
         // "src/resources/Nodes_7_OutTree.dot"
@@ -50,37 +47,33 @@ public class Main extends Application {
             return;
         }
 
-        // Check is visualisation is desired
         if (parser.wantVisual()) {
             launch(args);
         }
 
-        // InputStreamReader isr;
-        // try {
-        //     isr = new FileReader(parser.getInputFileName());
-        // } catch (FileNotFoundException e) {
-        //     Log.error("Invalid input filename (please check the spelling)");
-        //     return;
-        // }
+         InputStreamReader isr;
+         try {
+             isr = new FileReader(parser.getInputFileName());
+         } catch (FileNotFoundException e) {
+             Log.error("Invalid input filename (please check the spelling)");
+             return;
+         }
 
-        // InputFileReader ifr = new InputFileReader();
+         InputFileReader ifr = new InputFileReader();
 
-        // Log.info("-- Starting scheduling --");
-        // long startTime = System.nanoTime();
+         Log.info("-- Starting scheduling --");
+         long startTime = System.nanoTime();
 
-        // ifr.readInput(isr);
-        // AStarScheduler scheduler = new AStarScheduler();
-        // scheduler.findOptimalSchedule();// Start scheduling
+         ifr.readInput(isr);
+         AStarScheduler scheduler = new AStarScheduler();
+         scheduler.findOptimalSchedule();// Start scheduling
 
-        // long endTime = System.nanoTime();
-        // Log.info("-- Finished scheduling --");
+         long endTime = System.nanoTime();
+         Log.info("-- Finished scheduling --");
 
-        // long executionTime = endTime - startTime;
-        // Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
+         long executionTime = endTime - startTime;
+         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
 
-        // launch(args);
-
-        return;
     }
 
     @Override
