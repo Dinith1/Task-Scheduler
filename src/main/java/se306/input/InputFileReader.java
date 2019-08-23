@@ -148,6 +148,21 @@ public class InputFileReader {
         return line.substring(0, iEnd);
     }
 
+    private void addIdToWeightMap(int id, int weight) {
+        if (mapOfNodeWeights.containsKey(weight)) {
+            // A node with the same weight already exists
+            int[] listOfNodes = mapOfNodeWeights.get(weight);
+            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+            newListOfNodes[newListOfNodes.length - 1] = id;
+            mapOfNodeWeights.put(weight, newListOfNodes);
+        } else {
+            // A node with the same weight does not exist
+            int[] newListOfNodes = {id};
+            mapOfNodeWeights.put(weight, newListOfNodes);
+        }
+    }
+
     /**
      * Checks if the task graph contains a task that is identical in every aspect including:
      * Same task weight, parents, children, incoming edge weights and outgoing edge weights.
@@ -157,7 +172,6 @@ public class InputFileReader {
      */
     public void pruneIdenticalNodes() {
         //Find all nodes with the same weight [/]
-        // Iterate over each entry of map using entrySet
         for (Map.Entry<Integer, int[]> entry : mapOfNodeWeights.entrySet()) {
             int[] sameWeightNodes = entry.getValue();
             // Check if value matches with given value
@@ -170,61 +184,185 @@ public class InputFileReader {
         }
     }
 
-    private void addIdToWeightMap(int id, int weight) {
-        if (mapOfNodeWeights.containsKey(weight)) {
-            // A node with the same weight already exists
-            int[] listOfNodes = mapOfNodeWeights.get(weight);
-            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
-            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
-            newListOfNodes[newListOfNodes.length - 1] = id;
-            mapOfNodeWeights.put(weight, newListOfNodes);
-
-        } else {
-            // A node with the same weight does not exist
-            int[] newListOfNodes = {id};
-            mapOfNodeWeights.put(weight, newListOfNodes);
-        }
-    }
-
     private void checkNodeParents(int[] sameWeightNodes) {
         if (sameWeightNodes.length == 1) {
             return;
         }
-        // Check children
-        int[] sameParentNodes = sameWeightNodes;
-        checkNodeChildren(sameParentNodes);
+
+        // Map from parent node to list of children node ids
+        HashMap<Integer, int[]> mapOfNodeParents = new HashMap<>();
+
+        //Find all same weight nodes with the same parent
+        for (int i : sameWeightNodes) {
+            mapOfNodeParents = addIdToParentMap(i, mapOfNodeParents);
+        }
+        for (Map.Entry<Integer, int[]> entry : mapOfNodeParents.entrySet()) {
+            int[] sameParentNodes = entry.getValue();
+
+            // Check if value matches with given value
+            if (sameParentNodes.length == 1) {
+                continue;
+            } else {
+                // Check if nodes have the same children
+                checkNodeChildren(sameParentNodes);
+            }
+        }
+    }
+
+    private HashMap<Integer, int[]> addIdToParentMap(int id, HashMap<Integer, int[]> nodeParents) {
+        int[] p = parents[id];
+
+        for (int parent : p) {
+            if (nodeParents.containsKey(parent)) {
+                // A node with the same weight already exists
+                int[] listOfNodes = nodeParents.get(parent);
+                int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+                System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+                newListOfNodes[newListOfNodes.length - 1] = id;
+                nodeParents.put(parent, newListOfNodes);
+
+            } else {
+                // A node with the same weight does not exist
+                int[] newListOfNodes = {id};
+                nodeParents.put(parent, newListOfNodes);
+            }
+        }
+        return nodeParents;
     }
 
     private void checkNodeChildren(int[] sameParentNodes) {
         if (sameParentNodes.length == 1) {
             return;
         }
-        // Check incoming edge weights
-        int[] sameChildrenNodes = sameParentNodes;
-        checkNodeIncomingEdges(sameChildrenNodes);
+        // Map from parent node to list of children node ids
+        HashMap<Integer, int[]> mapOfNodeChildren = new HashMap<>();
+
+        //Find all same weight nodes with the same children
+        for (int i : sameParentNodes) {
+            mapOfNodeChildren = addIdToChildrenMap(i, mapOfNodeChildren);
+        }
+        for (Map.Entry<Integer, int[]> entry : mapOfNodeChildren.entrySet()) {
+            int[] sameChildrenNodes = entry.getValue();
+
+            // Check if value matches with given value
+            if (sameChildrenNodes.length == 1) {
+                continue;
+            } else {
+                // Check incoming edge weights
+                checkNodeIncomingEdges(sameChildrenNodes);
+            }
+        }
+    }
+
+    private HashMap<Integer, int[]> addIdToChildrenMap(int id, HashMap<Integer, int[]> nodeChildren) {
+        int[] c = parents[id]; // Need to change this to children
+
+        for (int child : c) {
+            if (nodeChildren.containsKey(child)) {
+                // A node with the same weight already exists
+                int[] listOfNodes = nodeChildren.get(child);
+                int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+                System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+                newListOfNodes[newListOfNodes.length - 1] = id;
+                nodeChildren.put(child, newListOfNodes);
+
+            } else {
+                // A node with the same weight does not exist
+                int[] newListOfNodes = {id};
+                nodeChildren.put(child, newListOfNodes);
+            }
+        }
+        return nodeChildren;
     }
 
     private void checkNodeIncomingEdges(int[] sameChildrenNodes) {
         if (sameChildrenNodes.length == 1) {
             return;
         }
-        int[] sameIncomingNodes = sameChildrenNodes;
-        // Check outgoing edge weights
-        checkNodeOutgoingEdges(sameIncomingNodes);
+        // Map from parent node to list of children node ids
+        HashMap<Integer, int[]> mapOfNodeIncomingEdges = new HashMap<>();
+
+        //Find all same weight nodes with the same children
+        for (int i : sameChildrenNodes) {
+            mapOfNodeIncomingEdges = addIdToIncomingEdgeMap(i, mapOfNodeIncomingEdges);
+        }
+
+        for (Map.Entry<Integer, int[]> entry : mapOfNodeIncomingEdges.entrySet()) {
+            int[] sameIncomingEdgeNodes = entry.getValue();
+
+            // Check if value matches with given value
+            if (sameIncomingEdgeNodes.length == 1) {
+                continue;
+            } else {
+                // Check outgoing edge weights
+                checkNodeOutgoingEdges(sameIncomingEdgeNodes);
+            }
+        }
+    }
+
+    private HashMap<Integer, int[]> addIdToIncomingEdgeMap(int id, HashMap<Integer, int[]> nodeIncomingEdges) {
+        int[] edges = parents[id]; // TODO: Need to change this to incoming edges
+        for (int e : edges) {
+            if (nodeIncomingEdges.containsKey(e)) {
+                // A node with the same weight already exists
+                int[] listOfNodes = nodeIncomingEdges.get(e);
+                int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+                System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+                newListOfNodes[newListOfNodes.length - 1] = id;
+                nodeIncomingEdges.put(e, newListOfNodes);
+            } else {
+                // A node with the same weight does not exist
+                int[] newListOfNodes = {id};
+                nodeIncomingEdges.put(e, newListOfNodes);
+            }
+        }
+        return nodeIncomingEdges;
     }
 
     private void checkNodeOutgoingEdges(int[] sameIncomingNodes) {
         if (sameIncomingNodes.length == 1) {
             return;
         }
-        int[] sameOutgoingNodes = sameIncomingNodes;
+        // Map from parent node to list of children node ids
+        HashMap<Integer, int[]> mapOfNodeOutgoingEdges = new HashMap<>();
 
-        // If this point is reached, the nodes are identical
-        // Chain the identical nodes
-        chainIdenticalNodes(sameOutgoingNodes);
+        //Find all same weight nodes with the same children
+        for (int i : sameIncomingNodes) {
+            mapOfNodeOutgoingEdges = addIdToOutgoingEdgeMap(i, mapOfNodeOutgoingEdges);
+        }
+        for (Map.Entry<Integer, int[]> entry : mapOfNodeOutgoingEdges.entrySet()) {
+            int[] sameOutgoingEdgeNodes = entry.getValue();
+            // Check if value matches with given value
+            if (sameOutgoingEdgeNodes.length == 1) {
+                continue;
+            } else {
+                // If this point is reached, the nodes are identical
+                // Chain the identical nodes
+                chainIdenticalNodes(sameOutgoingEdgeNodes);
+            }
+        }
     }
 
-    private void chainIdenticalNodes(int[] sameOutgoingNodes) {
-        // Set the parents and children of each identical node as each other
+    private HashMap<Integer, int[]> addIdToOutgoingEdgeMap(int id, HashMap<Integer, int[]> nodeIncomingEdges) {
+        int[] edges = parents[id]; // TODO: Need to change this to outgoing edges
+        for (int e : edges) {
+            if (nodeIncomingEdges.containsKey(e)) {
+                // A node with the same weight already exists
+                int[] listOfNodes = nodeIncomingEdges.get(e);
+                int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+                System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+                newListOfNodes[newListOfNodes.length - 1] = id;
+                nodeIncomingEdges.put(e, newListOfNodes);
+            } else {
+                // A node with the same weight does not exist
+                int[] newListOfNodes = {id};
+                nodeIncomingEdges.put(e, newListOfNodes);
+            }
+        }
+        return nodeIncomingEdges;
+    }
+
+    private void chainIdenticalNodes(int[] sameOutgoingEdgeNodes) {
+        // TODO: Set the parents and children of each identical node as each other
     }
 }
