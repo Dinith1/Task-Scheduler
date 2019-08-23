@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.ScatterChart?>
 <?import javafx.scene.control.Button?>
@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
    <children>
       <VBox alignment="TOP_CENTER" style="-fx-background-color: #2E2C2F;">
          <children>
@@ -26,14 +26,14 @@
                   </VBox>
                   <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
                      <children>
-                        <LineChart prefHeight="250.0" prefWidth="600.0">
-                           <xAxis>
-                              <CategoryAxis side="BOTTOM" />
-                           </xAxis>
-                           <yAxis>
-                              <NumberAxis side="LEFT" />
-                           </yAxis>
-                        </LineChart>
+                        <BarChart fx:id="cpuMonitorBar" prefHeight="250.0" prefWidth="600.0">
+                          <xAxis>
+                            <CategoryAxis fx:id="cpu" side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis fx:id="cpuId" side="LEFT" />
+                          </yAxis>
+                        </BarChart>
                         <ScatterChart prefHeight="250.0" prefWidth="600.0">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
