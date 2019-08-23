@@ -1,9 +1,11 @@
 package se306.input;
 
+import se306.algorithm.PartialSchedule;
 import se306.output.OutputFileGenerator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,9 +30,14 @@ public class InputFileReader {
                                                                                            // node -> MIGHT NEED TO
                                                                                            // CHANGE WEIGHT TO DOUBLE
 
+    public static HashMap<Integer, Object> childrenofParent = new HashMap<Integer, Object>();
+
     public static int[][] parents = new int[NUM_NODES][NUM_NODES]; // parents[0] stores parents of node with id = 0,
                                                                    // i.e. parents[0][1] = 1 means node with id = 1 is a
                                                                    // parent of node with id 0
+
+
+    public static int[][] parentsReverse = new int[NUM_NODES][NUM_NODES];
 
     public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
                                                                // the id of the node
@@ -97,6 +104,7 @@ public class InputFileReader {
 
                 // Store parent
                 parents[nodeNamesReverse.get(endNode)][nodeNamesReverse.get(startNode)] = 1;
+                parentsReverse[nodeNamesReverse.get(startNode)][nodeNamesReverse.get(endNode)] = 1;
 
                 outputFileGenerator.readLine(listOfEdges[edgeNum]);
                 edgeNum++;
@@ -105,7 +113,14 @@ public class InputFileReader {
         }
 
         buffRead.close();
+
+        //Loops through all nodes and gets all immediate children of that node
+        for(int i = 0; i < NUM_NODES; i++) {
+            createChildren(i);
+        }
+
     }
+
 
     /**
      * Takes in a line from the file and gets the weight.
@@ -129,5 +144,26 @@ public class InputFileReader {
         line = line.replaceAll("\\s", "");
         int iEnd = line.indexOf("[");
         return line.substring(0, iEnd);
+    }
+
+
+    /**
+     * Takes a node, and generates all the immediate children of that node, putting it into a HashMap
+     * @param node
+     */
+    private void createChildren(int node){
+        int[] childIds = new int[NUM_NODES];
+
+       for(int i =0;i<parentsReverse[node].length;i++){
+           if(parentsReverse[node][i] == 1){
+               childIds[i] = 1;
+           }
+       }
+
+       if (Arrays.stream(childIds).anyMatch(i -> i != -1)) {
+            childrenofParent.put(node,childIds);
+        } else {
+           childrenofParent.put(node, new Integer(-1));
+       }
     }
 }
