@@ -401,7 +401,7 @@ public class InputFileReader {
             parents[childId][nodeId] = 1;
         }
 
-        // TODO: Update edges
+        // TODO: Update edges e.g. remove edge between old children and create edge between new children
     }
 
     private void setParent(int nodeId, int parentId, boolean removeAll) {
@@ -413,7 +413,7 @@ public class InputFileReader {
             parents[nodeId][parentId] = 1;
         }
 
-        // TODO: Update edges
+        // TODO: Update edges e.g. remove edge between old parents and create edge between new parents
         // TODO: Double check id and index passing for all methods
     }
 
