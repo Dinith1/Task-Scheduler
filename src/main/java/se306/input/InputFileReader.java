@@ -255,7 +255,7 @@ public class InputFileReader {
     }
 
     private HashMap<Integer, int[]> addIdToChildrenMap(int id, HashMap<Integer, int[]> nodeChildren) {
-        int[] c = parents[id]; // Need to change this to children
+        int[] c = getColumnFromArray(parents, id);
 
         for (int child : c) {
             if (nodeChildren.containsKey(child)) {
@@ -273,6 +273,20 @@ public class InputFileReader {
             }
         }
         return nodeChildren;
+    }
+
+    private int[] getColumnFromArray(int[][] array, int col) {
+        int[] columnArray = new int[array[0].length];
+        int count = 0;
+        for (int j = 0; j < array[0].length; j++) {
+            for (int i = 0; i < array.length; i++) {
+                if (j == col) {
+                    columnArray[count] = array[i][j];
+                    count++;
+                }
+            }
+        }
+        return columnArray;
     }
 
     private void checkNodeIncomingEdges(int[] sameChildrenNodes) {
@@ -301,7 +315,8 @@ public class InputFileReader {
     }
 
     private HashMap<Integer, int[]> addIdToIncomingEdgeMap(int id, HashMap<Integer, int[]> nodeIncomingEdges) {
-        int[] edges = parents[id]; // TODO: Need to change this to incoming edges
+        int[] edges = getColumnFromArray(listOfEdges, id);
+
         for (int e : edges) {
             if (nodeIncomingEdges.containsKey(e)) {
                 // A node with the same weight already exists
@@ -344,7 +359,8 @@ public class InputFileReader {
     }
 
     private HashMap<Integer, int[]> addIdToOutgoingEdgeMap(int id, HashMap<Integer, int[]> nodeIncomingEdges) {
-        int[] edges = parents[id]; // TODO: Need to change this to outgoing edges
+        int[] edges = listOfEdges[id];
+
         for (int e : edges) {
             if (nodeIncomingEdges.containsKey(e)) {
                 // A node with the same weight already exists
@@ -363,6 +379,64 @@ public class InputFileReader {
     }
 
     private void chainIdenticalNodes(int[] sameOutgoingEdgeNodes) {
-        // TODO: Set the parents and children of each identical node as each other
+        // If reached, this means the nodes are identical
+        // Set the parents and children of each identical node as each other
+
+        //from,to,weight
+
+        int[] intermediateNodes = new int[sameOutgoingEdgeNodes.length - 2];
+
+        //Iterate through all identical nodes and create an intermediate chain of nodes
+        for (int i = 1; i < sameOutgoingEdgeNodes.length - 1; i++) {
+            setIntermediateChain(i);
+        }
+
+        // Set the first identical node to keep its parent and set child to head of the intermediate chain
+//        setChild(sameOutgoingEdgeNodes[0], intermediateNodes);
+//        setParent(sameOutgoingEdgeNodes[sameOutgoingEdgeNodes.length-1], intermediateNodes);
+
+    }
+
+    private void setChild(int nodeId, int childId, boolean removeAll) {
+        if (removeAll) {
+            removeChildrenNodes(parents, nodeId);
+        } else {
+            parents[nodeId][childId] = 1;
+        }
+    }
+
+    private void setParent(int nodeId, int parentId, boolean removeAll) {
+        if (removeAll) {
+            // Set its parent to head of the intermediate chain
+//            parents[id] = new int[NUM_NODES];
+        } else {
+
+        }
+    }
+
+    private void setIntermediateChain(int id) {
+        // Remove all parents and children of the intermediate nodes (nodes that are not the head or tail of the chain)
+        parents[id] = new int[NUM_NODES];
+        int[] childrenNodes = removeChildrenNodes(parents, id);
+
+        //Must also remove edges to and from children
+
+        // parents[0] stores parents of node with id = 0,
+        // i.e. parents[0][1] = 1 means node with id = 1 is a
+        // parent of node with id 0
+    }
+
+    private int[] removeChildrenNodes(int[][] array, int col) {
+        int[] columnArray = new int[array[0].length];
+        int count = 0;
+        for (int j = 0; j < array[0].length; j++) {
+            for (int i = 0; i < array.length; i++) {
+                if (j == col) {
+                    columnArray[count] = 0;
+                    count++;
+                }
+            }
+        }
+        return columnArray;
     }
 }
