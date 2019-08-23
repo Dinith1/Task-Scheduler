@@ -68,7 +68,7 @@ public class PartialSchedule {
     }
 
     public ArrayList<Integer> getFreeNodes() {
-        return this.freeNodes;
+        return this.findSchedulableNodes();
     }
 
     /**

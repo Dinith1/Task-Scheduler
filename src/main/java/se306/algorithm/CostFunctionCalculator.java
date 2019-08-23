@@ -29,20 +29,21 @@ public class CostFunctionCalculator {
 
         // Get the freeNodes for the particular partial schedule
         ArrayList<Integer> free = newPs.getFreeNodes();
+        double maxBL = getBottomLevelRecursive(newestNode);
+        System.out.println("MAXBL = " + maxBL);
 
         double maxDRT = getDRT(newPs, free);
+        System.out.println("MaxDrt = " + maxDRT);
 
-        //Free var drt
 
-        double maxBL = getBottomLevelRecursive(newestNode);
-        //    int maxBL = 0;
         double maxIdleTime = getIdleTime(newPs, numOfProcessors);
-        // int maxIdleTime = 0;
+        System.out.println("idleTime= " + maxIdleTime);
+
         double max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
 
         //	System.out.println("maxBl = " + maxBL);
         //	System.out.println("maxDRT = " + maxDRT);
-        System.out.println("idleTime= " + maxIdleTime);
+
         return max;
     }
 
@@ -62,19 +63,20 @@ public class CostFunctionCalculator {
             int upperBound = 0;
             // Want to get those children
             int[] arrayOfChildren = (int[]) childrenOfParent.get(node);
-
+            int current = 0;
             // Iterate through each child
             for (int i = 0; i < arrayOfChildren.length; i++) {
                 // Check if node has child
                 if (arrayOfChildren[i] == 1) {
 //                    upperBound += getBottomLevelRecursive(i);
-                    int current = getBottomLevelRecursive(i);
+                    current = getBottomLevelRecursive(i);
                     this.bottomLevels[i] = current;
                     if(upperBound < current){
                         upperBound = current;
                     }
                 }
             }
+            this.bottomLevels[node] = current + InputFileReader.nodeWeights.get(node);
             return upperBound + InputFileReader.nodeWeights.get(node);
         } else {
             return InputFileReader.nodeWeights.get(node);
@@ -114,11 +116,11 @@ public class CostFunctionCalculator {
      */
     public double getDRT (PartialSchedule newPs, ArrayList<Integer> free){
             double maxDRT = 0;
-            int dataReady;
+            double dataReady = 0;
             double bottomLevel;
             for (Integer freeNode : free) {
 
-                int minDRT = -1;
+                double maxStartTime = 0;
 
                 // Find the bottom level of the current free node that is being "applied"
                 bottomLevel = this.bottomLevels[freeNode];
@@ -129,14 +131,14 @@ public class CostFunctionCalculator {
                     // Find the earliest start time that the node can be scheduled onto the current processor
                     dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
-                    // Update the minimum T(dr)
-                    if (minDRT > dataReady) {
-                        minDRT = dataReady;
+                    // Update the maximum T(dr)
+                    if (maxStartTime < dataReady) {
+                        maxStartTime = dataReady;
                     }
                 }
 
                 // Calculate the cost function DRT
-                double dataReadyCost = bottomLevel + minDRT;
+                double dataReadyCost = bottomLevel + maxStartTime;
 
                 if (dataReadyCost > maxDRT) {
                     maxDRT = dataReadyCost;
@@ -205,7 +207,7 @@ public class CostFunctionCalculator {
             }
 
             // Calculate the cost function of Idle Time
-            return (totalIdleTime + totalWeight) / (double)numberOfProcessors;
+            return (Math.ceil((totalIdleTime + totalWeight) / (double)numberOfProcessors));
         }
     }
 

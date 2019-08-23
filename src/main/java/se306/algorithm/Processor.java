@@ -114,11 +114,18 @@ public class Processor {
     public double calculateIdleTime(){
         double idleTime = 0;
 
-        for(int i = 0;i<this.scheduledNodes.size() -1;i++){
-            int finishingTime = InputFileReader.nodeWeights.get(this.scheduledNodes.get(i)) + this.startTimes.get(i);
+        for(int i = 1;i<this.scheduledNodes.size();i++){
+//            int finishingTime = InputFileReader.nodeWeights.get(this.scheduledNodes.get(i)) + this.startTimes.get(i);
 
-            if(finishingTime != this.startTimes.get(i+1)){
-                idleTime = idleTime + this.startTimes.get(i+1) - finishingTime;
+
+            int startOfCurrentNode = this.startTimes.get(i);
+            int weightOfCurrentNode = InputFileReader.nodeWeights.get(i);
+            int weightOfLastNode = InputFileReader.nodeWeights.get(i-1);
+            int startOfLastNode = this.startTimes.get(i-1);
+
+
+            if((startOfCurrentNode - weightOfCurrentNode) != (startOfLastNode - weightOfLastNode)){
+                idleTime = idleTime + ((startOfCurrentNode - weightOfCurrentNode) - (startOfLastNode));
             }
         }
         return idleTime;
