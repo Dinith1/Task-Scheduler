@@ -37,21 +37,21 @@
                               <Insets />
                            </VBox.margin>
                         </BarChart>
-                        <AnchorPane fx:id="schedulePane" prefHeight="200.0" prefWidth="200.0" />
+                        <AnchorPane fx:id="schedulePane" prefHeight="303.0" prefWidth="600.0" />
                         <HBox prefHeight="250.0" prefWidth="200.0">
                            <children>
                               <Pane prefHeight="151.0" prefWidth="300.0">
                                  <children>
-                                    <Label alignment="CENTER" layoutX="22.0" layoutY="125.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Total Number of Nodes:" />
-                                    <Label alignment="CENTER" layoutX="22.0" layoutY="192.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Time Elapsed:" />
-                                    <Label fx:id="numberOfNodes" layoutX="236.0" layoutY="136.0" text="0" textFill="WHITE" />
-                                    <Label fx:id="timeElapsed" layoutX="236.0" layoutY="203.0" text="0:0" textFill="WHITE" />
+                                    <Label alignment="CENTER" layoutX="22.0" layoutY="68.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Total Number of Nodes:" />
+                                    <Label alignment="CENTER" layoutX="22.0" layoutY="152.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Time Elapsed:" />
+                                    <Label fx:id="numberOfNodes" layoutX="240.0" layoutY="79.0" text="0" textFill="WHITE" />
+                                    <Label fx:id="timeElapsed" layoutX="238.0" layoutY="163.0" text="0:0" textFill="WHITE" />
                                  </children>
                               </Pane>
                               <Tile fx:id="progressTile" />
                            </children>
                            <VBox.margin>
-                              <Insets top="100.0" />
+                              <Insets top="10.0" />
                            </VBox.margin>
                         </HBox>
                      </children>

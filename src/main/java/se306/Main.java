@@ -2,6 +2,7 @@ package se306;
 
 import java.io.*;
 
+import guru.nidi.graphviz.model.MutableGraph;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
 import se306.visualisation.backend.GraphController;
+import se306.visualisation.backend.GraphParser;
 
 /**
  * Main class to test InputFileReader functionality
@@ -36,9 +38,11 @@ public class Main extends Application {
         // "src/resources/Nodes_11_OutTree.dot"
 
         CommandLineParser parser = CommandLineParser.getInstance();
-
         try {
             parser.parseCommandLineArguments(args);
+            GraphParser graphParser = new GraphParser();
+            graphParser.parseGraph();
+
 
         } catch (InvalidInputException | NumberFormatException e) {
             Log.error(e.getMessage());
@@ -46,7 +50,9 @@ public class Main extends Application {
             return;
         }
 
-        launch(args);
+        if (parser.wantVisual()) {
+            launch(args);
+        }
     }
 
 
@@ -82,6 +88,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         primaryStage.setTitle("Visualisation");
         primaryStage.setResizable(false);
 
@@ -91,14 +98,13 @@ public class Main extends Application {
 
         // Passes required data to controllers
         GraphController ctrl = menuLoader.getController();
-        ctrl.createGraph();
+        ctrl.createGraph(GraphParser.g);
 
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
+//        primaryStage.setMaximized(true);
         CommandLineParser parser = CommandLineParser.getInstance();
-        if (parser.wantVisual()) {
-            primaryStage.show();
-        }
+        primaryStage.show();
     }
 }

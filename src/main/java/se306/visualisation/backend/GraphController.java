@@ -22,7 +22,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import se306.Main;
 import se306.input.CommandLineParser;
@@ -33,13 +32,12 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
+import sun.security.ec.point.ProjectivePoint;
 
 public class GraphController implements Initializable {
 
@@ -67,8 +65,6 @@ public class GraphController implements Initializable {
     @FXML
     private Tile progressTile;
 
-    private int totalNodes = 0, totalEdges = 0;
-
     @FXML
     void handleStart(MouseEvent event) {
         Main.startScheduling();
@@ -76,15 +72,7 @@ public class GraphController implements Initializable {
         startBtn.setDisable(true);
     }
 
-    public void createGraph() throws IOException {
-
-        CommandLineParser parser = CommandLineParser.getInstance();
-        String s = parser.getInputFileName();
-        InputStreamReader isr = new FileReader(parser.getInputFileName());
-        InputStream inputStream  = new FileInputStream(s);
-
-        getNumberOfNodesAndEdges(isr);
-        MutableGraph graph = Parser.read(inputStream);
+    public void createGraph(MutableGraph graph) throws IOException {
 
         File file = new File("temp-graph.png");
         Graphviz.fromGraph(graph).width(1200).render(Format.PNG).toFile(file);
@@ -92,9 +80,8 @@ public class GraphController implements Initializable {
         setNumberOfNodes(Integer.toString(InputFileReader.numNodes));
 
         Image image = new Image(file.toURI().toString());
-        setNumberOfNodes(Integer.toString(totalNodes));
+        setNumberOfNodes(Integer.toString(GraphParser.totalNodes));
         graphImage.setImage(image);
-
     }
 
     public void createSchedule() {
@@ -185,10 +172,6 @@ public class GraphController implements Initializable {
         numberOfNodes.setText(s);
     }
 
-    public void setNodesToSchedule(String newText) {
-        nodesToSchedule.setText(newText);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initCpuMonitor();
@@ -233,37 +216,6 @@ public class GraphController implements Initializable {
         progressTile.setTitle("Schedule progress");
         progressTile.setSkinType(Tile.SkinType.CIRCULAR_PROGRESS);
         progressTile.setValue(new Random().nextDouble() * 120);
-    }
-
-    private void getNumberOfNodesAndEdges(InputStreamReader isr) {
-        BufferedReader buffRead = new BufferedReader(isr);
-
-        try {
-            String line;
-            buffRead.readLine();
-            while ((line = buffRead.readLine()) != null) {
-                String end = line.substring(0, 1);
-
-                // Stop reading once it reaches end of file
-                if (end.equalsIgnoreCase("}")) {
-                    break;
-                }
-                // If the line is not a line that includes a node or an edge
-                Pattern p = Pattern.compile(".*\\[Weight=.*];");
-                Matcher m = p.matcher(line);
-                if (!m.matches()) {
-                    continue;
-                }
-
-                if (line.indexOf("->") == -1) { // Handle nodes
-                    totalNodes++;
-                } else {
-                    totalEdges++;
-                }
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }
