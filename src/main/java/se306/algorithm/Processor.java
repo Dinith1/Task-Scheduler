@@ -149,7 +149,7 @@ public class Processor {
 
 
                 if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {
-                    idleTime = idleTime + ((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
+                    idleTime = idleTime + (double)((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
                 }
             }
         }

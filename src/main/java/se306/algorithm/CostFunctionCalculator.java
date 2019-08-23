@@ -195,6 +195,7 @@ public class CostFunctionCalculator {
 
             // Iterate through each processor to find Idle Times
             for (Processor p : ps.getProcessorList()) {
+//                System.out.println("Idle Time to add: " + p.calculateIdleTime());
                 totalIdleTime += p.calculateIdleTime();
             }
 
@@ -208,7 +209,7 @@ public class CostFunctionCalculator {
             }
 
             // Calculate the cost function of Idle Time
-            return (Math.ceil((totalIdleTime + totalWeight) / (double)numberOfProcessors));
+            return ((totalIdleTime + totalWeight) / (double)numberOfProcessors);
         }
     }
 
