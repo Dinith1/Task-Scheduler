@@ -49,7 +49,7 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
                     // Add the schedule to overall expanded list
-                    newExpandedSchedule.add(newSchedule);
+                newExpandedSchedule.add(newSchedule);
             }
         }
 
@@ -71,8 +71,9 @@ public class PartialSchedule {
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
-
+                System.out.println(node);
                 // If no parents then add to list
+                System.out.println(Arrays.toString(InputFileReader.parents[node]));
                 if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
                     freeNodes.add(node); // AUTOBOXING
                 }
@@ -134,7 +135,6 @@ public class PartialSchedule {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -224,15 +224,13 @@ public class PartialSchedule {
     public int calculateStartTime(int node, int processorNumber) {
         int maxStartTime = 0;
 
-        // Best starting time of current node if no communication costs
+        //Gets parents of the current node
         int[] parentNodes = InputFileReader.parents[node];
-
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
 //            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
-
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
             for (int parent : parentNodes) {
