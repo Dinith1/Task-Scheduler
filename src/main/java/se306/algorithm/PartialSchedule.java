@@ -2,6 +2,7 @@ package se306.algorithm;
 
 import java.util.*;
 
+import javafx.scene.input.InputMethodTextRun;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
@@ -247,9 +248,17 @@ public class PartialSchedule {
         return true;
     }
 
+
+    public int findStartTime(int node, Processor processor) {
+        return processor.getScheduleStartTimes()[node];
+    }
+
+
     /**
      * Method calculates the start time of the current node by finding the latest
      * parent that has been scheduled, as well as the communication costs
+     *
+     * This function finds the BEST start time to schedule the node, not the start times of nodes already scheduled
      * 
      * @param node
      * @param processorNumber
@@ -259,54 +268,70 @@ public class PartialSchedule {
         int maxStartTime = 0;
 
         // Best starting time of current node if no communication costs
+
+        // Find parents of the current node
         int[] parentNodes = InputFileReader.parents[node];
 
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
-//            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
+
+            // Find the latest start time in the processor
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
 
+
+        // For each processor
         for (Processor p : processorList) {
-            for (int parent : parentNodes) {
 
-                // ========================
-                // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
-                // ========================
+            // For each parent
+            for (int parentID = 0; parentID < parentNodes.length; parentID++) {
 
-                int currentStartTime = processorList.get(processorNumber).getCurrentCost();
-//                System.out.println("CURRENT START TIME : " + currentStartTime);
+                int parent = parentNodes[parentID];
+                if (parent != 0) {
 
-                // If current processor contains a parent of "node" then calculate the the start
-                // time needed
-                if (p.getScheduledNodes().contains(parent)) {
-                    // If parent node is not scheduled in same processor
-                    if (p.getProcessorID() != processorNumber) {
+                    // ========================
+                    // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
+                    // ========================
 
-                        // Find end time of the parent node
-                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parent))
-                                + InputFileReader.nodeWeights.get(parent);
 
-                        // Gets communication cost of the parent
-                        int communicationCost = 0; // NEED TO CHECK THIS ====================================
-                        for (int[] edge : InputFileReader.listOfEdges) {
-                            if ((edge[0] == parent) && (edge[1] == node)) {
-                                communicationCost = edge[2];
-                                break;
+
+                    // If current processor contains a parent of "node"
+                    if (p.getScheduledNodes().contains(parentID)) {
+
+                        // Find the latest start time in the processor @TODO + communication cost
+                        int currentStartTime = processorList.get(p.getProcessorID()).getCurrentCost();
+
+
+                        // If the processor ID is not the original processor number
+                        if (p.getProcessorID() != processorNumber) {
+
+                            int startTime = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID));
+                            int weight = InputFileReader.nodeWeights.get(parentID);
+
+                            // Find end time of the parent node
+                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                                    + InputFileReader.nodeWeights.get(parentID);
+                            // Gets communication cost of the parent
+                            int communicationCost = 0; // NEED TO CHECK THIS ====================================
+                            for (int[] edge : InputFileReader.listOfEdges) {
+                                if ((edge[0] == parentID) && (edge[1] == node)) {
+                                    communicationCost = edge[2];
+                                    break;
+                                }
+                            }
+
+                            // If end time of parent is longer, that means we need to schedule when
+                            // parent is finished
+                            // instead of right when processor is free
+                            if ((endTimeOfParent >= currentStartTime) ||
+                                    (endTimeOfParent + communicationCost >= currentStartTime)) {
+                                currentStartTime = endTimeOfParent + communicationCost;
                             }
                         }
-
-                        // If end time of parent is longer than that means we need to schedule when
-                        // parent is finished
-                        // instead of right when processor is free
-                        if ((endTimeOfParent >= currentStartTime)
-                                || (endTimeOfParent + communicationCost >= currentStartTime)) {
-                            currentStartTime = endTimeOfParent + communicationCost;
+                        // Finds the most start time as it is dependent on all parents
+                        if (maxStartTime < currentStartTime) {
+                            maxStartTime = currentStartTime;
                         }
-                    }
-                    // Finds the most start time as it is dependent on all parents
-                    if (maxStartTime < currentStartTime) {
-                        maxStartTime = currentStartTime;
                     }
                 }
             }
