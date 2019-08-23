@@ -23,7 +23,6 @@ import se306.visualisation.backend.GraphController;
 /**
  * Main class to test InputFileReader functionality
  * 
- * @param args
  * @throws IOException
  */
 public class Main extends Application {
@@ -47,33 +46,38 @@ public class Main extends Application {
             return;
         }
 
-        if (parser.wantVisual()) {
-            launch(args);
+        launch(args);
+    }
+
+
+    public static void startScheduling() {
+        CommandLineParser parser = CommandLineParser.getInstance();
+        InputStreamReader isr;
+        try {
+            isr = new FileReader(parser.getInputFileName());
+        } catch (FileNotFoundException e) {
+            Log.error("Invalid input filename (please check the spelling)");
+            return;
         }
 
-         InputStreamReader isr;
-         try {
-             isr = new FileReader(parser.getInputFileName());
-         } catch (FileNotFoundException e) {
-             Log.error("Invalid input filename (please check the spelling)");
-             return;
-         }
+        InputFileReader ifr = new InputFileReader();
 
-         InputFileReader ifr = new InputFileReader();
+        Log.info("-- Starting scheduling --");
+        long startTime = System.nanoTime();
 
-         Log.info("-- Starting scheduling --");
-         long startTime = System.nanoTime();
+        try {
+            ifr.readInput(isr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        AStarScheduler scheduler = new AStarScheduler();
+        scheduler.findOptimalSchedule();// Start scheduling
 
-         ifr.readInput(isr);
-         AStarScheduler scheduler = new AStarScheduler();
-         scheduler.findOptimalSchedule();// Start scheduling
+        long endTime = System.nanoTime();
+        Log.info("-- Finished scheduling --");
 
-         long endTime = System.nanoTime();
-         Log.info("-- Finished scheduling --");
-
-         long executionTime = endTime - startTime;
-         Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
-
+        long executionTime = endTime - startTime;
+        Log.info("Execution Time: " + (executionTime / 1000000) + "ms");
     }
 
     @Override
@@ -93,6 +97,9 @@ public class Main extends Application {
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
-        primaryStage.show();
+        CommandLineParser parser = CommandLineParser.getInstance();
+        if (parser.wantVisual()) {
+            primaryStage.show();
+        }
     }
 }

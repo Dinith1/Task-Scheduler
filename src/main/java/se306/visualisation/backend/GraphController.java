@@ -8,20 +8,19 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import se306.Main;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
 import java.io.*;
-
-import com.sun.management.OperatingSystemMXBean;
-import java.lang.management.ManagementFactory;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -52,7 +51,16 @@ public class GraphController implements Initializable {
     @FXML
     private Pane schedulePane;
 
+    @FXML
+    private Button startBtn;
+
     private int totalNodes = 0, totalEdges = 0;
+
+    @FXML
+    void handleStart(MouseEvent event) {
+        Main.startScheduling();
+        startBtn.setDisable(true);
+    }
 
     public void createGraph() throws IOException {
 
@@ -107,7 +115,7 @@ public class GraphController implements Initializable {
         XYChart.Series series2 = new XYChart.Series();
         series2.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-green")));
         series2.getData().add(new XYChart.Data(1, machine, new SchedulesBar.ExtraData( 1, "status-green")));
-        series2.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 2, "status-red")));
+        series2.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 20, "status-red")));
 
         machine = machines[2];
         XYChart.Series series3 = new XYChart.Series();
@@ -150,7 +158,10 @@ public class GraphController implements Initializable {
         series1.getData().add(new XYChart.Data<>("two", 1));
         cpuMonitorBar.setLegendVisible(false);
         cpuMonitorBar.getData().addAll(series1);
-        createSchedule(); //TODO remote later
+        createSchedule(); //TODO remove later
+        if (!parser.wantVisual()) {
+            Main.startScheduling();
+        }
 
     }
 
