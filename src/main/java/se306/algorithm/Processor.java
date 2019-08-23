@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Processor {
 
-    private List<Integer> scheduledNodes = new ArrayList<Integer>();
-    private List<Integer> startTimes = new ArrayList<Integer>();
+    private List<Integer> scheduledNodes;
+    private List<Integer> startTimes;
     private int id;
 
     public Processor(int pid) {
@@ -106,7 +106,7 @@ public class Processor {
         
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-                // .appendSuper(super.equals(obj))
+//                 .appendSuper(super.equals(obj))
                 .append(scheduledNodes, secondProcessor.scheduledNodes).append(startTimes, secondProcessor.startTimes)
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
     }

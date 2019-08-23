@@ -39,9 +39,8 @@ public class PartialSchedule {
         }
     };
 
-    public List<PartialSchedule> expandNewStates() {
-        List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
-
+    public HashSet<PartialSchedule> expandNewStates() {
+        HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         // Find how many nodes need to be scheduled for the expansion
         ArrayList<Integer> nodes = findSchedulableNodes();
         for (Integer node : nodes) {
@@ -50,14 +49,8 @@ public class PartialSchedule {
                 PartialSchedule newSchedule = new PartialSchedule(this);
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
-
-                if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
-                    continue;
-                }
-                else {
                     // Add the schedule to overall expanded list
-                    newExpandedSchedule.add(newSchedule);
-                }
+                newExpandedSchedule.add(newSchedule);
             }
         }
 
@@ -204,9 +197,13 @@ public class PartialSchedule {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
+        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
+        List<Processor> tempProcessorList2 = new ArrayList<>(secondSchedule.processorList);
+        tempProcessorList1.sort(new ProcessorHashCodeComparator());
+        tempProcessorList2.sort(new ProcessorHashCodeComparator());
         return new EqualsBuilder()
                 // .appendSuper(super.equals(obj))
-                .append(processorList, secondSchedule.processorList).append(costFunction, secondSchedule.costFunction)
+                .append(tempProcessorList1, tempProcessorList2).append(costFunction, secondSchedule.costFunction)
                 .isEquals();
 
         // // Check for process normalisation
@@ -221,11 +218,9 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        return new HashCodeBuilder(805306457, 402653189).append(processorList).append(costFunction).toHashCode();
-    }
-
-    private boolean processNormalisation() {
-        return true;
+        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
+        tempProcessorList1.sort(new ProcessorHashCodeComparator());
+        return new HashCodeBuilder(805306457, 402653189).append(tempProcessorList1).append(costFunction).toHashCode();
     }
 
     /**

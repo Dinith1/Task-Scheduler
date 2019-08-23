@@ -10,6 +10,7 @@ public class AStarScheduler {
 
     public static PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
     public static HashSet<PartialSchedule> closed = new HashSet<>();
+    private static HashSet<PartialSchedule> createdSchedules = new HashSet<>();
 
     /**
      * This function uses the a star algorithm to find the most optimal schedule. It
@@ -22,7 +23,7 @@ public class AStarScheduler {
      */
     private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception {
         // OPEN <-- S init
-        open.add(getPartialScheduleInitial(numberOfProcessors));
+        getPartialScheduleInitial(numberOfProcessors);
         while (!open.isEmpty()) {
             // Retrieves head and removes it from the queue
             PartialSchedule currentSchedule = open.peek();
@@ -33,10 +34,15 @@ public class AStarScheduler {
 
                 // EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
-
                 for (PartialSchedule s : expandedCurrentSchedule) {
+                    if(createdSchedules.contains(s)){
+                        continue;
+                    }
+                    else {
                         s.setCostFunction(s.calculateCostFunction());
                         open.add(s);
+                        createdSchedules.add(s);
+                    }
                 }
                 open.remove(currentSchedule);
                 closed.add(currentSchedule);
@@ -66,11 +72,10 @@ public class AStarScheduler {
      * @return a partialSchedule which has the lowest cost function to start out
      *         with
      */
-    public PartialSchedule getPartialScheduleInitial(int numberOfProcessors) {
+    public void getPartialScheduleInitial(int numberOfProcessors) {
         // Creates a schedule with the correct number of processors
         PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
-        List<PartialSchedule> newScheduleList = schedule.expandNewStates();
-        newScheduleList.sort(new CostFunctionComparator());
-        return newScheduleList.get(0);
+        HashSet<PartialSchedule> newScheduleList = schedule.expandNewStates();
+        open.addAll(newScheduleList);
     }
 }
