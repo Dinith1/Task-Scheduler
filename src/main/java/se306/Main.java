@@ -1,19 +1,19 @@
 package se306;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import se306.algorithm.AStarScheduler;
 import se306.exceptions.InvalidInputException;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 import se306.logging.Log;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
  * Main class to test InputFileReader functionality
  * 
- * @param args
  * @throws IOException
  */
 public class Main {
@@ -52,6 +52,7 @@ public class Main {
         long startTime = System.nanoTime();
 
         ifr.readInput(isr);
+        ifr.pruneIdenticalNodes();
         AStarScheduler scheduler = new AStarScheduler();
         scheduler.findOptimalSchedule();// Start scheduling
 
