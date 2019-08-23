@@ -233,45 +233,50 @@ public class PartialSchedule {
         }
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
-            for (int parent : parentNodes) {
+            for (int parentID = 0; parentID < parentNodes.length; parentID++) {
 
-                // ========================
-                // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
-                // ========================
+                int parent = parentNodes[parentID];
 
-                int currentStartTime = processorList.get(processorNumber).getCurrentCost();
+                if (parent != 0) {
+                    // ========================
+                    // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
+                    // ========================
+
 //                System.out.println("CURRENT START TIME : " + currentStartTime);
 
-                // If current processor contains a parent of "node" then calculate the the start
-                // time needed
-                if (p.getScheduledNodes().contains(parent)) {
-                    // If parent node is not scheduled in same processor
-                    if (p.getProcessorID() != processorNumber) {
+                    // If current processor contains a parent of "node" then calculate the the start
+                    // time needed
+                    if (p.getScheduledNodes().contains(parentID)) {
+                        int currentStartTime = processorList.get(p.getProcessorID()).getCurrentCost();
 
-                        // Find end time of the parent node
-                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parent))
-                                + InputFileReader.nodeWeights.get(parent);
+                        // If parent node is not scheduled in same processor
+                        if (p.getProcessorID() != processorNumber) {
 
-                        // Gets communication cost of the parent
-                        int communicationCost = 0; // NEED TO CHECK THIS ====================================
-                        for (int[] edge : InputFileReader.listOfEdges) {
-                            if ((edge[0] == parent) && (edge[1] == node)) {
-                                communicationCost = edge[2];
-                                break;
+                            // Find end time of the parent node
+                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                                    + InputFileReader.nodeWeights.get(parentID);
+
+                            // Gets communication cost of the parent
+                            int communicationCost = 0; // NEED TO CHECK THIS ====================================
+                            for (int[] edge : InputFileReader.listOfEdges) {
+                                if ((edge[0] == parentID) && (edge[1] == node)) {
+                                    communicationCost = edge[2];
+                                    break;
+                                }
+                            }
+
+                            // If end time of parent is longer than that means we need to schedule when
+                            // parent is finished
+                            // instead of right when processor is free
+                            if ((endTimeOfParent >= currentStartTime)
+                                    || (endTimeOfParent + communicationCost >= currentStartTime)) {
+                                currentStartTime = endTimeOfParent + communicationCost;
                             }
                         }
-
-                        // If end time of parent is longer than that means we need to schedule when
-                        // parent is finished
-                        // instead of right when processor is free
-                        if ((endTimeOfParent >= currentStartTime)
-                                || (endTimeOfParent + communicationCost >= currentStartTime)) {
-                            currentStartTime = endTimeOfParent + communicationCost;
+                        // Finds the most start time as it is dependent on all parents
+                        if (maxStartTime < currentStartTime) {
+                            maxStartTime = currentStartTime;
                         }
-                    }
-                    // Finds the most start time as it is dependent on all parents
-                    if (maxStartTime < currentStartTime) {
-                        maxStartTime = currentStartTime;
                     }
                 }
             }

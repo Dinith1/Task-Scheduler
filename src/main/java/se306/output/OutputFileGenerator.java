@@ -142,7 +142,7 @@ public class OutputFileGenerator {
 			if (this.node != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(InputFileReader.nodeNames.get(this.node));
+				sb.append((this.node));
 				sb.append("\t\t[Weight=");
 				sb.append(InputFileReader.nodeWeights.get(this.node));
 				sb.append(",Start=");
@@ -156,9 +156,9 @@ public class OutputFileGenerator {
 			if (this.edge[0] != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(InputFileReader.nodeNames.get(this.edge[0]));
+				sb.append((this.edge[0]));
 				sb.append(" -> ");
-				sb.append(InputFileReader.nodeNames.get(this.edge[1]));
+				sb.append((this.edge[1]));
 				sb.append("\t[Weight=");
 				sb.append(this.edge[2]);
 				sb.append("];");
