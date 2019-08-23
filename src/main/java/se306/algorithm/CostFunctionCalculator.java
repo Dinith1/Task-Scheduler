@@ -14,7 +14,7 @@ public class CostFunctionCalculator {
 
     private PartialSchedule ps;
 
-    public int getCostFunction(PartialSchedule newPs, Node newestNode, int numOfProcessors, List<Node> free) {
+    public double getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors, ArrayList<Integer> free) {
 
 
         // Find all the free nodes AFTER node n has been scheduled
@@ -25,16 +25,16 @@ public class CostFunctionCalculator {
         // f(drt) =   max( all  data ready times + bottom level)
 
 
-        int maxDRT = 0;
+        double maxDRT = 0;
         maxDRT = getDRT(newPs, newestNode, free);
 
         //Free var drt
 
-        int maxBL = getBottomLevelRecursive(newestNode);
+        double maxBL = getBottomLevelRecursive(newestNode);
         //    int maxBL = 0;
-        int maxIdleTime = getIdleTime(newPs, numOfProcessors);
+        double maxIdleTime = getIdleTime(newPs, numOfProcessors);
         // int maxIdleTime = 0;
-        int max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
+        double max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
 
         //	System.out.println("maxBl = " + maxBL);
         //	System.out.println("maxDRT = " + maxDRT);
