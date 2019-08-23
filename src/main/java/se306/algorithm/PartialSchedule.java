@@ -42,7 +42,7 @@ public class PartialSchedule {
     public HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         // Find how many nodes need to be scheduled for the expansion
-        ArrayList<Integer> nodes = findSchedulableNodes();
+        Set<Integer> nodes = findSchedulableNodes();
         for (Integer node : nodes) {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
@@ -50,7 +50,9 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
                     // Add the schedule to overall expanded list
-                newExpandedSchedule.add(newSchedule);
+                if(!AStarScheduler.createdSchedules.contains(newSchedule)) {
+                    newExpandedSchedule.add(newSchedule);
+                }
             }
         }
 
@@ -65,8 +67,8 @@ public class PartialSchedule {
      * @return freeNodes
      */
 
-    private ArrayList<Integer> findSchedulableNodes() {
-        ArrayList<Integer> freeNodes = new ArrayList<>();
+    private Set<Integer> findSchedulableNodes() {
+        Set<Integer> freeNodes = new HashSet<>();
 
         // Loops through all nodes
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {

@@ -3,14 +3,13 @@ package se306.algorithm;
 import se306.input.CommandLineParser;
 import se306.output.OutputFileGenerator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class AStarScheduler {
 
     public static PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
     public static HashSet<PartialSchedule> closed = new HashSet<>();
-    private static HashSet<PartialSchedule> createdSchedules = new HashSet<>();
+    public static HashSet<PartialSchedule> createdSchedules = new HashSet<>();
 
     /**
      * This function uses the a star algorithm to find the most optimal schedule. It
@@ -35,14 +34,9 @@ public class AStarScheduler {
                 // EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
                 for (PartialSchedule s : expandedCurrentSchedule) {
-                    if(createdSchedules.contains(s)){
-                        continue;
-                    }
-                    else {
                         s.setCostFunction(s.calculateCostFunction());
                         open.add(s);
                         createdSchedules.add(s);
-                    }
                 }
                 open.remove(currentSchedule);
                 closed.add(currentSchedule);
