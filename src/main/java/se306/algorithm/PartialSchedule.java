@@ -9,9 +9,9 @@ public class PartialSchedule {
 
     // User defined available processors placed in a list
     private HashMap<Integer,Processor> processorList = new HashMap();
-    private int costFunction;
+    private double costFunction;
     public int numberOfNodesScheduled;
-    private ArrayList<Integer> freeNodes = new ArrayList<>();
+//    private Set<Integer> freeNodes = new HashSet<>();
 
     PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
@@ -46,7 +46,7 @@ public class PartialSchedule {
         return newExpandedSchedule;
     }
 
-    public ArrayList<Integer> getFreeNodes() {
+    public Set<Integer> getFreeNodes() {
         return this.findSchedulableNodes();
     }
 

@@ -125,15 +125,16 @@ public class Processor {
 
         // If only one node is scheduled, get start time of the node
         if (this.scheduledNodes.size() == 1) {
-            idleTime = this.startTimes.get(0);
+            for(Integer i: scheduledNodes.values())
+            idleTime = this.getStartTimes().get(i);
         } else {
 
             // Go through each node that is in the processor
             for (int i = 1; i < this.scheduledNodes.size(); i++) {
 
-                int startOfCurrentNode = this.startTimes.get(i);
+                int startOfCurrentNode = this.getStartTimes().get(i);
                 int weightOfLastNode = InputFileReader.nodeWeights.get(scheduledNodes.get(i - 1));
-                int startOfLastNode = this.startTimes.get(i - 1);
+                int startOfLastNode = this.getStartTimes().get(i - 1);
 
                 // Calculate any idle times and add it to the total idle time
                 if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {

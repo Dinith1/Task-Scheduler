@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.graphstream.stream.GraphParseException;
+
 
 public class InputFileReader {
     public static int NUM_NODES;; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
@@ -35,7 +35,7 @@ public class InputFileReader {
                                                                                            // node -> MIGHT NEED TO
                                                                                            // CHANGE WEIGHT TO DOUBLE
 
-    private static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
+    public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
 
     public static int[][] parents; // parents[0] stores parents of node with id = 0,
                                    // i.e. parents[0][1] = 1 means node with id = 1 is a

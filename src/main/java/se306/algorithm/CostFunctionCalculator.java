@@ -4,6 +4,7 @@ package se306.algorithm;
 import se306.input.InputFileReader;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import static se306.input.InputFileReader.childrenOfParent;
 
@@ -25,14 +26,16 @@ public class CostFunctionCalculator {
 
 
         // Find all the free nodes AFTER node n has been scheduled
-        ArrayList<Integer> free = newPs.getFreeNodes();
+        Set<Integer> free = newPs.getFreeNodes();
 
         double maxBL = 0;
 
         // For each processor, calculate the bottom level time and output the maximum out of all processors
-        for (Processor processor : newPs.getProcessorList()) {
-            for(int nodeId : processor.getScheduledNodes()) {
-                double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(processor.getScheduledNodes().indexOf(nodeId));
+        for (Integer integer : newPs.getProcessorList().keySet()) {
+            Processor processor = newPs.getProcessorList().get(integer);
+            for(int nodeId : processor.getStartTimes().values()) {
+                double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(processor.
+                        getStartTimes().get(nodeId));
                 if (BL > maxBL) {
                     maxBL = BL;
                 }
@@ -92,7 +95,7 @@ public class CostFunctionCalculator {
      * @param free
      * @return
      */
-    public double getDRT (PartialSchedule newPs,int node, ArrayList<Integer> free){
+    public double getDRT (PartialSchedule newPs,int node, Set<Integer> free){
             double bottomLevel;
             double maxDRT = this.bottomLevels[node] + InputFileReader.nodeWeights.get(node);
             for (Integer freeNode : free) {
@@ -103,7 +106,7 @@ public class CostFunctionCalculator {
                 bottomLevel = this.bottomLevels[freeNode];
 
                 // Trial every processor
-                for (Processor p : newPs.getProcessorList()) {
+                for (Processor p : newPs.getProcessorList().values()) {
                     // Find the earliest start time that the node can be scheduled onto the current processor
                    int dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
@@ -136,7 +139,7 @@ public class CostFunctionCalculator {
             double totalIdleTime = 0;
 
             // Iterate through each processor to find Idle Times
-            for (Processor p : ps.getProcessorList()) {
+            for (Processor p : ps.getProcessorList().values()) {
                 totalIdleTime += p.calculateIdleTime();
             }
 

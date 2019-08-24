@@ -18,12 +18,7 @@ import se306.input.InputFileReader;
 import se306.logging.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import net.bytebuddy.asm.Advice.Exit;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.DefaultGraph;
-import org.graphstream.stream.file.FileSource;
-import org.graphstream.stream.file.FileSourceFactory;
 import se306.visualisation.backend.GraphController;
 import se306.visualisation.backend.GraphParser;
 

@@ -37,7 +37,7 @@ public class AStarScheduler {
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
                 for (PartialSchedule s : expandedCurrentSchedule) {
                     if(!createdSchedules.contains(s)){
-                        s.setCostFunction(s.calculateCostFunction());
+                       // s.setCostFunction(s.calculateCostFunction());
                         open.add(s);
                         createdSchedules.add(s);
                     }

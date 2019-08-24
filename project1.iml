@@ -20,6 +20,35 @@
     <orderEntry type="library" name="Maven: com.github.pcj:google-options:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.7" level="project" />
+    <orderEntry type="library" name="Maven: com.jfoenix:jfoenix:8.0.8" level="project" />
+    <orderEntry type="library" name="Maven: org.graphstream:gs-core:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.graphstream:pherd:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.graphstream:mbox2:1.0" level="project" />
+    <orderEntry type="library" name="Maven: guru.nidi:graphviz-java:0.10.0" level="project" />
+    <orderEntry type="library" name="Maven: org.webjars.npm:viz.js:2.1.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.xmlgraphics:xmlgraphics-commons:2.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-io:commons-io:2.6" level="project" />
+    <orderEntry type="library" name="Maven: guru.nidi.com.kitfox:svgSalamander:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: net.arnx:nashorn-promise:0.1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.eclipsesource.j2v8:j2v8_macosx_x86_64:4.6.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.eclipsesource.j2v8:j2v8_linux_x86_64:4.6.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.eclipsesource.j2v8:j2v8_win32_x86_64:4.6.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.eclipsesource.j2v8:j2v8_win32_x86:4.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-exec:1.3" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.26" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.26" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.26" level="project" />
+    <orderEntry type="library" name="Maven: eu.hansolo:tilesfx:1.6.4" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: eu.hansolo:Medusa:11.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-controls:mac:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-controls:win:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-graphics:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-base:mac:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-base:win:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-graphics:mac:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-graphics:win:11.0.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-base:11.0.2" level="project" />
   </component>
 </module>
