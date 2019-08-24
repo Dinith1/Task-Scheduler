@@ -10,6 +10,7 @@ public class PartialSchedule {
     // User defined available processors placed in a list
     private HashMap<Integer,Processor> processorList = new HashMap();
     private int costFunction;
+    public int numberOfNodesScheduled;
 
     PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
@@ -127,14 +128,18 @@ public class PartialSchedule {
      * 
      * @return scheduledNodes
      */
-    private Set<Integer> getUsedNodes() {
+     private Set<Integer> getUsedNodes() {
         Set<Integer> scheduledNodes = new HashSet<>();
-
+        int count = 0;
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
             // For each processor node map turn it into a hashSet of keys
-            scheduledNodes.addAll(p.getScheduledNodes());
+            for(Integer nodes:p.getScheduledNodes()){
+                scheduledNodes.add(nodes);
+                count++;
+            }
         }
+         numberOfNodesScheduled = count;
         return scheduledNodes;
     }
 
