@@ -12,6 +12,7 @@ public class Processor {
 
     private List<Integer> scheduledNodes;
     private List<Integer> startTimes;
+    private int endTime;
     private int id;
 
     public Processor(int pid) {

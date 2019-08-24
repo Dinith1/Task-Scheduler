@@ -24,20 +24,6 @@ public class PartialSchedule {
         this.costFunction = ps.costFunction;
     }
 
-    /**
-     * Comparator to be used with resorting the processor list back into the process
-     * identifier number order
-     */
-    private Comparator<Processor> sortByIdentifierNumber = new Comparator<Processor>() {
-        public int compare(Processor p1, Processor p2) {
-            if (p1.getProcessorID() < p2.getProcessorID()) {
-                return -1;
-            }
-
-            return 1;
-        }
-    };
-
     public HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         // Find how many nodes need to be scheduled for the expansion
