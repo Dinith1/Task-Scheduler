@@ -2,6 +2,8 @@ package se306.algorithm;
 
 import se306.input.CommandLineParser;
 import se306.output.OutputFileGenerator;
+import se306.visualisation.backend.ScheduleParser;
+
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
@@ -52,6 +54,7 @@ public class AStarScheduler {
         try {
             PartialSchedule optimalSchedule = aStarAlgorithm(CommandLineParser.getInstance().getNumberOfProcessors());
             OutputFileGenerator.getInstance().generateFile(optimalSchedule.getProcessorList());
+            ScheduleParser.getInstance().parseSchedule(optimalSchedule);
         } catch (Exception e) {
             e.getMessage();
             e.printStackTrace();

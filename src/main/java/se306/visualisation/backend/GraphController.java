@@ -3,6 +3,7 @@ package se306.visualisation.backend;
 import com.sun.javafx.runtime.VersionInfo;
 import eu.hansolo.tilesfx.Tile;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
@@ -22,15 +23,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apache.commons.lang3.time.StopWatch;
 import se306.Main;
+import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
@@ -43,7 +44,7 @@ public class GraphController implements Initializable {
     ImageView graphImage;
 
     @FXML
-    Label timeElapsed, numberOfNodes, nodesToSchedule;
+    Label timeElapsed, numberOfNodes;
 
     @FXML
     CategoryAxis cpu;
@@ -60,11 +61,14 @@ public class GraphController implements Initializable {
     @FXML
     private Tile progressTile;
 
+    private boolean timerRunning;
+
     @FXML
     void handleStart(MouseEvent event) {
         Main.startScheduling();
         startTimeElapsed();
         createSchedule();
+
         startBtn.setDisable(true);
     }
 
@@ -102,10 +106,23 @@ public class GraphController implements Initializable {
         chart.setLegendVisible(false);
         chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 30));
 
-        for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
+        Collection<Processor> processorList = ScheduleParser.getInstance().getProcessorList();
+
+        int i = 0;
+        boolean isBlue = true;
+        for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
-            series.getData().add(new XYChart.Data(i, processors[i], new SchedulesBar.ExtraData( 1, "status-red")));
-            chart.getData().add(series);
+            for (int j = 0; j < p.getScheduledNodes().size(); j++) {
+                if (isBlue) {
+                    isBlue = false;
+                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(p.getScheduledNodes().get(j)), "status-blue")));
+                } else {
+                    isBlue = true;
+                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(p.getScheduledNodes().get(j)), "status-red")));
+                }
+            }
+        i++;
+        chart.getData().add(series);
         }
 
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
@@ -118,38 +135,20 @@ public class GraphController implements Initializable {
     }
 
     public void startTimeElapsed() {
-        AnimationTimer timer = new AnimationTimer() {
-            private long timestamp;
-            private long time = 0;
-            private long fraction = 0;
-
-            @Override
-            public void start() {
-                // current time adjusted by remaining time from last run
-                timestamp = System.currentTimeMillis() - fraction;
-                super.start();
-            }
-
-            @Override
-            public void stop() {
-                super.stop();
-                // save leftover time not handled with the last update
-                fraction = System.currentTimeMillis() - timestamp;
-            }
-
-            @Override
-            public void handle(long now) {
-                long newTime = System.currentTimeMillis();
-                if (timestamp <= newTime) {
-                    long deltaT = (newTime - timestamp) ;
-                    time += deltaT;
-                    timestamp += deltaT;
-                    timeElapsed.setText(Long.toString(time / 1000) + ":" + Long.toString(time % 1000));
+        Timer timer = new Timer();
+        timerRunning = true;
+        long startTime = System.nanoTime()/1000000;
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                if(timerRunning)
+                {
+                    long currentTime = System.nanoTime()/1000000 - startTime;
+                    Platform.runLater(() -> timeElapsed.setText(currentTime/1000 + ":" + currentTime%1000));
                 }
+                else
+                    timer.cancel();
             }
-        };
-
-        timer.start();
+        }, 0,1);
     }
 
     public void setNumberOfNodes(String s) {
