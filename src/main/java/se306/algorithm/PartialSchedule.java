@@ -239,7 +239,7 @@ public class PartialSchedule {
                         if (p.getProcessorID() != processorNumber) {
 
                             // Find end time of the parent node
-                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                            int endTimeOfParent = p.getStartTimes().get(parentID)
                                     + InputFileReader.nodeWeights.get(parentID);
 
                             // Gets communication cost of the parent
