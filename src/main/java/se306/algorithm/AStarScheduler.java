@@ -7,9 +7,8 @@ import java.util.PriorityQueue;
 
 public class AStarScheduler {
 
-    public static PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
-    public static HashSet<PartialSchedule> closed = new HashSet<>();
-    public static HashSet<PartialSchedule> createdSchedules = new HashSet<>();
+    private PriorityQueue<PartialSchedule> open = new PriorityQueue<>(new CostFunctionComparator());
+    private HashSet<PartialSchedule> createdSchedules = new HashSet<>();
 
     /**
      * This function uses the a star algorithm to find the most optimal schedule. It
@@ -34,12 +33,13 @@ public class AStarScheduler {
                 // EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
                 for (PartialSchedule s : expandedCurrentSchedule) {
+                    if(!createdSchedules.contains(s)){
                         s.setCostFunction(s.calculateCostFunction());
                         open.add(s);
                         createdSchedules.add(s);
+                    }
                 }
                 open.remove(currentSchedule);
-                closed.add(currentSchedule);
             }
         }
         throw new Exception();

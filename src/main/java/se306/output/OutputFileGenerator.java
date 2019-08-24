@@ -6,7 +6,9 @@ import se306.input.InputFileReader;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class OutputFileGenerator {
 
@@ -28,7 +30,7 @@ public class OutputFileGenerator {
 	 * assigns processors to the nodes to be printed
 	 *
 	 */
-	public void generateFile(List<Processor> processorList) {
+	public void generateFile(HashMap<Integer,Processor> processorList) {
 		addProcessorsToLines(processorList);
 		printLinesToFile();
 		closeWriter();
@@ -41,8 +43,9 @@ public class OutputFileGenerator {
 	 *
 	 * @param processorList
 	 */
-	private void addProcessorsToLines(List<Processor> processorList) {
-		for (Processor processor : processorList) {
+	private void addProcessorsToLines(HashMap<Integer,Processor> processorList) {
+		for (Integer i : processorList.keySet()) {
+			Processor processor = processorList.get(i);
 			for (int n : processor.getScheduledNodes()) { // AUTOBOXING ================================================
 				for (Line line : this.lineInformation) {
 					if (n == line.node) {
@@ -139,7 +142,7 @@ public class OutputFileGenerator {
 			if (this.node != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(InputFileReader.nodeNames.get(this.node));
+				sb.append((this.node));
 				sb.append("\t\t[Weight=");
 				sb.append(InputFileReader.nodeWeights.get(this.node));
 				sb.append(",Start=");
@@ -153,9 +156,9 @@ public class OutputFileGenerator {
 			if (this.edge[0] != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(InputFileReader.nodeNames.get(this.edge[0]));
+				sb.append((this.edge[0]));
 				sb.append(" -> ");
-				sb.append(InputFileReader.nodeNames.get(this.edge[1]));
+				sb.append((this.edge[1]));
 				sb.append("\t[Weight=");
 				sb.append(this.edge[2]);
 				sb.append("];");

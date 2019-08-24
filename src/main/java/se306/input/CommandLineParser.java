@@ -14,6 +14,7 @@ public class CommandLineParser {
 	private String inputFileName;
 	private String outputFileName;
 	private int numProcessors;
+	private boolean visualise;
 	private OptionsParser optParser;
 
 	/**
@@ -97,6 +98,8 @@ public class CommandLineParser {
 		} else {
 			this.outputFileName = options.outputFile;
 		}
+
+		this.visualise = options.visualise;
 	}
 
 	/**
@@ -124,6 +127,14 @@ public class CommandLineParser {
 	 */
 	public String getOutputFileName() {
 		return outputFileName;
+	}
+
+	/**
+	 * Finds whether the user specified to visualise the algorithm or not.
+	 * @return true if visualisation was specified by the user, false otherwise.
+	 */
+	public boolean wantVisual() {
+		return visualise;
 	}
 
 	/**

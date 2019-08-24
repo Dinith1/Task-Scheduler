@@ -2,15 +2,13 @@ package se306.algorithm;
 
 import java.util.*;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
-import se306.algorithm.Processor;
 
 public class PartialSchedule {
 
     // User defined available processors placed in a list
-    private ArrayList<Processor> processorList = new ArrayList<>();
+    private HashMap<Integer,Processor> processorList = new HashMap();
     private int costFunction;
 
     public PartialSchedule(int processorNumber) {
@@ -18,8 +16,9 @@ public class PartialSchedule {
     }
 
     public PartialSchedule(PartialSchedule ps) {
-        for (Processor p : ps.getProcessorList()) {
-            this.processorList.add(new Processor(p));
+        for (Integer i : ps.getProcessorList().keySet()) {
+            Processor p = ps.getProcessorList().get(i);
+            this.processorList.put(p.getProcessorID(),new Processor(p));
         }
 
         this.costFunction = ps.costFunction;
@@ -50,9 +49,7 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
                     // Add the schedule to overall expanded list
-                if(!AStarScheduler.createdSchedules.contains(newSchedule)) {
-                    newExpandedSchedule.add(newSchedule);
-                }
+                newExpandedSchedule.add(newSchedule);
             }
         }
 
@@ -74,7 +71,6 @@ public class PartialSchedule {
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
-
                 // If no parents then add to list
                 if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
                     freeNodes.add(node); // AUTOBOXING
@@ -121,7 +117,7 @@ public class PartialSchedule {
      */
     private void createProcessors(int numProcessors) {
         for (int i = 0; i < numProcessors; i++) {
-            processorList.add(new Processor(i));
+            processorList.put(i,new Processor(i));
         }
     }
 
@@ -137,7 +133,6 @@ public class PartialSchedule {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -149,7 +144,8 @@ public class PartialSchedule {
     public Set<Integer> getUsedNodes() {
         Set<Integer> scheduledNodes = new HashSet<>();
 
-        for (Processor p : processorList) {
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
             // For each processor node map turn it into a hashSet of keys
             scheduledNodes.addAll(p.getScheduledNodes());
         }
@@ -160,16 +156,15 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-    public ArrayList<Processor> getProcessorList() {
-        Collections.sort(processorList, sortByIdentifierNumber);
+    public HashMap<Integer,Processor> getProcessorList() {
         return processorList;
     }
 
     public int getFinishTime() {
         int finishTime = 0;
-        for (Processor p : processorList) {
-            if (p.getCurrentCost() > finishTime) {
-                finishTime = p.getCurrentCost();
+        for (Integer i : processorList.keySet()) {
+            if (processorList.get(i).getCurrentCost() > finishTime) {
+                finishTime = processorList.get(i).getCurrentCost();
             }
         }
         return finishTime;
@@ -199,19 +194,11 @@ public class PartialSchedule {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
-        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
-        List<Processor> tempProcessorList2 = new ArrayList<>(secondSchedule.processorList);
-        tempProcessorList1.sort(new ProcessorHashCodeComparator());
-        tempProcessorList2.sort(new ProcessorHashCodeComparator());
-        return new EqualsBuilder()
-                // .appendSuper(super.equals(obj))
-                .append(tempProcessorList1, tempProcessorList2).append(costFunction, secondSchedule.costFunction)
-                .isEquals();
-
+        return(processorList.hashCode() == (secondSchedule.processorList.hashCode()));
         // // Check for process normalisation
         // if (!processNormalisation(secondSchedule.getProcessorList())){
         // return false;
-        // }
+        // }2
     }
 
     /**
@@ -220,9 +207,8 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        List<Processor> tempProcessorList1 = new ArrayList<>(processorList);
-        tempProcessorList1.sort(new ProcessorHashCodeComparator());
-        return new HashCodeBuilder(805306457, 402653189).append(tempProcessorList1).append(costFunction).toHashCode();
+
+        return new HashCodeBuilder().append(processorList).toHashCode();
     }
 
     /**
@@ -236,55 +222,61 @@ public class PartialSchedule {
     public int calculateStartTime(int node, int processorNumber) {
         int maxStartTime = 0;
 
-        // Best starting time of current node if no communication costs
+        //Gets parents of the current node
         int[] parentNodes = InputFileReader.parents[node];
-
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
 //            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
+            for (int parentID = 0; parentID < parentNodes.length; parentID++) {
 
-        for (Processor p : processorList) {
-            for (int parent : parentNodes) {
+                int parent = parentNodes[parentID];
 
-                // ========================
-                // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
-                // ========================
+                if (parent != 0) {
+                    // ========================
+                    // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
+                    // ========================
 
-                int currentStartTime = processorList.get(processorNumber).getCurrentCost();
 //                System.out.println("CURRENT START TIME : " + currentStartTime);
 
-                // If current processor contains a parent of "node" then calculate the the start
-                // time needed
-                if (p.getScheduledNodes().contains(parent)) {
-                    // If parent node is not scheduled in same processor
-                    if (p.getProcessorID() != processorNumber) {
+                    //best start time for the node being inserted to the specific processor
+                    int currentStartTime = processorList.get(processorNumber).getCurrentCost();
 
-                        // Find end time of the parent node
-                        int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parent))
-                                + InputFileReader.nodeWeights.get(parent);
+                    // If current processor contains a parent of "node" then calculate the the start
+                    // time needed
+                    if (p.getScheduledNodes().contains(parentID)) {
 
-                        // Gets communication cost of the parent
-                        int communicationCost = 0; // NEED TO CHECK THIS ====================================
-                        for (int[] edge : InputFileReader.listOfEdges) {
-                            if ((edge[0] == parent) && (edge[1] == node)) {
-                                communicationCost = edge[2];
-                                break;
+                        // If parent node is not scheduled in same processor
+                        if (p.getProcessorID() != processorNumber) {
+
+                            // Find end time of the parent node
+                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                                    + InputFileReader.nodeWeights.get(parentID);
+
+                            // Gets communication cost of the parent
+                            int communicationCost = 0; // NEED TO CHECK THIS ====================================
+                            for (int[] edge : InputFileReader.listOfEdges) {
+                                if ((edge[0] == parentID) && (edge[1] == node)) {
+                                    communicationCost = edge[2];
+                                    break;
+                                }
+                            }
+
+                            // If end time of parent is longer than that means we need to schedule when
+                            // parent is finished
+                            // instead of right when processor is free
+                            if ((endTimeOfParent >= currentStartTime)
+                                    || (endTimeOfParent + communicationCost >= currentStartTime)) {
+                                currentStartTime = endTimeOfParent + communicationCost;
                             }
                         }
-
-                        // If end time of parent is longer than that means we need to schedule when
-                        // parent is finished
-                        // instead of right when processor is free
-                        if ((endTimeOfParent >= currentStartTime)
-                                || (endTimeOfParent + communicationCost >= currentStartTime)) {
-                            currentStartTime = endTimeOfParent + communicationCost;
+                        // Finds the most start time as it is dependent on all parents
+                        if (maxStartTime < currentStartTime) {
+                            maxStartTime = currentStartTime;
                         }
-                    }
-                    // Finds the most start time as it is dependent on all parents
-                    if (maxStartTime < currentStartTime) {
-                        maxStartTime = currentStartTime;
                     }
                 }
             }
