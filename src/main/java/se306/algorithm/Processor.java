@@ -11,12 +11,14 @@ import java.sql.SQLOutput;
 public class Processor {
 
     private HashMap<Integer,Integer> scheduledNodes;
+    private HashMap<Integer,Integer> orderOfNodes;
     private int processorEndTime;
     private int id;
 
     public Processor(int pid) {
         this.id = pid;
         this.scheduledNodes = new HashMap<>();
+        this.orderOfNodes = new HashMap<>();
         this.processorEndTime = 0;
     }
 
@@ -25,6 +27,7 @@ public class Processor {
      */
     public Processor(Processor processor) {
         this.scheduledNodes = new HashMap<>(processor.scheduledNodes);
+        this.orderOfNodes = new HashMap<>(processor.orderOfNodes);
         this.id = processor.id;
         this.processorEndTime = processor.processorEndTime;
     }
@@ -60,8 +63,10 @@ public class Processor {
     public void addNode(int node, PartialSchedule schedule, int processorNumber) {
         // Calculates time using the schedule the node needs to be added to and adds it
         // into the appropriate processor
+        int order = scheduledNodes.size();
         scheduledNodes.put(node,schedule.calculateStartTime(node, processorNumber));
         processorEndTime = scheduledNodes.get(node) + InputFileReader.nodeWeights.get(node);
+        orderOfNodes.put(order,node);
 
     }
 
@@ -120,21 +125,22 @@ public class Processor {
      * @return
      */
     public double calculateIdleTime(){
-
         double idleTime = 0;
 
         // If only one node is scheduled, get start time of the node
         if (this.scheduledNodes.size() == 1) {
-            for(Integer i: scheduledNodes.values())
-            idleTime = this.getStartTimes().get(i);
+            idleTime = this.scheduledNodes.get(orderOfNodes.get(0));
+
         } else {
 
             // Go through each node that is in the processor
-            for (int i = 1; i < this.scheduledNodes.size(); i++) {
-
-                int startOfCurrentNode = this.getStartTimes().get(i);
-                int weightOfLastNode = InputFileReader.nodeWeights.get(scheduledNodes.get(i - 1));
-                int startOfLastNode = this.getStartTimes().get(i - 1);
+            for (Integer i : orderOfNodes.keySet()) {
+                if(i == 0){
+                    continue;
+                }
+                int startOfCurrentNode = this.getStartTimes().get(orderOfNodes.get(i));
+                int weightOfLastNode = InputFileReader.nodeWeights.get(orderOfNodes.get(i-1));
+                int startOfLastNode = this.getStartTimes().get(orderOfNodes.get(i-1));
 
                 // Calculate any idle times and add it to the total idle time
                 if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {

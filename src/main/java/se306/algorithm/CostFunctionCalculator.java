@@ -31,11 +31,9 @@ public class CostFunctionCalculator {
         double maxBL = 0;
 
         // For each processor, calculate the bottom level time and output the maximum out of all processors
-        for (Integer integer : newPs.getProcessorList().keySet()) {
-            Processor processor = newPs.getProcessorList().get(integer);
-            for(int nodeId : processor.getStartTimes().values()) {
-                double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(processor.
-                        getStartTimes().get(nodeId));
+        for (Processor processor : newPs.getProcessorList().values()) {
+            for(Integer nodeId : processor.getStartTimes().keySet()) {
+                double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(nodeId);
                 if (BL > maxBL) {
                     maxBL = BL;
                 }
