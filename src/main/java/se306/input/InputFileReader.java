@@ -36,19 +36,12 @@ public class InputFileReader {
     // {{from, to, weight}, {f, t, w}, ...} Each from/to is the id of the node
     public static int[][] listOfEdges;
 
-    // public static int[][] parents; // parents[0] stores parents of node with id =
-    // 0,
-    // i.e. parents[0][1] = 1 means node with id = 1 is a
-    // parent of node with id 0
-
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
     public InputFileReader() {
         NUM_NODES = GraphParser.totalNodes;
         NUM_EDGES = GraphParser.totalEdges;
         nodeIds = new int[NUM_NODES];
-        // parents = new int[NUM_NODES][NUM_NODES];
-        // parentsReverse = new int[NUM_NODES][NUM_NODES];
         listOfEdges = new int[NUM_EDGES][3];
     }
 
@@ -60,18 +53,14 @@ public class InputFileReader {
      * @throws IOException
      */
     public void readInput(InputStreamReader isr) throws IOException {
-
-        // int id = 0; // For node ids
-        int edgeNum = 0; // for adding to listOfEdges
+        int nodeCount = 0; // for adding to nodeIds
+        int edgeCount = 0; // for adding to listOfEdges
 
         BufferedReader buffRead = new BufferedReader(isr);
 
         // Skip first line of file
         String line = buffRead.readLine();
-
         outputFileGenerator.readLine(line);
-
-        int nodeCount = 0;
 
         while ((line = buffRead.readLine()) != null) {
             String end = line.substring(0, 1);
@@ -114,9 +103,9 @@ public class InputFileReader {
                 int childNodeInt = Integer.parseInt(childNode);
                 int weight = findWeight(line);
 
-                listOfEdges[edgeNum][0] = Integer.parseInt(parentNode);
-                listOfEdges[edgeNum][1] = Integer.parseInt(childNode);
-                listOfEdges[edgeNum][2] = weight;
+                listOfEdges[edgeCount][0] = Integer.parseInt(parentNode);
+                listOfEdges[edgeCount][1] = Integer.parseInt(childNode);
+                listOfEdges[edgeCount][2] = weight;
 
                 // Add parent to hash map where key is child node ID, value is int[] of
                 // parents
@@ -126,8 +115,8 @@ public class InputFileReader {
                 // children
                 addChild(parentNodeInt, childNodeInt);
 
-                outputFileGenerator.readLine(listOfEdges[edgeNum]);
-                edgeNum++;
+                outputFileGenerator.readLine(listOfEdges[edgeCount]);
+                edgeCount++;
             }
         }
 
@@ -201,13 +190,14 @@ public class InputFileReader {
             return;
         }
 
-        // Map from parent node to list of children node ids
+        // Map from parent node to list of node ids
         HashMap<Integer, int[]> mapOfNodeParents = new HashMap<>();
 
         // Find all same weight nodes with the same parent
-        for (int i : sameWeightNodes) {
-            mapOfNodeParents = addIdToParentMap(i, mapOfNodeParents);
+        for (int node : sameWeightNodes) {
+            addIdToParentMap(node, mapOfNodeParents);
         }
+
         for (Map.Entry<Integer, int[]> entry : mapOfNodeParents.entrySet()) {
             int[] sameParentNodes = entry.getValue();
 
@@ -221,32 +211,38 @@ public class InputFileReader {
         }
     }
 
-    private HashMap<Integer, int[]> addIdToParentMap(int id, HashMap<Integer, int[]> nodeParents) {
-        int[] p = nodeParents.get(id);
+    private void addIdToParentMap(int node, HashMap<Integer, int[]> parents) {
+        // If node has no parents
+        if (!nodeParents.containsKey(node)) {
+            return;
+        }
+
+        int[] nParents = nodeParents.get(node);
+
+        int[] p = parents.get(node);
 
         for (int parent : p) {
-            if (nodeParents.containsKey(parent)) {
+            if (parents.containsKey(parent)) {
                 // A node with the same weight already exists
                 int[] listOfNodes = nodeParents.get(parent);
                 int[] newListOfNodes = new int[(listOfNodes.length + 1)];
                 System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
-                newListOfNodes[newListOfNodes.length - 1] = id;
-                nodeParents.put(parent, newListOfNodes);
+                newListOfNodes[newListOfNodes.length - 1] = node;
+                parents.put(parent, newListOfNodes);
 
             } else {
                 // A node with the same weight does not exist
-                int[] newListOfNodes = { id };
-                nodeParents.put(parent, newListOfNodes);
+                int[] newListOfNodes = { node };
+                parents.put(parent, newListOfNodes);
             }
         }
-        return nodeParents;
     }
 
     private void checkNodeChildren(int[] sameParentNodes) {
         if (sameParentNodes.length == 1) {
             return;
         }
-        // Map from parent node to list of children node ids
+        // Map from child node to list of node ids
         HashMap<Integer, int[]> mapOfNodeChildren = new HashMap<>();
 
         // Find all same weight nodes with the same children
@@ -411,17 +407,17 @@ public class InputFileReader {
                 // Delete all parents of tail
                 nodeParents.remove(identicalNodes[0]);
                 // Set parent of tail to be second to last element of array
-                addParent(identicalNodes[length-2], identicalNodes[length-1]);
+                addParent(identicalNodes[length - 2], identicalNodes[length - 1]);
 
             } else {
                 // Delete all parents
                 nodeParents.remove(identicalNodes[i]);
                 // Set parent to identical[i-1] (chain to previous identical node)
-                addParent(identicalNodes[i], identicalNodes[i-1]);
+                addParent(identicalNodes[i], identicalNodes[i - 1]);
                 // Delete all children
                 nodeChildren.remove(identicalNodes[i]);
                 // Set child to identical[i+1] (chain to next identical node)
-                addChild(identicalNodes[i], identicalNodes[i+1]);
+                addChild(identicalNodes[i], identicalNodes[i + 1]);
             }
         }
     }
