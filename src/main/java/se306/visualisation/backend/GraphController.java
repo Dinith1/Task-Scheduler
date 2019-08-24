@@ -145,13 +145,13 @@ public class GraphController implements Initializable {
         boolean isBlue = true;
         for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
-            for (int j = 0; j < p.getScheduledNodes().size(); j++) {
+            for (Integer j : p.getScheduledNodes()) {
                 if (isBlue) {
                     isBlue = false;
-                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(p.getScheduledNodes().get(j)), "status-blue")));
+                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-blue")));
                 } else {
                     isBlue = true;
-                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(p.getScheduledNodes().get(j)), "status-red")));
+                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-red")));
                 }
             }
         i++;

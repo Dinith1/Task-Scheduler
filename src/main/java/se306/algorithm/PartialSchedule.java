@@ -147,7 +147,7 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-     HashMap<Integer,Processor> getProcessorList() {
+     public HashMap<Integer,Processor> getProcessorList() {
         return processorList;
     }
 

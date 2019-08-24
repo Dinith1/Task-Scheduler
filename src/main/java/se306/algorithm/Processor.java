@@ -66,7 +66,7 @@ public class Processor {
     }
 
     /**
-     * Returns list of nodes that have been scheduled
+     * Returns set of nodes that have been scheduled
      * 
      * @return
      */
