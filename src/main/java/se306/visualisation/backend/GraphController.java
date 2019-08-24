@@ -56,7 +56,7 @@ public class GraphController implements Initializable {
     private Button startBtn;
 
     @FXML
-    private Tile progressTile;
+    private Tile progressTile, memoryUsage;
 
     Timeline countProgress = new Timeline();
     private static final double STARTTIME = 0;
@@ -192,7 +192,10 @@ public class GraphController implements Initializable {
     private void populateTile() {
         progressTile.setTitle("Schedule progress");
         progressTile.setSkinType(Tile.SkinType.CIRCULAR_PROGRESS);
-        progressTile.setValue(new Random().nextDouble() * 120);
+        progressTile.setValue(new Random().nextDouble() * 100);
+
+        memoryUsage.setSkinType(Tile.SkinType.SPARK_LINE);
+        memoryUsage.setValue(new Random().nextDouble() * 100);
     }
 
 }
