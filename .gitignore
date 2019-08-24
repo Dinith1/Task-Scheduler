@@ -12,3 +12,4 @@ output.dot
 Nodes_*
 *.dot
 !src/main/resources/*dot
+src/main/resources/*-output.dot

@@ -2,7 +2,6 @@ package se306.input;
 
 import se306.output.OutputFileGenerator;
 import se306.visualisation.backend.GraphParser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.graphstream.stream.GraphParseException;
 
 public class InputFileReader {
     public static int NUM_NODES;
@@ -431,18 +428,16 @@ public class InputFileReader {
      */
     private void addParent(int child, int parent) {
         if (nodeParents.containsKey(child)) {
-            // Node already has an existing parent
-            int[] listOfNodes = nodeParents.get(child);
-            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
-            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
-            newListOfNodes[newListOfNodes.length - 1] = parent;
-            nodeParents.put(child, newListOfNodes);
+            // Node already has an existing parent, so add to existing parent array
+            int[] parentList = nodeParents.get(child);
+            int[] newParentList = Arrays.copyOf(parentList, parentList.length + 1);
+            newParentList[newParentList.length - 1] = parent;
+            nodeParents.put(child, newParentList);
             return;
         }
 
-        // Node does not have a parent yet
-        int[] newListOfNodes = { parent };
-        nodeParents.put(child, newListOfNodes);
+        // Node does not have a parent yet, so add first parent
+        nodeParents.put(child, new int[] { parent });
     }
 
     /**
@@ -454,17 +449,15 @@ public class InputFileReader {
      */
     private void addChild(int parent, int child) {
         if (nodeChildren.containsKey(parent)) {
-            // Node already has an existing child
-            int[] listOfNodes = nodeChildren.get(parent);
-            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
-            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
-            newListOfNodes[newListOfNodes.length - 1] = child;
-            nodeChildren.put(parent, newListOfNodes);
+            // Node already has an existing child, so add to existing child array
+            int[] childList = nodeChildren.get(parent);
+            int[] newChildList = Arrays.copyOf(childList, childList.length + 1);
+            newChildList[newChildList.length - 1] = child;
+            nodeChildren.put(parent, newChildList);
             return;
         }
 
-        // Node does not have a child yet
-        int[] newListOfNodes = { child };
-        nodeParents.put(parent, newListOfNodes);
+        // Node does not have a child yet, so add first child
+        nodeChildren.put(parent, new int[] { child });
     }
 }
