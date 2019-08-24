@@ -22,6 +22,7 @@ public class AStarScheduler {
      */
     private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception {
         // OPEN <-- S init
+
         open.add(getPartialScheduleInitial(numberOfProcessors));
         while (!open.isEmpty()) {
             // Retrieves head and removes it from the queue
@@ -70,6 +71,7 @@ public class AStarScheduler {
     public PartialSchedule getPartialScheduleInitial(int numberOfProcessors) {
         // Creates a schedule with the correct number of processors
         PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
+     //   schedule.calculateInitialCostFunction(schedule, numberOfProcessors);
         List<PartialSchedule> newScheduleList = schedule.expandNewStates();
         newScheduleList.sort(new CostFunctionComparator());
         return newScheduleList.get(0);

@@ -53,7 +53,18 @@ public class PartialSchedule {
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
 
-                this.assignCostFunction((this.calculateCostFunction(newSchedule, node, processorList.size())), newSchedule);
+//                boolean init = true;
+//                for(Processor p : newSchedule.getProcessorList()) {
+//                    if (p.getScheduledNodes().size() != 0) {
+//                        init = false;
+//                    }
+//                }
+
+                //if (init == false) {
+                  calculateCostFunction(newSchedule, node, processorList.size());
+               // } else {
+                //    this.assignCostFunction((this.calculateInitialCostFunction(newSchedule,processorList.size())),newSchedule);
+              //  }
                 if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
                     continue;
                 }
@@ -129,14 +140,17 @@ public class PartialSchedule {
         //
     }
 
-    private void assignCostFunction(double costFunction, PartialSchedule partialSchedule) {
-        partialSchedule.setCostFunction(costFunction);
-    }
 
-    private double calculateCostFunction(PartialSchedule ps, int nodeToAdd, int numOfProcessors) {
+
+    private void calculateCostFunction(PartialSchedule ps, int nodeToAdd, int numOfProcessors) {
         CostFunctionCalculator calculator = new CostFunctionCalculator();
 
-        return calculator.getCostFunction(ps, nodeToAdd, numOfProcessors);
+       calculator.getCostFunction(ps, nodeToAdd, numOfProcessors);
+    }
+
+    public void calculateInitialCostFunction(PartialSchedule ps, int numOfProcessors){
+        CostFunctionCalculator calculator = new CostFunctionCalculator();
+         calculator.getCostFunctionInitial(ps,numOfProcessors);
     }
 
     /**

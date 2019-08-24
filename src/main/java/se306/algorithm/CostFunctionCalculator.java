@@ -14,7 +14,7 @@ public class CostFunctionCalculator {
 
     private PartialSchedule ps;
 
-    public double getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors) {
+    public void getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors) {
 
 
         // Find all the free nodes AFTER node n has been scheduled
@@ -42,7 +42,7 @@ public class CostFunctionCalculator {
         }
     //   System.out.println("MAXBL = " + maxBL);
 
-        double maxDRT = getDRT(newPs, free);
+        double maxDRT = getDRT(newPs,newestNode, free);
      //   System.out.println("MaxDrt = " + maxDRT);
 
 
@@ -55,7 +55,53 @@ public class CostFunctionCalculator {
         //	System.out.println("maxDRT = " + maxDRT);
 
     //    System.out.println("Cost function is " + max);
-        return max;
+        newPs.setCostFunction(max);
+    }
+
+
+    public void getCostFunctionInitial(PartialSchedule newPs, int numOfProcessors){
+        ArrayList<Integer> free = newPs.getFreeNodes();
+
+        double maxBL = 0;
+        boolean hasParent = false;
+        double BL = 0;
+        double costFunction = 0;
+        double max = 0;
+
+        for (int i = 0; i < InputFileReader.parents[0].length; i++) {
+            hasParent = false;
+            for (int j = 0; j < InputFileReader.parents[i].length; j++) {
+                if (InputFileReader.parents[i][j] == 1) {
+                    hasParent = true;
+                }
+            }
+
+            if (hasParent == false) {
+                BL = getBottomLevelRecursive(i);
+                double averageTotalWeight = (getTotalWeight())/numOfProcessors;
+                costFunction = Math.max(BL,averageTotalWeight);
+
+
+            }
+
+            if (max < costFunction) {
+                max = costFunction;
+            }
+
+        }
+
+        newPs.setCostFunction(max);
+
+
+        //   System.out.println("idleTime= " + maxIdleTime);
+
+
+
+        //	System.out.println("maxBl = " + maxBL);
+        //	System.out.println("maxDRT = " + maxDRT);
+
+        //    System.out.println("Cost function is " + max);
+
     }
 
 
@@ -125,10 +171,9 @@ public class CostFunctionCalculator {
      * @param free
      * @return
      */
-    public double getDRT (PartialSchedule newPs, ArrayList<Integer> free){
-            double maxDRT = 0;
-            double dataReady = 0;
+    public double getDRT (PartialSchedule newPs,int node, ArrayList<Integer> free){
             double bottomLevel;
+            double maxDRT = this.bottomLevels[node] + InputFileReader.nodeWeights.get(node);
             for (Integer freeNode : free) {
 
                 double maxStartTime = 0;
@@ -138,14 +183,13 @@ public class CostFunctionCalculator {
 
                 // Trial every processor
                 for (Processor p : newPs.getProcessorList()) {
-
                     // Find the earliest start time that the node can be scheduled onto the current processor
-                    dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
+                   int dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
                     // Update the maximum T(dr)
-                   // if (maxStartTime < dataReady) {
+                   if ((maxStartTime < dataReady) && maxStartTime == 0) {
                         maxStartTime = dataReady;
-                 //   }
+                   }
                 }
 
                 // Calculate the cost function DRT
@@ -220,6 +264,15 @@ public class CostFunctionCalculator {
 
             // Calculate the cost function of Idle Time
             return ((totalIdleTime + totalWeight) / (double)numberOfProcessors);
+        }
+
+
+        public double getTotalWeight(){
+            double totalWeight = 0;
+            for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
+                totalWeight += InputFileReader.nodeWeights.get(i);
+            }
+            return totalWeight;
         }
     }
 
