@@ -5,29 +5,28 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import se306.input.InputFileReader;
 
+import java.util.*;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Processor {
 
-    private List<Integer> scheduledNodes = new ArrayList<Integer>();
-    private List<Integer> startTimes = new ArrayList<Integer>();
+    private HashMap<Integer,Integer> scheduledNodes;
+    private int processorEndTime;
     private int id;
 
     public Processor(int pid) {
         this.id = pid;
-        this.scheduledNodes = new ArrayList<>();
-        this.startTimes = new ArrayList<>();
+        this.scheduledNodes = new HashMap<>();
+        this.processorEndTime = 0;
     }
 
     /**
      * Copy constructor
      */
     public Processor(Processor processor) {
-        this.scheduledNodes = new ArrayList<>(processor.scheduledNodes);
-        this.startTimes = new ArrayList<>(processor.startTimes);
+        this.scheduledNodes = new HashMap<>(processor.scheduledNodes);
         this.id = processor.id;
+        this.processorEndTime = processor.processorEndTime;
     }
 
     public int getProcessorID() {
@@ -40,15 +39,14 @@ public class Processor {
      * @return finishing time
      */
     public int getCurrentCost() {
-
-        // If the processor doesn't have anything scheduled in it
-        if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
-            return 0;
-        }
-
-        // Get the start time of last node in list + weight
-        return startTimes.get(startTimes.size() - 1)
-                + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
+//        if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
+//            return 0;
+//        }
+////        System.out.println("START : " + startTimes.get(startTimes.size() - 1));
+////        System.out.println("WEIGHT: " + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)));
+//        return startTimes.get(startTimes.size() - 1)
+//                + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
+        return processorEndTime;
     }
 
     /**
@@ -62,19 +60,19 @@ public class Processor {
     public void addNode(int node, PartialSchedule schedule, int processorNumber) {
         // Calculates time using the schedule the node needs to be added to and adds it
         // into the appropriate processor
-        startTimes.add(schedule.calculateStartTime(node, processorNumber));
-        scheduledNodes.add(node);
+        scheduledNodes.put(node,schedule.calculateStartTime(node, processorNumber));
+        processorEndTime = scheduledNodes.get(node) + InputFileReader.nodeWeights.get(node);
 
     }
 
 
     /**
-     * Returns list of nodes that have been scheduled
+     * Returns set of nodes that have been scheduled
      * 
      * @return
      */
-    public List<Integer> getScheduledNodes() {
-        return scheduledNodes;
+    public Set<Integer> getScheduledNodes() {
+        return scheduledNodes.keySet();
     }
 
     /**
@@ -83,8 +81,8 @@ public class Processor {
      * 
      * @return
      */
-    public List<Integer> getStartTimes() {
-        return startTimes;
+    public HashMap<Integer, Integer> getStartTimes() {
+        return scheduledNodes;
     }
 
     /**
@@ -109,8 +107,8 @@ public class Processor {
         
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-                // .appendSuper(super.equals(obj))
-                .append(scheduledNodes, secondProcessor.scheduledNodes).append(startTimes, secondProcessor.startTimes)
+//                 .appendSuper(super.equals(obj))
+                .append(scheduledNodes, secondProcessor.scheduledNodes)
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
     }
 
@@ -152,7 +150,8 @@ public class Processor {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        return new HashCodeBuilder(805306457, 402653189).append(scheduledNodes).append(startTimes)
+        return new HashCodeBuilder(805306457, 402653189)
+                .append(scheduledNodes)
                 .append(getCurrentCost()).toHashCode();
     }
 

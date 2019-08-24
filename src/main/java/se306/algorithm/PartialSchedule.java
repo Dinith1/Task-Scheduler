@@ -2,48 +2,34 @@ package se306.algorithm;
 
 import java.util.*;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 
 public class PartialSchedule {
 
     // User defined available processors placed in a list
-    private ArrayList<Processor> processorList = new ArrayList<>();
-    private double costFunction;
+    private HashMap<Integer,Processor> processorList = new HashMap();
+    private int costFunction;
+    public int numberOfNodesScheduled;
     private ArrayList<Integer> freeNodes = new ArrayList<>();
 
-    public PartialSchedule(int processorNumber) {
+    PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
 
-    public PartialSchedule(PartialSchedule ps) {
-        for (Processor p : ps.getProcessorList()) {
-            this.processorList.add(new Processor(p));
+    private PartialSchedule(PartialSchedule ps) {
+        for (Integer i : ps.getProcessorList().keySet()) {
+            Processor p = ps.getProcessorList().get(i);
+            this.processorList.put(p.getProcessorID(),new Processor(p));
         }
 
         this.costFunction = ps.costFunction;
     }
 
-    /**
-     * Comparator to be used with resorting the processor list back into the process
-     * identifier number order
-     */
-    private Comparator<Processor> sortByIdentifierNumber = new Comparator<Processor>() {
-        public int compare(Processor p1, Processor p2) {
-            if (p1.getProcessorID() < p2.getProcessorID()) {
-                return -1;
-            }
-
-            return 1;
-        }
-    };
-
-    public List<PartialSchedule> expandNewStates() {
-        List<PartialSchedule> newExpandedSchedule = new ArrayList<>();
-
+     HashSet<PartialSchedule> expandNewStates() {
+        HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         // Find how many nodes need to be scheduled for the expansion
-        ArrayList<Integer> nodes = findSchedulableNodes();
+        Set<Integer> nodes = findSchedulableNodes();
         for (Integer node : nodes) {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
@@ -51,18 +37,9 @@ public class PartialSchedule {
 
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
-
-                // Assign and calculate an updated cost function of the partial schedule
                 calculateCostFunction(newSchedule, node, processorList.size());
-
-                if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
-                    continue;
-                }
-                else {
-
                     // Add the schedule to overall expanded list
-                    newExpandedSchedule.add(newSchedule);
-                }
+                newExpandedSchedule.add(newSchedule);
             }
         }
 
@@ -81,14 +58,13 @@ public class PartialSchedule {
      * @return freeNodes
      */
 
-    private ArrayList<Integer> findSchedulableNodes() {
-        freeNodes = new ArrayList<>();
+    private Set<Integer> findSchedulableNodes() {
+        Set<Integer> freeNodes = new HashSet<>();
 
         // Loops through all nodes
         for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
-
                 // If no parents then add to list
                 if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
                     freeNodes.add(node); // AUTOBOXING
@@ -159,7 +135,7 @@ public class PartialSchedule {
      */
     private void createProcessors(int numProcessors) {
         for (int i = 0; i < numProcessors; i++) {
-            processorList.add(new Processor(i));
+            processorList.put(i,new Processor(i));
         }
     }
 
@@ -175,7 +151,6 @@ public class PartialSchedule {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -184,13 +159,18 @@ public class PartialSchedule {
      * 
      * @return scheduledNodes
      */
-    public Set<Integer> getUsedNodes() {
+     private Set<Integer> getUsedNodes() {
         Set<Integer> scheduledNodes = new HashSet<>();
-
-        for (Processor p : processorList) {
+        int count = 0;
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
             // For each processor node map turn it into a hashSet of keys
-            scheduledNodes.addAll(p.getScheduledNodes());
+            for(Integer nodes:p.getScheduledNodes()){
+                scheduledNodes.add(nodes);
+                count++;
+            }
         }
+         numberOfNodesScheduled = count;
         return scheduledNodes;
     }
 
@@ -198,8 +178,7 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-    public ArrayList<Processor> getProcessorList() {
-        Collections.sort(processorList, sortByIdentifierNumber);
+     public HashMap<Integer,Processor> getProcessorList() {
         return processorList;
     }
 
@@ -215,15 +194,11 @@ public class PartialSchedule {
             return false;
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
-        return new EqualsBuilder()
-                // .appendSuper(super.equals(obj))
-                .append(processorList, secondSchedule.processorList).append(costFunction, secondSchedule.costFunction)
-                .isEquals();
-
+        return(processorList.hashCode() == (secondSchedule.processorList.hashCode()));
         // // Check for process normalisation
         // if (!processNormalisation(secondSchedule.getProcessorList())){
         // return false;
-        // }
+        // }2
     }
 
     /**
@@ -232,13 +207,8 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        return new HashCodeBuilder(805306457, 402653189).append(processorList).append(costFunction).toHashCode();
+        return new HashCodeBuilder().append(processorList).toHashCode();
     }
-
-    private boolean processNormalisation() {
-        return true;
-    }
-
 
     /**
      * Method calculates the start time of the current node by finding the latest
@@ -257,43 +227,39 @@ public class PartialSchedule {
 
         // Find parents of the current node
         int[] parentNodes = InputFileReader.parents[node];
-
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
 
             // Find the latest start time in the processor
             maxStartTime = processorList.get(processorNumber).getCurrentCost();
         }
-
-
-        // For each processor
-        for (Processor p : processorList) {
-
-            // For each parent
+        for (Integer i : processorList.keySet()) {
+            Processor p = processorList.get(i);
             for (int parentID = 0; parentID < parentNodes.length; parentID++) {
 
                 int parent = parentNodes[parentID];
-                if (parent != 0) {
 
+                if (parent != 0) {
                     // ========================
                     // NEED TO CHECK EQUALS IN THIS METHOD AND ALL OTHER PLACES
                     // ========================
 
-                    // Find the latest start time in the processor @TODO + communication cost
+//                System.out.println("CURRENT START TIME : " + currentStartTime);
+
+                    //best start time for the node being inserted to the specific processor
                     int currentStartTime = processorList.get(processorNumber).getCurrentCost();
 
-                    // If current processor contains a parent of "node"
+                    // If current processor contains a parent of "node" then calculate the the start
+                    // time needed
                     if (p.getScheduledNodes().contains(parentID)) {
 
-
-
-
-                        // If the processor ID is not the original processor number
+                        // If parent node is not scheduled in same processor
                         if (p.getProcessorID() != processorNumber) {
 
                             // Find end time of the parent node
-                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                            int endTimeOfParent = p.getStartTimes().get(parentID)
                                     + InputFileReader.nodeWeights.get(parentID);
+
                             // Gets communication cost of the parent
                             int communicationCost = 0; // NEED TO CHECK THIS ====================================
                             for (int[] edge : InputFileReader.listOfEdges) {
@@ -303,10 +269,11 @@ public class PartialSchedule {
                                 }
                             }
 
-                            // If end time of parent is longer, that means we need to schedule when
-                            // parent is finished instead of right when processor is free
-                            if ((endTimeOfParent >= currentStartTime) ||
-                                    (endTimeOfParent + communicationCost >= currentStartTime)) {
+                            // If end time of parent is longer than that means we need to schedule when
+                            // parent is finished
+                            // instead of right when processor is free
+                            if ((endTimeOfParent >= currentStartTime)
+                                    || (endTimeOfParent + communicationCost >= currentStartTime)) {
                                 currentStartTime = endTimeOfParent + communicationCost;
                             }
                         }
