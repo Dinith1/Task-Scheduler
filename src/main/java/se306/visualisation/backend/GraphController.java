@@ -86,7 +86,7 @@ public class GraphController implements Initializable {
         CommandLineParser parser = CommandLineParser.getInstance();
         String[] processors = new String[parser.getNumberOfProcessors()];
         for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
-            processors[i] = "Processor" + (i+1);
+            processors[i] = "Processor" + (i);
         }
 
         final NumberAxis xAxis = new NumberAxis();
