@@ -68,11 +68,11 @@ public class PartialSchedule {
         Set<Integer> freeNodes = new HashSet<>();
 
         // Loops through all nodes
-        for (int node = 0; node < InputFileReader.NUM_NODES; node++) {
+        for (int node : InputFileReader.nodeIds) {
             // Checks if the node is in used nodes already
             if (!this.getUsedNodes().contains(node)) {
                 // If no parents then add to list
-                if (!Arrays.stream(InputFileReader.parents[node]).anyMatch(i -> i == 1)) {
+                if (!InputFileReader.nodeParents.containsKey(node)) {
                     freeNodes.add(node); // AUTOBOXING
                 }
 
@@ -81,9 +81,7 @@ public class PartialSchedule {
                     boolean allParentsUsed = true; // Should be true even if the node has no parents
 
                     for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
-                        int parent = InputFileReader.parents[node][i];
-
-                        if ((parent == 1) && !this.getUsedNodes().contains(i)) {
+                        if (Arrays.asList(InputFileReader.nodeParents.get(node)).contains(i) && !this.getUsedNodes().contains(i)) {
                             allParentsUsed = false;
                             break;
                         }
@@ -223,7 +221,7 @@ public class PartialSchedule {
         int maxStartTime = 0;
 
         //Gets parents of the current node
-        int[] parentNodes = InputFileReader.parents[node];
+        int[] parentNodes = InputFileReader.nodeParents.get(node);
         // If no parents
         if (!Arrays.stream(parentNodes).anyMatch(i -> i == 1)) {
 //            System.out.println("Node " + InputFileReader.nodeNames.get(node) + " has no parents");

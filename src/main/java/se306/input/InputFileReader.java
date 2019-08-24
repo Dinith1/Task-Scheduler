@@ -71,6 +71,8 @@ public class InputFileReader {
 
         outputFileGenerator.readLine(line);
 
+        int nodeCount = 0;
+
         while ((line = buffRead.readLine()) != null) {
             String end = line.substring(0, 1);
 
@@ -91,6 +93,9 @@ public class InputFileReader {
             if (line.indexOf("->") == -1) { // Handle nodes
                 String node = findName(line);
                 int nodeInt = Integer.parseInt(node);
+
+                nodeIds[nodeCount] = nodeInt;
+                nodeCount++;
 
                 int weight = findWeight(line);
                 nodeWeights.put(nodeInt, weight);
@@ -158,7 +163,7 @@ public class InputFileReader {
             // A node with the same weight already exists
             int[] listOfNodes = nodeWeightsReversed.get(weight);
             int[] newListOfNodes = new int[(listOfNodes.length + 1)];
-            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, listOfNodes.length);
             newListOfNodes[newListOfNodes.length - 1] = id;
             nodeWeightsReversed.put(weight, newListOfNodes);
         } else {
