@@ -15,48 +15,40 @@ import java.util.regex.Pattern;
 import org.graphstream.stream.GraphParseException;
 
 public class InputFileReader {
-    public static int NUM_NODES;; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
-                                  // graph generator)
-    public static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
-                                 // graph generator)
+    public static int NUM_NODES;
+    public static int NUM_EDGES;
 
-    // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
-    // the id (not the name) of the node
-    // (DON"T EVEN NEED THIS AS CAN STORE TOTAL NUMBER OF
-    // NODES INSTEAD -> KNOW THAT NODES WILL BE 0 to n-1)
+    // Values stored are node ids
+    public static int[] nodeIds;
 
-    // public static HashMap<Integer, String> nodeNames = new HashMap<Integer,
-    // String>(); // Map from id to name of node
+    // Map from id to weight of node
+    public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>();
 
-    // public static HashMap<String, Integer> nodeNamesReverse = new HashMap<String,
-    // Integer>(); // To find id for given
-    // node name
+    // Map from weight of node to list of node ids
+    public static HashMap<Integer, int[]> nodeWeightsReversed = new HashMap<Integer, int[]>();
 
-    public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>(); // Map from id to weight of
-                                                                                           // node -> MIGHT NEED TO
-                                                                                           // CHANGE WEIGHT TO DOUBLE
+    // Map from id to node's parents
+    public static HashMap<Integer, int[]> nodeParents = new HashMap<Integer, int[]>();
 
-    public static HashMap<Integer, int[]> mapOfNodeWeights = new HashMap<Integer, int[]>(); // Map from weight of node
-                                                                                            // to list of node ids
+    // Map from id to node's children
+    public static HashMap<Integer, int[]> nodeChildren = new HashMap<Integer, int[]>();
 
-    public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
+    // {{from, to, weight}, {f, t, w}, ...} Each from/to is the id of the node
+    public static int[][] listOfEdges;
 
-    public static int[][] parents; // parents[0] stores parents of node with id = 0,
-                                   // i.e. parents[0][1] = 1 means node with id = 1 is a
-                                   // parent of node with id 0
-
-    public static int[][] parentsReverse;
-
-    public static int[][] listOfEdges; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
-                                       // the id of the node
+    // public static int[][] parents; // parents[0] stores parents of node with id =
+    // 0,
+    // i.e. parents[0][1] = 1 means node with id = 1 is a
+    // parent of node with id 0
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
     public InputFileReader() {
         NUM_NODES = GraphParser.totalNodes;
         NUM_EDGES = GraphParser.totalEdges;
-        parents = new int[NUM_NODES][NUM_NODES];
-        parentsReverse = new int[NUM_NODES][NUM_NODES];
+        nodeIds = new int[NUM_NODES];
+        // parents = new int[NUM_NODES][NUM_NODES];
+        // parentsReverse = new int[NUM_NODES][NUM_NODES];
         listOfEdges = new int[NUM_EDGES][3];
     }
 
@@ -110,27 +102,35 @@ public class InputFileReader {
 
             } else { // Handle edges
                 // Parent node
-                String startNode = line.substring(0, line.indexOf("-")).replaceAll("\\s+", "");
-                int startNodeInt = Integer.parseInt(startNode);
+                String parentNode = line.substring(0, line.indexOf("-")).replaceAll("\\s+", "");
+                int parentNodeInt = Integer.parseInt(parentNode);
                 // Child node
-                String endNode = line.substring(line.indexOf(">") + 1, line.indexOf("[")).replaceAll("\\s+", "");
-                int endNodeInt = Integer.parseInt(endNode);
+                String childNode = line.substring(line.indexOf(">") + 1, line.indexOf("[")).replaceAll("\\s+", "");
+                int childNodeInt = Integer.parseInt(childNode);
                 int weight = findWeight(line);
 
-                listOfEdges[edgeNum][0] = Integer.parseInt(startNode);
-                listOfEdges[edgeNum][1] = Integer.parseInt(endNode);
+                listOfEdges[edgeNum][0] = Integer.parseInt(parentNode);
+                listOfEdges[edgeNum][1] = Integer.parseInt(childNode);
                 listOfEdges[edgeNum][2] = weight;
 
-//                // If the current node has an identical node, change the parent of the node to the identical node (to prune the search space)
-//                int currentNodeId = nodeNamesReverse.get(startNode);
-//                Integer identicalNodeId = identicalTaskExists(currentNodeId, weight, startNode);
-//                if (identicalNodeId != null){
-//                    listOfEdges[edgeNum][0] = nodeNamesReverse.get(identicalNodeId);
-//                    parents[nodeNamesReverse.get(endNode)][identicalNodeId] = 1;
-//                } else {
+                // // If the current node has an identical node, change the parent of the node
+                // to the identical node (to prune the search space)
+                // int currentNodeId = nodeNamesReverse.get(parentNode);
+                // Integer identicalNodeId = identicalTaskExists(currentNodeId, weight,
+                // parentNode);
+                // if (identicalNodeId != null){
+                // listOfEdges[edgeNum][0] = nodeNamesReverse.get(identicalNodeId);
+                // parents[nodeNamesReverse.get(childNode)][identicalNodeId] = 1;
+                // } else {
                 // Store parent
-                parents[endNodeInt][startNodeInt] = 1;
-                parentsReverse[startNodeInt][endNodeInt] = 1;
+
+                // TODO: Add parent to hash map where key is child node ID, value is int[] of
+                // parents
+                addParents(childNodeInt, parentNodeInt);
+
+                // TODO: Add parent to hash map where key is parent node ID, value is int[] of
+                // children
+                addChildren(parentNodeInt, childNodeInt);
 
                 outputFileGenerator.readLine(listOfEdges[edgeNum]);
                 edgeNum++;
@@ -138,12 +138,6 @@ public class InputFileReader {
         }
 
         buffRead.close();
-
-        // Loops through all nodes and gets all immediate children of that node
-        for (int i = 0; i < NUM_NODES; i++) {
-            createChildren(i);
-        }
-
     }
 
     /**
@@ -171,17 +165,17 @@ public class InputFileReader {
     }
 
     private void addIdToWeightMap(int id, int weight) {
-        if (mapOfNodeWeights.containsKey(weight)) {
+        if (nodeWeightsReversed.containsKey(weight)) {
             // A node with the same weight already exists
-            int[] listOfNodes = mapOfNodeWeights.get(weight);
+            int[] listOfNodes = nodeWeightsReversed.get(weight);
             int[] newListOfNodes = new int[(listOfNodes.length + 1)];
             System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
             newListOfNodes[newListOfNodes.length - 1] = id;
-            mapOfNodeWeights.put(weight, newListOfNodes);
+            nodeWeightsReversed.put(weight, newListOfNodes);
         } else {
             // A node with the same weight does not exist
             int[] newListOfNodes = { id };
-            mapOfNodeWeights.put(weight, newListOfNodes);
+            nodeWeightsReversed.put(weight, newListOfNodes);
         }
     }
 
@@ -195,8 +189,8 @@ public class InputFileReader {
      * scheduled node (chaining).
      */
     public void pruneIdenticalNodes() {
-        // Find all nodes with the same weight [/]
-        for (Map.Entry<Integer, int[]> entry : mapOfNodeWeights.entrySet()) {
+        // Find all nodes with the same weight
+        for (Map.Entry<Integer, int[]> entry : nodeWeightsReversed.entrySet()) {
             int[] sameWeightNodes = entry.getValue();
             // Check if value matches with given value
             if (sameWeightNodes.length == 1) {
@@ -234,7 +228,7 @@ public class InputFileReader {
     }
 
     private HashMap<Integer, int[]> addIdToParentMap(int id, HashMap<Integer, int[]> nodeParents) {
-        int[] p = parents[id];
+        int[] p = nodeParents.get(id);
 
         for (int parent : p) {
             if (nodeParents.containsKey(parent)) {
@@ -279,7 +273,7 @@ public class InputFileReader {
     }
 
     private HashMap<Integer, int[]> addIdToChildrenMap(int id, HashMap<Integer, int[]> nodeChildren) {
-        int[] c = getColumnFromArray(parents, id);
+        int[] c = nodeChildren.get(id);
 
         for (int child : c) {
             if (nodeChildren.containsKey(child)) {
@@ -429,6 +423,7 @@ public class InputFileReader {
 
         // TODO: Update edges e.g. remove edge between old children and create edge
         // between new children
+
     }
 
     private void setParent(int nodeId, int parentId, boolean removeAll) {
@@ -470,24 +465,48 @@ public class InputFileReader {
     }
 
     /**
-     * Takes a node, and generates all the immediate children of that node, putting
-     * it into a HashMap
+     * Takes a node, and adds an immediate parent, putting
+     * it into the nodeParents HashMap
      * 
-     * @param node
+     * @param child
+     * @param parent
      */
-    private void createChildren(int node) {
-        int[] childIds = new int[NUM_NODES];
-
-        for (int i = 0; i < parentsReverse[node].length; i++) {
-            if (parentsReverse[node][i] == 1) {
-                childIds[i] = 1;
-            }
+    private void addParents(int child, int parent) {
+        if (nodeParents.containsKey(child)) {
+            // Node already has an existing parent
+            int[] listOfNodes = nodeParents.get(child);
+            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+            newListOfNodes[newListOfNodes.length - 1] = parent;
+            nodeParents.put(child, newListOfNodes);
+            return;
         }
 
-        if (Arrays.stream(childIds).anyMatch(i -> i != -1)) {
-            childrenOfParent.put(node, childIds);
-        } else {
-            childrenOfParent.put(node, new Integer(-1));
+        // Node does not have a parent yet
+        int[] newListOfNodes = { parent };
+        nodeParents.put(child, newListOfNodes);
+    }
+
+    /**
+     * Takes a node, and adds an immediate child, putting
+     * it into the nodeChildren HashMap
+     * 
+     * @param parent
+     * @param child
+     */
+    private void addChildren(int parent, int child) {
+        if (nodeChildren.containsKey(parent)) {
+            // Node already has an existing child
+            int[] listOfNodes = nodeChildren.get(parent);
+            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
+            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, newListOfNodes.length);
+            newListOfNodes[newListOfNodes.length - 1] = child;
+            nodeChildren.put(parent, newListOfNodes);
+            return;
         }
+
+        // Node does not have a child yet
+        int[] newListOfNodes = { child };
+        nodeParents.put(parent, newListOfNodes);
     }
 }
