@@ -26,6 +26,9 @@ public class AStarScheduler {
         while (!open.isEmpty()) {
             // Retrieves head and removes it from the queue
             PartialSchedule currentSchedule = open.peek();
+
+
+
             if (currentSchedule != null) {
                 if (currentSchedule.isComplete()) {
                     return currentSchedule;

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import se306.input.InputFileReader;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,13 +66,14 @@ public class Processor {
     public void addNode(int node, PartialSchedule schedule, int processorNumber) {
         // Calculates time using the schedule the node needs to be added to and adds it
         // into the appropriate processor
-        System.out.println("Start time is : " + schedule.calculateStartTime(node, processorNumber) + " for node " + node
-        + " PS: " + schedule + " and on Processor " + processorNumber);
+//        System.out.println("Start time is: " + schedule.calculateStartTime(node, processorNumber) + " for node " + node
+//        + " PS: " + schedule + " and on Processor " + processorNumber);
         startTimes.add(schedule.calculateStartTime(node, processorNumber));
 //        scheduleStartTime.add()
         scheduledNodes.add(node);
 
     }
+
 
     public int[] getScheduleStartTimes() {
         return this.scheduleStartTime;

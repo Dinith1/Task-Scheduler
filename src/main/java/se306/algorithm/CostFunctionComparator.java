@@ -9,7 +9,7 @@ public class CostFunctionComparator implements Comparator<PartialSchedule> {
             return -1;
         }
         else if(s1.getCostFunction() == s2.getCostFunction()){
-            return -1;
+            return 0;
         }
         else{
             return 1;

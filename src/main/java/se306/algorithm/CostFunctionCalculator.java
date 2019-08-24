@@ -29,22 +29,32 @@ public class CostFunctionCalculator {
 
         // Get the freeNodes for the particular partial schedule
         ArrayList<Integer> free = newPs.getFreeNodes();
-        double maxBL = getBottomLevelRecursive(newestNode);
-        System.out.println("MAXBL = " + maxBL);
+
+        double maxBL = 0;
+
+        for (Processor processor : newPs.getProcessorList()) {
+            for(int nodeId : processor.getScheduledNodes()) {
+                double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(processor.getScheduledNodes().indexOf(nodeId));
+                if (BL > maxBL) {
+                    maxBL = BL;
+                }
+            }
+        }
+//        System.out.println("MAXBL = " + maxBL);
 
         double maxDRT = getDRT(newPs, free);
-        System.out.println("MaxDrt = " + maxDRT);
+//        System.out.println("MaxDrt = " + maxDRT);
 
 
         double maxIdleTime = getIdleTime(newPs, numOfProcessors);
-        System.out.println("idleTime= " + maxIdleTime);
+//        System.out.println("idleTime= " + maxIdleTime);
 
         double max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
 
         //	System.out.println("maxBl = " + maxBL);
         //	System.out.println("maxDRT = " + maxDRT);
 
-        System.out.println("Cost function is " + max);
+//        System.out.println("Cost function is " + max);
         return max;
     }
 
