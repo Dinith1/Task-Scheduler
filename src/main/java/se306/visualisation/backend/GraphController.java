@@ -67,6 +67,7 @@ public class GraphController implements Initializable {
     void handleStart(MouseEvent event) {
         Main.startScheduling();
         startTimeElapsed();
+        createSchedule();
         startBtn.setDisable(true);
     }
 
@@ -81,7 +82,11 @@ public class GraphController implements Initializable {
     }
 
     public void createSchedule() {
-        String[] machines = new String[] { "Machine 1", "Machine 2", "Machine 3" };
+        CommandLineParser parser = CommandLineParser.getInstance();
+        String[] processors = new String[parser.getNumberOfProcessors()];
+        for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
+            processors[i] = "Processor" + (i+1);
+        }
 
         final NumberAxis xAxis = new NumberAxis();
         final CategoryAxis yAxis = new CategoryAxis();
@@ -94,32 +99,18 @@ public class GraphController implements Initializable {
         yAxis.setLabel("");
         yAxis.setTickLabelFill(Color.CHOCOLATE);
         yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(machines)));
+        yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(processors)));
 
         chart.setTitle("Machine Monitoring");
         chart.setLegendVisible(false);
-        chart.setBlockHeight( 50);
-        String machine;
+        chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 2));
 
-        machine = machines[0];
-        XYChart.Series series1 = new XYChart.Series();
-        series1.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-red")));
-        series1.getData().add(new XYChart.Data(1, machine, new SchedulesBar.ExtraData( 1, "status-green")));
-        series1.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 1, "status-red")));
-        series1.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
+        for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
+            XYChart.Series series = new XYChart.Series();
+            series.getData().add(new XYChart.Data(i, processors[i], new SchedulesBar.ExtraData( 1, "status-red")));
+            chart.getData().add(series);
+        }
 
-        machine = machines[1];
-        XYChart.Series series2 = new XYChart.Series();
-        series2.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-green")));
-        series2.getData().add(new XYChart.Data(1, machine, new SchedulesBar.ExtraData( 1, "status-green")));
-        series2.getData().add(new XYChart.Data(2, machine, new SchedulesBar.ExtraData( 20, "status-red")));
-
-        machine = machines[2];
-        XYChart.Series series3 = new XYChart.Series();
-        series3.getData().add(new XYChart.Data(0, machine, new SchedulesBar.ExtraData( 1, "status-blue")));
-        series3.getData().add(new XYChart.Data(3, machine, new SchedulesBar.ExtraData( 1, "status-green")));
-
-        chart.getData().addAll(series1, series2, series3);
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
         schedulePane.setLeftAnchor(chart, 0.0);
         schedulePane.setRightAnchor(chart, 0.0);
@@ -171,7 +162,6 @@ public class GraphController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initCpuMonitor();
-        createSchedule(); //TODO remove later
         populateTile();
         CommandLineParser parser = CommandLineParser.getInstance();
         if (!parser.wantVisual()) {
