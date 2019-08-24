@@ -46,9 +46,6 @@ public class GraphController implements Initializable {
     Label timeElapsed, numberOfNodes, nodesToSchedule;
 
     @FXML
-    BarChart<String, Number> cpuMonitorBar;
-
-    @FXML
     CategoryAxis cpu;
 
     @FXML
@@ -101,9 +98,9 @@ public class GraphController implements Initializable {
         yAxis.setTickLabelGap(10);
         yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(processors)));
 
-        chart.setTitle("Machine Monitoring");
+        chart.setTitle("Final schedule");
         chart.setLegendVisible(false);
-        chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 2));
+        chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 30));
 
         for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
             XYChart.Series series = new XYChart.Series();
@@ -161,41 +158,11 @@ public class GraphController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initCpuMonitor();
         populateTile();
         CommandLineParser parser = CommandLineParser.getInstance();
         if (!parser.wantVisual()) {
             Main.startScheduling();
         }
-    }
-
-    private void initCpuMonitor() {
-        XYChart.Series<String, Number> series1 = new XYChart.Series<>();
-        cpuMonitorBar.setTitle("cpu Monitor");
-        cpu.setLabel("cateogory");
-        cpu.setTickLabelRotation(90);
-        cpuId.setLabel("num");
-
-        cpuMonitorBar.setLegendVisible(false);
-        series1.setName("asdfasdf");
-        // JavaSysMon monitor = new JavaSysMon();
-//
-//        Task<Integer> task = new Task<Integer>() {
-//            @Override protected Integer call() throws Exception {
-//                while (true) {
-//                    if (isCancelled()) {
-//                        break;
-//                    }
-//                    System.out.println(monitor.cpuFrequencyInHz()/1000000);
-//                }
-//                return 0;
-//            }
-//        };
-//
-//        Thread thread = new Thread(task);
-//        thread.start();
-
-
     }
 
     private void populateTile() {

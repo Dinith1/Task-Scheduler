@@ -2,9 +2,6 @@
 
 <?import eu.hansolo.tilesfx.Tile?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
@@ -21,23 +18,19 @@
                <children>
                   <VBox prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #37f6ed;">
                      <children>
-                        <ImageView fx:id="graphImage" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true" />
+                        <ImageView fx:id="graphImage" fitHeight="800.0" fitWidth="600.0" pickOnBounds="true">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin></ImageView>
                      </children>
                   </VBox>
                   <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
                      <children>
-                        <BarChart fx:id="cpuMonitorBar" prefHeight="250.0" prefWidth="600.0">
-                          <xAxis>
-                            <CategoryAxis fx:id="cpu" side="BOTTOM" />
-                          </xAxis>
-                          <yAxis>
-                            <NumberAxis fx:id="cpuId" side="LEFT" />
-                          </yAxis>
+                        <AnchorPane fx:id="schedulePane" prefHeight="450.0" prefWidth="600.0">
                            <VBox.margin>
-                              <Insets />
+                              <Insets top="50.0" />
                            </VBox.margin>
-                        </BarChart>
-                        <AnchorPane fx:id="schedulePane" prefHeight="303.0" prefWidth="600.0" />
+                        </AnchorPane>
                         <HBox prefHeight="250.0" prefWidth="200.0">
                            <children>
                               <Pane prefHeight="151.0" prefWidth="300.0">
@@ -47,11 +40,14 @@
                                     <Label fx:id="numberOfNodes" layoutX="240.0" layoutY="79.0" text="0" textFill="WHITE" />
                                     <Label fx:id="timeElapsed" layoutX="238.0" layoutY="163.0" text="0:0" textFill="WHITE" />
                                  </children>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
                               </Pane>
                               <Tile fx:id="progressTile" />
                            </children>
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets bottom="50.0" top="10.0" />
                            </VBox.margin>
                         </HBox>
                      </children>
