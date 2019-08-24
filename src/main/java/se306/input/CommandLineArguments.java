@@ -11,12 +11,12 @@ public class CommandLineArguments extends OptionsBase {
 	@Option(name = "HELP", abbrev = 'h', help = "Prints usage info", category = "Startup", defaultValue = "false")
 	public boolean help;
 
-	@Option(name = "NUMCORES", abbrev = 'p', help = "[NOT YET IMPLEMENTED] Number of cores to use to produce the schedule", category = "Startup", defaultValue = "1")
+	@Option(name = "NUMCORES", abbrev = 'p', help = "Number of cores to use to produce the schedule", category = "Startup", defaultValue = "1")
 	public int numCores;
 
 	@Option(name = "OUTPUT", abbrev = 'o', help = "output file is named OUTPUT (default is INPUT-output.dot)", category = "Startup", defaultValue = "output.dot")
 	public String outputFile;
 
-	@Option(name = "VISUALISE", abbrev = 'v', help = "[NOT YET IMPLEMENTED] Visualise the search", category = "Startup", defaultValue = "false")
+	@Option(name = "VISUALISE", abbrev = 'v', help = "Visualise the search", category = "Startup", defaultValue = "false")
 	public boolean visualise;
 }
