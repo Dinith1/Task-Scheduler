@@ -18,6 +18,8 @@ import se306.input.InputFileReader;
 import se306.logging.Log;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import net.bytebuddy.asm.Advice.Exit;
+
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
@@ -46,7 +48,6 @@ public class Main extends Application {
             GraphParser graphParser = new GraphParser();
             graphParser.parseGraph();
 
-
         } catch (InvalidInputException | NumberFormatException e) {
             Log.error(e.getMessage());
             parser.printUsage();
@@ -55,9 +56,12 @@ public class Main extends Application {
 
         if (parser.wantVisual()) {
             launch(args);
+        } else {
+            startScheduling();
         }
-    }
 
+        System.exit(0);
+    }
 
     public static void startScheduling() {
         CommandLineParser parser = CommandLineParser.getInstance();
@@ -106,7 +110,7 @@ public class Main extends Application {
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
-//        primaryStage.setMaximized(true);
+        // primaryStage.setMaximized(true);
         CommandLineParser parser = CommandLineParser.getInstance();
         primaryStage.show();
     }

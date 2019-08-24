@@ -1,6 +1,8 @@
 package se306.input;
 
 import se306.output.OutputFileGenerator;
+import se306.visualisation.backend.GraphParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,11 +11,13 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.graphstream.stream.GraphParseException;
+
 public class InputFileReader {
-    public static int NUM_NODES = 7; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
-                                     // graph generator)
-    public static int NUM_EDGES = 6; // Testing with Nodes_7 (change later to read number of edges from GraphViz
-                                     // graph generator)
+    public static int NUM_NODES;; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
+                                  // graph generator)
+    public static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
+                                 // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
     // the id (not the name) of the node
@@ -33,17 +37,24 @@ public class InputFileReader {
 
     public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
 
-    public static int[][] parents = new int[NUM_NODES][NUM_NODES]; // parents[0] stores parents of node with id = 0,
-                                                                   // i.e. parents[0][1] = 1 means node with id = 1 is a
-                                                                   // parent of node with id 0
+    public static int[][] parents; // parents[0] stores parents of node with id = 0,
+                                   // i.e. parents[0][1] = 1 means node with id = 1 is a
+                                   // parent of node with id 0
 
-    public static int[][] parentsReverse = new int[NUM_NODES][NUM_NODES];
+    public static int[][] parentsReverse;
 
-    public static int[][] listOfEdges = new int[NUM_EDGES][3]; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
-                                                               // the id of the node
+    public static int[][] listOfEdges; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
+                                       // the id of the node
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
+    public InputFileReader() {
+        NUM_NODES = GraphParser.totalNodes;
+        NUM_EDGES = GraphParser.totalEdges;
+        parents = new int[NUM_NODES][NUM_NODES];
+        parentsReverse = new int[NUM_NODES][NUM_NODES];
+        listOfEdges = new int[NUM_EDGES][3];
+    }
 
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into

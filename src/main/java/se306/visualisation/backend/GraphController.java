@@ -1,6 +1,5 @@
 package se306.visualisation.backend;
 
-import com.jezhumble.javasysmon.JavaSysMon;
 import com.sun.javafx.runtime.VersionInfo;
 import eu.hansolo.tilesfx.Tile;
 import javafx.animation.AnimationTimer;
@@ -189,7 +188,7 @@ public class GraphController implements Initializable {
 
         cpuMonitorBar.setLegendVisible(false);
         series1.setName("asdfasdf");
-        JavaSysMon monitor = new JavaSysMon();
+        // JavaSysMon monitor = new JavaSysMon();
 //
 //        Task<Integer> task = new Task<Integer>() {
 //            @Override protected Integer call() throws Exception {
