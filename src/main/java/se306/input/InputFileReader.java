@@ -44,6 +44,7 @@ public class InputFileReader {
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
+
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
      * their respective ArrayLists
