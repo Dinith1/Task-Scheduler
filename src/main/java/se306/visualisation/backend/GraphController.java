@@ -2,10 +2,17 @@ package se306.visualisation.backend;
 
 import com.sun.javafx.runtime.VersionInfo;
 import eu.hansolo.tilesfx.Tile;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,12 +30,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import org.apache.commons.lang3.time.StopWatch;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -61,13 +70,53 @@ public class GraphController implements Initializable {
     @FXML
     private Tile progressTile;
 
+    long startTime = System.nanoTime()/1000000;
+
+    Timeline countProgress = new Timeline();
+    static final int STARTTIME = 0;
+    private final IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
+    Timeline timeline;
+
     private boolean timerRunning;
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        populateTile();
+        timeElapsed.textProperty().bind((timeSeconds.divide(1000.0)).asString());
+        CommandLineParser parser = CommandLineParser.getInstance();
+        if (!parser.wantVisual()) {
+            Main.startScheduling();
+        }
+    }
+    private void updateTime(){
+        int seconds = timeSeconds.get();
+        timeSeconds.set(seconds+1);
+    }
 
     @FXML
     void handleStart(MouseEvent event) {
-        Main.startScheduling();
-        startTimeElapsed();
-        createSchedule();
+        Task<Void> schedule = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Main.startScheduling();
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        timeline.stop();
+                        createSchedule();
+                    }
+                });
+                return null;
+            }
+        };
+        timeline = new Timeline(new KeyFrame(Duration.seconds(0.001),evt-> updateTime()));
+        timeline.setCycleCount((Animation.INDEFINITE));
+        timeSeconds.set(STARTTIME);
+        Thread thread = new Thread(schedule);
+        thread.start();
+        timeline.play();
+//        Main.startScheduling();
+//        createSchedule();
 
         startBtn.setDisable(true);
     }
@@ -134,35 +183,27 @@ public class GraphController implements Initializable {
         schedulePane.getChildren().add(chart);
     }
 
-    public void startTimeElapsed() {
-        Timer timer = new Timer();
-        timerRunning = true;
-        long startTime = System.nanoTime()/1000000;
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                if(timerRunning)
-                {
-                    long currentTime = System.nanoTime()/1000000 - startTime;
-                    Platform.runLater(() -> timeElapsed.setText(currentTime/1000 + ":" + currentTime%1000));
-                }
-                else
-                    timer.cancel();
-            }
-        }, 0,1);
-    }
+//    public void startTimeElapsed() {
+//        timerRunning = true;
+//        long startTime = System.nanoTime()/1000000;
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() {
+//                if(timerRunning)
+//                {
+//                    long currentTime = System.nanoTime()/1000000 - startTime;
+//                    timeElapsed.setText(currentTime/1000 + ":" + currentTime%1000);
+//                }
+//                else
+//                    timer.cancel();
+//            }
+//        }, 0,1);
+//    }
 
     public void setNumberOfNodes(String s) {
         numberOfNodes.setText(s);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        populateTile();
-        CommandLineParser parser = CommandLineParser.getInstance();
-        if (!parser.wantVisual()) {
-            Main.startScheduling();
-        }
-    }
+
 
     private void populateTile() {
         progressTile.setTitle("Schedule progress");
