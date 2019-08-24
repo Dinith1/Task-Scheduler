@@ -11,27 +11,25 @@ public class CostFunctionCalculator {
 
     private double[] bottomLevels = new double[InputFileReader.NUM_NODES];
 
-
-    private PartialSchedule ps;
-
-    public void getCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors) {
+    /**
+     * This method calculates and assigns the total cost function of a partial schedule in dependency of
+     * adding the newest node. The total cost function is calculated by the maximum of:
+     * 1. Bottom Level
+     * 2. Data Ready Time
+     * 3. Idle Time
+     * @param newPs
+     * @param newestNode
+     * @param numOfProcessors
+     */
+    public void calculateAndSetCostFunction(PartialSchedule newPs, int newestNode, int numOfProcessors) {
 
 
         // Find all the free nodes AFTER node n has been scheduled
-        // Loop through the free nodes
-        // Loop through each processor
-        // Schedule each free node onto each processor
-        // data ready time = min(earliest start of each node on all processors)
-        // f(drt) =   max( all  data ready times + bottom level)
-
-
-//        double maxDRT = 0;
-
-        // Get the freeNodes for the particular partial schedule
         ArrayList<Integer> free = newPs.getFreeNodes();
 
         double maxBL = 0;
 
+        // For each processor, calculate the bottom level time and output the maximum out of all processors
         for (Processor processor : newPs.getProcessorList()) {
             for(int nodeId : processor.getScheduledNodes()) {
                 double BL = getBottomLevelRecursive(nodeId) + processor.getStartTimes().get(processor.getScheduledNodes().indexOf(nodeId));
@@ -40,70 +38,16 @@ public class CostFunctionCalculator {
                 }
             }
         }
-    //   System.out.println("MAXBL = " + maxBL);
 
         double maxDRT = getDRT(newPs,newestNode, free);
-     //   System.out.println("MaxDrt = " + maxDRT);
-
 
         double maxIdleTime = getIdleTime(newPs, numOfProcessors);
-    //   System.out.println("idleTime= " + maxIdleTime);
 
         double max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
 
-        //	System.out.println("maxBl = " + maxBL);
-        //	System.out.println("maxDRT = " + maxDRT);
-
-    //    System.out.println("Cost function is " + max);
+        // Assign cost function to the partial schedule
         newPs.setCostFunction(max);
     }
-
-
-    public void getCostFunctionInitial(PartialSchedule newPs, int numOfProcessors){
-        ArrayList<Integer> free = newPs.getFreeNodes();
-
-        double maxBL = 0;
-        boolean hasParent = false;
-        double BL = 0;
-        double costFunction = 0;
-        double max = 0;
-
-        for (int i = 0; i < InputFileReader.parents[0].length; i++) {
-            hasParent = false;
-            for (int j = 0; j < InputFileReader.parents[i].length; j++) {
-                if (InputFileReader.parents[i][j] == 1) {
-                    hasParent = true;
-                }
-            }
-
-            if (hasParent == false) {
-                BL = getBottomLevelRecursive(i);
-                double averageTotalWeight = (getTotalWeight())/numOfProcessors;
-                costFunction = Math.max(BL,averageTotalWeight);
-
-
-            }
-
-            if (max < costFunction) {
-                max = costFunction;
-            }
-
-        }
-
-        newPs.setCostFunction(max);
-
-
-        //   System.out.println("idleTime= " + maxIdleTime);
-
-
-
-        //	System.out.println("maxBl = " + maxBL);
-        //	System.out.println("maxDRT = " + maxDRT);
-
-        //    System.out.println("Cost function is " + max);
-
-    }
-
 
     /**
      * This method calculates recursively each node, starting from the input node, it calls its children
@@ -125,7 +69,6 @@ public class CostFunctionCalculator {
             for (int i = 0; i < arrayOfChildren.length; i++) {
                 // Check if node has child
                 if (arrayOfChildren[i] == 1) {
-//                    upperBound += getBottomLevelRecursive(i);
                     current = getBottomLevelRecursive(i);
                     this.bottomLevels[i] = current;
                     if(upperBound < current){
@@ -139,28 +82,6 @@ public class CostFunctionCalculator {
             return InputFileReader.nodeWeights.get(node);
         }
     }
-
-//
-//        if (node.getNumberOfOutGoingEdges() > 0) {
-//            int upperBound = 0;
-//            List<Edge> listOfOutGoingEdges = node.getOutGoingEdges();
-//            List<Node> listOfChildNodes = new ArrayList<>();
-//            for (Edge e : listOfOutGoingEdges) {
-//                listOfChildNodes.add(e.getNodeEnd());
-//            }
-//
-//            for (Node n : listOfChildNodes) {
-//                int current = getBottomLevelRecursive(n);
-//                n.setBottomLevel(current);
-//                if (upperBound < current) {
-//                    upperBound = current;
-//                }
-//            }
-//            return upperBound + node.getNodeWeight();
-//        } else {
-//            return node.getNodeWeight();
-//        }
-//    }
 
 
     /**
@@ -203,39 +124,6 @@ public class CostFunctionCalculator {
 
         }
 
-//	public int getDRT(Node node, PartialSchedule ps, Processor processor) {
-//		int upperBound = 0;
-//		int drt = 0;
-//		if (node.getNumberOfIncomingEdges() > 0) {
-//			List<Edge> listofIncomingEdges = node.getIncomingEdges();
-//			List<Node> listofParentNodes = new ArrayList<>();
-//
-//			// Gets each parent of node
-//			for (Edge e : listofIncomingEdges) {
-//				listofParentNodes.add(e.getNodeStart());
-//			}
-//
-//			// For each parent
-//			for (Node parentNode : listofParentNodes) {
-//				//get finishing time
-//
-//				// If processor of parent is not the processor of the current node (child), add the communication cost
-//				int finishTimeOfNode = ps.getProcessor(parentNode).getStartTime(parentNode) + parentNode.getNodeWeight();
-//				if (ps.getProcessor(parentNode).getProcessorID() != processor.getProcessorID()) {
-//					finishTimeOfNode = finishTimeOfNode + node.getIncomingEdge(parentNode).getEdgeWeight();
-//				}
-//
-//				// If max upper bound is less than the new upper bound
-//				if (upperBound < finishTimeOfNode) {
-//					upperBound = finishTimeOfNode;
-//					drt = upperBound + parentNode.getBottomLevel();
-//				}
-//
-//			}
-//			return drt;
-//		}
-//		return drt;
-
 
     /**
      * This cost function returns the idle time + sum of each weight of every single node of the graph
@@ -249,12 +137,8 @@ public class CostFunctionCalculator {
 
             // Iterate through each processor to find Idle Times
             for (Processor p : ps.getProcessorList()) {
-//                System.out.println("Idle Time to add: " + p.calculateIdleTime());
                 totalIdleTime += p.calculateIdleTime();
             }
-
-            //System.out.println(totalIdleTime);
-            //  ps.setIdleTime(totalIdleTime);
 
             // Calculate the total weight of the graph
             double totalWeight = 0;
@@ -266,13 +150,5 @@ public class CostFunctionCalculator {
             return ((totalIdleTime + totalWeight) / (double)numberOfProcessors);
         }
 
-
-        public double getTotalWeight(){
-            double totalWeight = 0;
-            for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
-                totalWeight += InputFileReader.nodeWeights.get(i);
-            }
-            return totalWeight;
-        }
     }
 

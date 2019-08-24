@@ -13,7 +13,6 @@ public class Processor {
 
     private List<Integer> scheduledNodes = new ArrayList<Integer>();
     private List<Integer> startTimes = new ArrayList<Integer>();
-    private int[] scheduleStartTime = new int[InputFileReader.NUM_NODES];
     private int id;
 
     public Processor(int pid) {
@@ -47,9 +46,6 @@ public class Processor {
             return 0;
         }
 
-//        System.out.println("START : " + startTimes.get(startTimes.size() - 1));
-//        System.out.println("WEIGHT: " + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)));
-
         // Get the start time of last node in list + weight
         return startTimes.get(startTimes.size() - 1)
                 + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
@@ -66,18 +62,11 @@ public class Processor {
     public void addNode(int node, PartialSchedule schedule, int processorNumber) {
         // Calculates time using the schedule the node needs to be added to and adds it
         // into the appropriate processor
-//        System.out.println("Start time is: " + schedule.calculateStartTime(node, processorNumber) + " for node " + node
-//        + " PS: " + schedule + " and on Processor " + processorNumber);
         startTimes.add(schedule.calculateStartTime(node, processorNumber));
-//        scheduleStartTime.add()
         scheduledNodes.add(node);
 
     }
 
-
-    public int[] getScheduleStartTimes() {
-        return this.scheduleStartTime;
-    }
 
     /**
      * Returns list of nodes that have been scheduled
@@ -125,31 +114,30 @@ public class Processor {
                 .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
     }
 
+
+    /**
+     * This method calculates the idle time. If it has more than one node scheduled, any idle times are totalled
+     * and returned. If only one node is inside the processor, the start time is returned as the idle time.
+     * This includes the node to be scheduled.
+     * @return
+     */
     public double calculateIdleTime(){
+
         double idleTime = 0;
 
-
-        // @starttime is the time it is scheduled on the current processor
-
-        // this only checks if there is more than one node scheduled. what if there is one node scheduled but still
-        // has idle time?
-
-        // THIS INCLUDES THE NODE TO BE SCHEDULED (trial)
-
+        // If only one node is scheduled, get start time of the node
         if (this.scheduledNodes.size() == 1) {
             idleTime = this.startTimes.get(0);
         } else {
-            for (int i = 1; i < this.scheduledNodes.size(); i++) {
-//            int finishingTime = InputFileReader.nodeWeights.get(this.scheduledNodes.get(i)) + this.startTimes.get(i);
 
-                int processorID = this.getProcessorID();
+            // Go through each node that is in the processor
+            for (int i = 1; i < this.scheduledNodes.size(); i++) {
 
                 int startOfCurrentNode = this.startTimes.get(i);
-                int weightOfCurrentNode = InputFileReader.nodeWeights.get(scheduledNodes.get(i));
                 int weightOfLastNode = InputFileReader.nodeWeights.get(scheduledNodes.get(i - 1));
                 int startOfLastNode = this.startTimes.get(i - 1);
 
-
+                // Calculate any idle times and add it to the total idle time
                 if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {
                     idleTime = idleTime + (double)((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
                 }

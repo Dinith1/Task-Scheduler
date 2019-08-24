@@ -37,7 +37,6 @@ public class AStarScheduler {
                 HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
 
                 for (PartialSchedule s : expandedCurrentSchedule) {
-//                    s.assignCostFunction((s.calculateCostFunction(newSchedule, node, processorList.size())), newSchedule);
                     open.add(s);
                 }
                 open.remove(currentSchedule);
@@ -71,7 +70,6 @@ public class AStarScheduler {
     public PartialSchedule getPartialScheduleInitial(int numberOfProcessors) {
         // Creates a schedule with the correct number of processors
         PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
-     //   schedule.calculateInitialCostFunction(schedule, numberOfProcessors);
         List<PartialSchedule> newScheduleList = schedule.expandNewStates();
         newScheduleList.sort(new CostFunctionComparator());
         return newScheduleList.get(0);

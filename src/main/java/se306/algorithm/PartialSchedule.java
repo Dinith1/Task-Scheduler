@@ -2,11 +2,9 @@ package se306.algorithm;
 
 import java.util.*;
 
-import javafx.scene.input.InputMethodTextRun;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
-import se306.algorithm.Processor;
 
 public class PartialSchedule {
 
@@ -50,21 +48,13 @@ public class PartialSchedule {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
                 PartialSchedule newSchedule = new PartialSchedule(this);
+
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
 
-//                boolean init = true;
-//                for(Processor p : newSchedule.getProcessorList()) {
-//                    if (p.getScheduledNodes().size() != 0) {
-//                        init = false;
-//                    }
-//                }
+                // Assign and calculate an updated cost function of the partial schedule
+                calculateCostFunction(newSchedule, node, processorList.size());
 
-                //if (init == false) {
-                  calculateCostFunction(newSchedule, node, processorList.size());
-               // } else {
-                //    this.assignCostFunction((this.calculateInitialCostFunction(newSchedule,processorList.size())),newSchedule);
-              //  }
                 if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
                     continue;
                 }
@@ -140,18 +130,27 @@ public class PartialSchedule {
         //
     }
 
+    public double getCostFunction() {
+        return costFunction;
+    }
+
+    public void setCostFunction(double costFunction) {
+        this.costFunction = costFunction;
+    }
 
 
+    /**
+     * This method calls the calculateAndSetCostFunction method to set an updated
+     * cost function for the partial schedule AFTER the new node is trialled
+     * @param ps
+     * @param nodeToAdd
+     * @param numOfProcessors
+     */
     private void calculateCostFunction(PartialSchedule ps, int nodeToAdd, int numOfProcessors) {
         CostFunctionCalculator calculator = new CostFunctionCalculator();
-
-       calculator.getCostFunction(ps, nodeToAdd, numOfProcessors);
+        calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
 
-    public void calculateInitialCostFunction(PartialSchedule ps, int numOfProcessors){
-        CostFunctionCalculator calculator = new CostFunctionCalculator();
-         calculator.getCostFunctionInitial(ps,numOfProcessors);
-    }
 
     /**
      * Creates processors and adds it to the list
@@ -204,28 +203,6 @@ public class PartialSchedule {
         return processorList;
     }
 
-    public int getFinishTime() {
-        int finishTime = 0;
-        for (Processor p : processorList) {
-            if (p.getCurrentCost() > finishTime) {
-                finishTime = p.getCurrentCost();
-            }
-        }
-        return finishTime;
-    }
-
-//    public int calculateCostFunction() {
-//        return getFinishTime();
-//    }
-
-    public double getCostFunction() {
-        return costFunction;
-    }
-
-    public void setCostFunction(double costFunction) {
-        this.costFunction = costFunction;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -260,11 +237,6 @@ public class PartialSchedule {
 
     private boolean processNormalisation() {
         return true;
-    }
-
-
-    public int findStartTime(int node, Processor processor) {
-        return processor.getScheduleStartTimes()[node];
     }
 
 
@@ -319,9 +291,6 @@ public class PartialSchedule {
                         // If the processor ID is not the original processor number
                         if (p.getProcessorID() != processorNumber) {
 
-                            int startTime = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID));
-                            int weight = InputFileReader.nodeWeights.get(parentID);
-
                             // Find end time of the parent node
                             int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
                                     + InputFileReader.nodeWeights.get(parentID);
@@ -335,8 +304,7 @@ public class PartialSchedule {
                             }
 
                             // If end time of parent is longer, that means we need to schedule when
-                            // parent is finished
-                            // instead of right when processor is free
+                            // parent is finished instead of right when processor is free
                             if ((endTimeOfParent >= currentStartTime) ||
                                     (endTimeOfParent + communicationCost >= currentStartTime)) {
                                 currentStartTime = endTimeOfParent + communicationCost;
