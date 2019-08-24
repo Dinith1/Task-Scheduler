@@ -85,7 +85,7 @@ public class Main extends Application {
 
         try {
             ifr.readInput(isr);
-            // ifr.pruneIdenticalNodes();
+            ifr.pruneIdenticalNodes();
 
         } catch (IOException e) {
             e.printStackTrace();

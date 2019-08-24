@@ -144,19 +144,25 @@ public class InputFileReader {
         return line.substring(0, iEnd);
     }
 
+    /**
+     * Adds nodes to a hashmap, where the key is the weight, and the value is an
+     * array of all the node (IDs) with that weight.
+     * 
+     * @param id     ID of the node
+     * @param weight Weight of the node
+     */
     private void addIdToWeightMap(int id, int weight) {
         if (nodeWeightsReversed.containsKey(weight)) {
-            // A node with the same weight already exists
-            int[] listOfNodes = nodeWeightsReversed.get(weight);
-            int[] newListOfNodes = new int[(listOfNodes.length + 1)];
-            System.arraycopy(listOfNodes, 0, newListOfNodes, 0, listOfNodes.length);
-            newListOfNodes[newListOfNodes.length - 1] = id;
-            nodeWeightsReversed.put(weight, newListOfNodes);
-        } else {
-            // A node with the same weight does not exist
-            int[] newListOfNodes = { id };
-            nodeWeightsReversed.put(weight, newListOfNodes);
+            // A node with the same weight already exists, so add to existing node array
+            int[] nodeList = nodeWeightsReversed.get(weight);
+            int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
+            newNodeList[newNodeList.length - 1] = id;
+            nodeWeightsReversed.put(weight, newNodeList);
+            return;
         }
+
+        // A node with the same weight does not exist, So add first node
+        nodeWeightsReversed.put(weight, new int[] { id });
     }
 
     /**
@@ -167,30 +173,36 @@ public class InputFileReader {
      * If the tasks are identical, insert virtual edges between the identical tasks
      * of a group to prune the state space. The edges should be between the last
      * scheduled node (chaining).
+     * <p>
+     * This method will daisy chain through other methods, ending in the nodeParents
+     * and nodeChildren fields of InputFileReader being modified to reflect the
+     * pruned graph.
      */
     public void pruneIdenticalNodes() {
         // Find all nodes with the same weight
         for (Map.Entry<Integer, int[]> entry : nodeWeightsReversed.entrySet()) {
             int[] sameWeightNodes = entry.getValue();
-            // Check if value matches with given value
-            if (sameWeightNodes.length == 1) {
-                continue;
-            } else {
+            // Check if there's at least two nodes with the same weight
+            if (sameWeightNodes.length > 1) {
                 // Check if nodes have the same parents
                 checkNodeParents(sameWeightNodes);
+            } else {
+                continue;
             }
         }
     }
 
+    /**
+     * Checks if an array of nodes (which have the same weights) all have a common
+     * parent.
+     * 
+     * @param sameWeightNodes Array of nodes to check.
+     */
     private void checkNodeParents(int[] sameWeightNodes) {
-        if (sameWeightNodes.length == 1) {
-            return;
-        }
-
         // Map from parent node to list of node ids
         HashMap<Integer, int[]> mapOfNodeParents = new HashMap<>();
 
-        // Find all same weight nodes with the same parent
+        // Find all (same weight) nodes with a parent in common
         for (int node : sameWeightNodes) {
             addIdToParentMap(node, mapOfNodeParents);
         }
@@ -198,17 +210,29 @@ public class InputFileReader {
         for (Map.Entry<Integer, int[]> entry : mapOfNodeParents.entrySet()) {
             int[] sameParentNodes = entry.getValue();
 
-            // Check if value matches with given value
-            if (sameParentNodes.length == 1) {
-                continue;
-            } else {
+            // Check if there's at least two (same weight) nodes with the same parent
+            if (sameParentNodes.length > 1) {
                 // Check if nodes have the same children
                 checkNodeChildren(sameParentNodes);
+            } else {
+                continue;
             }
         }
     }
 
+    /**
+     * 
+     * @param node
+     * @param parents
+     */
     private void addIdToParentMap(int node, HashMap<Integer, int[]> parents) {
+        // SHOULD NODES BE ADDED TO MULTIPLE HASHMAPS (i.e. should the child node be
+        // part of multiple values/arrays, one for each of its parents/keys)?
+        // TODO: REDO WHOLE METHOD???
+        if (parents.containsKey(node)) {
+
+        }
+
         // If node has no parents
         if (!nodeParents.containsKey(node)) {
             return;
