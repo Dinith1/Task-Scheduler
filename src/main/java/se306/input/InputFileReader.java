@@ -364,14 +364,14 @@ public class InputFileReader {
             mapOfNodeOutgoingEdges = addIdToOutgoingEdgeMap(i, mapOfNodeOutgoingEdges);
         }
         for (Map.Entry<Integer, int[]> entry : mapOfNodeOutgoingEdges.entrySet()) {
-            int[] sameOutgoingEdgeNodes = entry.getValue();
+            int[] identicalNodes = entry.getValue();
             // Check if value matches with given value
-            if (sameOutgoingEdgeNodes.length == 1) {
+            if (identicalNodes.length == 1) {
                 continue;
             } else {
                 // If this point is reached, the nodes are identical
                 // Chain the identical nodes
-                chainIdenticalNodes(sameOutgoingEdgeNodes);
+                chainIdenticalNodes(identicalNodes);
             }
         }
     }
@@ -396,77 +396,66 @@ public class InputFileReader {
         return nodeIncomingEdges;
     }
 
-    private void chainIdenticalNodes(int[] sameOutgoingEdgeNodes) {
+    private void chainIdenticalNodes(int[] identicalNodes) {
         // If reached, this means the nodes are identical
-        // Set the parents and children of each identical node as each other
-        int[] intermediateNodes = new int[sameOutgoingEdgeNodes.length - 2];
+        // Set the parents and children of each identical node as each other for the
+        // body nodes
+        // The body excludes the head and tail of identical nodes (hence -2)
+        int[] bodyNodes = new int[identicalNodes.length - 2];
 
-        // Iterate through all identical nodes and create an intermediate chain of nodes
-        for (int i = 1; i < sameOutgoingEdgeNodes.length - 1; i++) {
-            createIntermediateChain(i);
+        // // Iterate through all identical nodes and create an Body chain of nodes
+        // for (int i = 1; i < identicalNodes.length - 1; i++) {
+        // createBodyChain(i);
+        // }
+
+        // // Set the first identical node to keep its parent and set child to head of
+        // the
+        // // body chain
+        // setChild(bodyNodes[0], identicalNodes);
+        // setParent(identicalNodes[identicalNodes.length - 1],
+        // bodyNodes[bodyNodes.length - 1]);
+
+        for (int i = 0; i < identicalNodes.length; i++) {
+            if (i == 0) {
+                // delete all children
+                // add identical[1] as child
+            } else if (i == identicalNodes.length - 1) {
+                // delete parent
+                // set parent to
+            }
         }
-
-        // Set the first identical node to keep its parent and set child to head of the
-        // intermediate chain
-        setChild(sameOutgoingEdgeNodes[0], intermediateNodes[0], true);
-        setParent(sameOutgoingEdgeNodes[sameOutgoingEdgeNodes.length - 1],
-                intermediateNodes[intermediateNodes.length - 1], true);
     }
 
-    private void setChild(int nodeId, int childId, boolean removeAll) {
-        // Update parents array
-        if (removeAll) {
-            removeChildrenNodes(parents, nodeId);
-        } else {
-            parents[childId][nodeId] = 1;
-        }
+    private void createBodyChain(int id) {
+        // Remove all parents and children of the intermediate nodes (nodes that are not
+        // the head or tail of the chain)
+
+        // Must also remove edges to and from children
+        // TODO: Update edges
+    }
+
+    private void setChild(int intermediateChild, int[] identicalNodes) {
+        // Get all children of parent
+        int[] children = nodeChildren.get(parent);
+
+        // Remove all children existing in identicalNodes excluding head
 
         // TODO: Update edges e.g. remove edge between old children and create edge
         // between new children
 
     }
 
-    private void setParent(int nodeId, int parentId, boolean removeAll) {
-        // Update parents array
-        if (removeAll) {
-            // Set its parent to head of the intermediate chain
-            parents[nodeId] = new int[NUM_NODES];
-        } else {
-            parents[nodeId][parentId] = 1;
-        }
+    private void setParent(int child, int intermediateParent) {
+        // Set its parent to head of the intermediate chain
 
         // TODO: Update edges e.g. remove edge between old parents and create edge
         // between new parents
         // TODO: Double check id and index passing for all methods
     }
 
-    private void createIntermediateChain(int id) {
-        // Remove all parents and children of the intermediate nodes (nodes that are not
-        // the head or tail of the chain)
-        parents[id] = new int[NUM_NODES];
-        int[] childrenNodes = removeChildrenNodes(parents, id);
-
-        // Must also remove edges to and from children
-        // TODO: Update edges
-    }
-
-    private int[] removeChildrenNodes(int[][] array, int col) {
-        int[] columnArray = new int[array[0].length];
-        int count = 0;
-        for (int j = 0; j < array[0].length; j++) {
-            for (int i = 0; i < array.length; i++) {
-                if (j == col) {
-                    columnArray[count] = 0;
-                    count++;
-                }
-            }
-        }
-        return columnArray;
-    }
-
     /**
-     * Takes a node, and adds an immediate parent, putting
-     * it into the nodeParents HashMap
+     * Takes a node, and adds an immediate parent, putting it into the nodeParents
+     * HashMap
      * 
      * @param child
      * @param parent
@@ -488,8 +477,8 @@ public class InputFileReader {
     }
 
     /**
-     * Takes a node, and adds an immediate child, putting
-     * it into the nodeChildren HashMap
+     * Takes a node, and adds an immediate child, putting it into the nodeChildren
+     * HashMap
      * 
      * @param parent
      * @param child
