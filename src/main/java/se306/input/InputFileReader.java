@@ -16,7 +16,7 @@ import org.graphstream.stream.GraphParseException;
 public class InputFileReader {
     public static int NUM_NODES;; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
                                   // graph generator)
-    public static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
+    private static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
                                  // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
@@ -35,13 +35,13 @@ public class InputFileReader {
                                                                                            // node -> MIGHT NEED TO
                                                                                            // CHANGE WEIGHT TO DOUBLE
 
-    public static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
+    private static HashMap<Integer, Object> childrenOfParent = new HashMap<Integer, Object>();
 
     public static int[][] parents; // parents[0] stores parents of node with id = 0,
                                    // i.e. parents[0][1] = 1 means node with id = 1 is a
                                    // parent of node with id 0
 
-    public static int[][] parentsReverse;
+    private static int[][] parentsReverse;
 
     public static int[][] listOfEdges; // {{from, to, weight}, {f, t, w}, ...} Each from/to is
                                        // the id of the node

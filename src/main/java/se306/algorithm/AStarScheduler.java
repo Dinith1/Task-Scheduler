@@ -66,7 +66,7 @@ public class AStarScheduler {
      * @return a partialSchedule which has the lowest cost function to start out
      *         with
      */
-    public void getPartialScheduleInitial(int numberOfProcessors) {
+     private void getPartialScheduleInitial(int numberOfProcessors) {
         // Creates a schedule with the correct number of processors
         PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
         HashSet<PartialSchedule> newScheduleList = schedule.expandNewStates();
