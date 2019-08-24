@@ -83,7 +83,6 @@ public class GraphController implements Initializable {
         Task<Void> schedule = new Task<Void>() {
             @Override
             public Void call(){
-                startBtn.setDisable(true);
                 Main.startScheduling();
                 return null;
             }
@@ -91,12 +90,12 @@ public class GraphController implements Initializable {
         schedule.setOnSucceeded(e -> { //Once tasks finished then it should re enable buttons
             countProgress.stop();
             createSchedule();
-            startBtn.setDisable(false);
         });
 
         startTimer();
         new Thread(schedule).start();
         countProgress.play();
+        startBtn.setDisable(true);
     }
 
     private void startTimer(){
