@@ -1,25 +1,15 @@
 package se306.visualisation.backend;
 
-import com.sun.javafx.runtime.VersionInfo;
 import eu.hansolo.tilesfx.Tile;
 import javafx.animation.Animation;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -31,13 +21,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import org.apache.commons.lang3.time.StopWatch;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -45,7 +33,6 @@ import java.util.*;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.parse.Parser;
 
 public class GraphController implements Initializable {
 
@@ -70,55 +57,51 @@ public class GraphController implements Initializable {
     @FXML
     private Tile progressTile;
 
-    long startTime = System.nanoTime()/1000000;
-
     Timeline countProgress = new Timeline();
-    static final int STARTTIME = 0;
-    private final IntegerProperty timeSeconds = new SimpleIntegerProperty(STARTTIME);
-    Timeline timeline;
+    private static final double STARTTIME = 0;
+    private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
-    private boolean timerRunning;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTile();
-        timeElapsed.textProperty().bind((timeSeconds.divide(1000.0)).asString());
+        timeElapsed.textProperty().bind(((seconds.divide(1000.00)).asString()));
         CommandLineParser parser = CommandLineParser.getInstance();
         if (!parser.wantVisual()) {
             Main.startScheduling();
         }
     }
     private void updateTime(){
-        int seconds = timeSeconds.get();
-        timeSeconds.set(seconds+1);
+        double seconds = this.seconds.get();
+        this.seconds.set(seconds+1);
     }
 
     @FXML
     void handleStart(MouseEvent event) {
         Task<Void> schedule = new Task<Void>() {
             @Override
-            public Void call() throws Exception {
+            public Void call(){
+                startBtn.setDisable(true);
                 Main.startScheduling();
-                Platform.runLater(new Runnable() {
-                    public void run() {
-                        timeline.stop();
-                        createSchedule();
-                    }
-                });
                 return null;
             }
         };
-        timeline = new Timeline(new KeyFrame(Duration.seconds(0.001),evt-> updateTime()));
-        timeline.setCycleCount((Animation.INDEFINITE));
-        timeSeconds.set(STARTTIME);
-        Thread thread = new Thread(schedule);
-        thread.start();
-        timeline.play();
-//        Main.startScheduling();
-//        createSchedule();
+        schedule.setOnSucceeded(e -> { //Once tasks finished then it should re enable buttons
+            countProgress.stop();
+            createSchedule();
+            startBtn.setDisable(false);
+        });
 
-        startBtn.setDisable(true);
+        startTimer();
+        new Thread(schedule).start();
+        countProgress.play();
+    }
+
+    private void startTimer(){
+        countProgress = new Timeline(new KeyFrame(Duration.millis(1),evt-> updateTime()));
+        countProgress.setCycleCount((Animation.INDEFINITE));
+        seconds.set(STARTTIME);
     }
 
     public void createGraph(MutableGraph graph) throws IOException {
