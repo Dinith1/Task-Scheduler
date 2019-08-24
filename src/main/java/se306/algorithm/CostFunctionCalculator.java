@@ -40,21 +40,21 @@ public class CostFunctionCalculator {
                 }
             }
         }
-//        System.out.println("MAXBL = " + maxBL);
+    //   System.out.println("MAXBL = " + maxBL);
 
         double maxDRT = getDRT(newPs, free);
-//        System.out.println("MaxDrt = " + maxDRT);
+     //   System.out.println("MaxDrt = " + maxDRT);
 
 
         double maxIdleTime = getIdleTime(newPs, numOfProcessors);
-//        System.out.println("idleTime= " + maxIdleTime);
+    //   System.out.println("idleTime= " + maxIdleTime);
 
         double max = Math.max(Math.max(maxBL, maxDRT), maxIdleTime);
 
         //	System.out.println("maxBl = " + maxBL);
         //	System.out.println("maxDRT = " + maxDRT);
 
-//        System.out.println("Cost function is " + max);
+    //    System.out.println("Cost function is " + max);
         return max;
     }
 
@@ -143,9 +143,9 @@ public class CostFunctionCalculator {
                     dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
                     // Update the maximum T(dr)
-                    if (maxStartTime < dataReady) {
+                   // if (maxStartTime < dataReady) {
                         maxStartTime = dataReady;
-                    }
+                 //   }
                 }
 
                 // Calculate the cost function DRT

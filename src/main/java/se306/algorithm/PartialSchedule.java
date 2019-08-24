@@ -54,11 +54,11 @@ public class PartialSchedule {
                 newSchedule.addToProcessor(j, node);
 
                 this.assignCostFunction((this.calculateCostFunction(newSchedule, node, processorList.size())), newSchedule);
-
                 if(AStarScheduler.closed.contains(newSchedule) || AStarScheduler.closed.contains(newSchedule)){
                     continue;
                 }
                 else {
+
                     // Add the schedule to overall expanded list
                     newExpandedSchedule.add(newSchedule);
                 }
@@ -335,7 +335,7 @@ public class PartialSchedule {
                     }
                 }
             }
-        }
+       }
         return maxStartTime;
     }
 }
