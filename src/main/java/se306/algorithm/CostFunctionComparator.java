@@ -12,7 +12,12 @@ public class CostFunctionComparator implements Comparator<PartialSchedule> {
             return 1;
         }
         else{
-            return -1;
+            if(s1.numberOfNodesScheduled >= s2.numberOfNodesScheduled) {
+                return -1;
+            }
+            else{
+                return 1;
+            }
         }
     }
 }

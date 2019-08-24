@@ -10,12 +10,13 @@ public class PartialSchedule {
     // User defined available processors placed in a list
     private HashMap<Integer,Processor> processorList = new HashMap();
     private int costFunction;
+    public int numberOfNodesScheduled;
 
-    public PartialSchedule(int processorNumber) {
+    PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
 
-    public PartialSchedule(PartialSchedule ps) {
+    private PartialSchedule(PartialSchedule ps) {
         for (Integer i : ps.getProcessorList().keySet()) {
             Processor p = ps.getProcessorList().get(i);
             this.processorList.put(p.getProcessorID(),new Processor(p));
@@ -24,21 +25,7 @@ public class PartialSchedule {
         this.costFunction = ps.costFunction;
     }
 
-    /**
-     * Comparator to be used with resorting the processor list back into the process
-     * identifier number order
-     */
-    private Comparator<Processor> sortByIdentifierNumber = new Comparator<Processor>() {
-        public int compare(Processor p1, Processor p2) {
-            if (p1.getProcessorID() < p2.getProcessorID()) {
-                return -1;
-            }
-
-            return 1;
-        }
-    };
-
-    public HashSet<PartialSchedule> expandNewStates() {
+     HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         // Find how many nodes need to be scheduled for the expansion
         Set<Integer> nodes = findSchedulableNodes();
@@ -141,14 +128,18 @@ public class PartialSchedule {
      * 
      * @return scheduledNodes
      */
-    public Set<Integer> getUsedNodes() {
+     private Set<Integer> getUsedNodes() {
         Set<Integer> scheduledNodes = new HashSet<>();
-
+        int count = 0;
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
             // For each processor node map turn it into a hashSet of keys
-            scheduledNodes.addAll(p.getScheduledNodes());
+            for(Integer nodes:p.getScheduledNodes()){
+                scheduledNodes.add(nodes);
+                count++;
+            }
         }
+         numberOfNodesScheduled = count;
         return scheduledNodes;
     }
 
@@ -156,11 +147,11 @@ public class PartialSchedule {
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
      */
-    public HashMap<Integer,Processor> getProcessorList() {
+     HashMap<Integer,Processor> getProcessorList() {
         return processorList;
     }
 
-    public int getFinishTime() {
+    private int getFinishTime() {
         int finishTime = 0;
         for (Integer i : processorList.keySet()) {
             if (processorList.get(i).getCurrentCost() > finishTime) {
@@ -170,15 +161,15 @@ public class PartialSchedule {
         return finishTime;
     }
 
-    public int calculateCostFunction() {
+     int calculateCostFunction() {
         return getFinishTime();
     }
 
-    public int getCostFunction() {
+     int getCostFunction() {
         return costFunction;
     }
 
-    public void setCostFunction(int costFunction) {
+     void setCostFunction(int costFunction) {
         this.costFunction = costFunction;
     }
 
@@ -207,7 +198,6 @@ public class PartialSchedule {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-
         return new HashCodeBuilder().append(processorList).toHashCode();
     }
 
@@ -253,7 +243,7 @@ public class PartialSchedule {
                         if (p.getProcessorID() != processorNumber) {
 
                             // Find end time of the parent node
-                            int endTimeOfParent = p.getStartTimes().get(p.getScheduledNodes().indexOf(parentID))
+                            int endTimeOfParent = p.getStartTimes().get(parentID)
                                     + InputFileReader.nodeWeights.get(parentID);
 
                             // Gets communication cost of the parent

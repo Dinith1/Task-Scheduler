@@ -50,7 +50,7 @@ public class OutputFileGenerator {
 				for (Line line : this.lineInformation) {
 					if (n == line.node) {
 						line.setProcessor(processor);
-						line.setNodeStartTime(processor.getStartTimes().get(processor.getScheduledNodes().indexOf(n)));
+						line.setNodeStartTime(processor.getStartTimes().get(n));
 					}
 				}
 			}
