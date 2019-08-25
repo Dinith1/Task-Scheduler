@@ -3,8 +3,8 @@
 ## Run from the Command Line
 1. Move all resources/input files into the same directory as where `scheduler-basic-T4.jar` exists
 2. Open up terminal/command line
-3. Run `cd <path to where scheduler-basic-T4.jar is located> `
-4. Run `java -jar scheduler.jar <INPUT.dot> <P> [OPTIONS]`
+3. Run `cd <path to where scheduler-final-T4.jar is located> `
+4. Run `java -jar scheduler-final-T4.jar <INPUT.dot> <P> [OPTIONS]`
 
 ## Run from IntelliJ
 1. Keep .dot files on the top project directory.
@@ -26,7 +26,7 @@
 ## Overview:
 This program takes in an input graph via a .dot file, this directed acyclic graph has nodes and edges with weights that represent processing time and communication costs between processors respectively. Each node represents a task which can be scheduled on a processor. This scheduler will find a valid schedule to return.
 
-- Run JAR: `java -jar scheduler.jar <INPUT.dot> <P> [OPTIONS]`
+- Run JAR: `java -jar scheduler-final-T4.jar <INPUT.dot> <P> [OPTIONS]`
 
 | Required | Description | 
 |---|---|
@@ -40,7 +40,7 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 | `-o <OUTPUT.dot>` | Name of file to save output schedule to |
 
 - To get help:
-  - `java -jar scheduler.jar --help`
+  - `java -jar scheduler-final-T4.jar --help`
   - This will prints information on how to use the JAR file
   - *DISCLAIMER: -p and -v have NOT been implemented in this current release*
 
@@ -48,7 +48,7 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 
 1. Run `mvn package`. This should generate a target folder on top directory
 2. Open up a terminal and cd to the target folder
-3. Run `scheduler.jar`
+3. Run `scheduler-final-T4.jar`
 4. It should run fine, if not, run `mvn clean` and try again.
 5. The output file should be in the same directory as your jar. i.e top level directory in target folder
 
