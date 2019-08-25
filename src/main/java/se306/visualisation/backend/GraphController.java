@@ -195,7 +195,7 @@ public class GraphController implements Initializable {
         yAxis.setTickLabelFill(Color.WHITE);
         yAxis.setTickLabelGap(10);
 
-        chart.setTitle("Final schedule");
+        chart.setTitle("Optimal Schedule");
         chart.setLegendVisible(false);
         schedulePane.setRightAnchor(chart, 0.0);
         schedulePane.getChildren().add(chart);
