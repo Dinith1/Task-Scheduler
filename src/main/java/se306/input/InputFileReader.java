@@ -314,15 +314,14 @@ public class InputFileReader {
         int[] weights = new int[1];
         int count = 0;
 
-        for (int i = 0; i < listOfEdges[0].length; i++) {
-            for (int j = 0; j < listOfEdges.length; j++) {
-                // If the 'to' node is the same as the specified node, store the weight
-                if (listOfEdges[i][col] == node) {
-                    weights[count] = listOfEdges[i][2];
-                    count++;
-                    weights = Arrays.copyOf(weights, weights.length + 1);
-                    weights[weights.length - 1] = listOfEdges[i][2];
-                }
+        // Iterate through all rows containing edges
+        for (int i = 0; i < listOfEdges.length; i++) {
+            // If the 'to' node is the same as the specified node, store the weight
+            if (listOfEdges[i][col] == node) {
+                weights[count] = listOfEdges[i][2];
+                count++;
+                weights = Arrays.copyOf(weights, weights.length + 1);
+                weights[weights.length - 1] = listOfEdges[i][2];
             }
         }
         return weights;
