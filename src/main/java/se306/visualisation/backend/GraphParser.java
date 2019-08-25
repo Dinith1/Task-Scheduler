@@ -28,7 +28,8 @@ public class GraphParser {
 
 			getNumberOfNodesAndEdges(isr);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("File not found");
+			System.exit(0);
 		}
 	}
 

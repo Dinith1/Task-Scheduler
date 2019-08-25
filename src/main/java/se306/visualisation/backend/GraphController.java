@@ -28,6 +28,7 @@ import javafx.util.Duration;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkImages;
 import se306.Main;
@@ -143,7 +144,7 @@ public class GraphController implements Initializable {
      * @throws IOException
      */
     public void createGraph() throws IOException {
-        Graph graph = new SingleGraph("Nodes Graph");
+        Graph graph = new MultiGraph("Nodes Graph");
         // for each node, add the node to the graph and set its label to be its id and
         // weight
         for (int i : InputFileReader.getInstance().getNodeIds()) {
