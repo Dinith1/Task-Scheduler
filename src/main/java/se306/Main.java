@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+
 import guru.nidi.graphviz.model.MutableGraph;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,11 @@ import javafx.stage.Stage;
 
 import se306.visualisation.backend.GraphController;
 import se306.visualisation.backend.GraphParser;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Main class to test InputFileReader functionality
@@ -46,7 +52,7 @@ public class Main extends Application {
         } catch (InvalidInputException | NumberFormatException e) {
             Log.error(e.getMessage());
             parser.printUsage();
-            return;
+            System.exit(0);
         }
 
         if (parser.wantVisual()) {
@@ -61,6 +67,7 @@ public class Main extends Application {
     public static void startScheduling() {
         CommandLineParser parser = CommandLineParser.getInstance();
         InputStreamReader isr;
+        
         try {
             isr = new FileReader(parser.getInputFileName());
         } catch (FileNotFoundException e) {
@@ -68,13 +75,17 @@ public class Main extends Application {
             return;
         }
 
-        InputFileReader ifr = new InputFileReader();
+        InputFileReader ifr = InputFileReader.getInstance();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
         try {
+            System.out.println("Before ifr");
             ifr.readInput(isr);
+            System.out.println("Before prune identical children");
+            ifr.pruneIdenticalNodes();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

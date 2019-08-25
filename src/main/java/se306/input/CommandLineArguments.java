@@ -8,9 +8,6 @@ import com.google.devtools.common.options.OptionsBase;
  */
 public class CommandLineArguments extends OptionsBase {
 
-	@Option(name = "HELP", abbrev = 'h', help = "Prints usage info", category = "Startup", defaultValue = "false")
-	public boolean help;
-
 	@Option(name = "NUMCORES", abbrev = 'p', help = "Number of cores to use to produce the schedule", category = "Startup", defaultValue = "1")
 	public int numCores;
 

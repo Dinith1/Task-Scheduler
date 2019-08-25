@@ -2,16 +2,15 @@ package se306.algorithm;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import se306.input.InputFileReader;
-
-import java.util.*;
-import java.sql.SQLOutput;
+import java.util.HashMap;
+import java.util.Set;
 
 public class Processor {
+    private InputFileReader ifr = InputFileReader.getInstance();
 
-    private HashMap<Integer,Integer> scheduledNodes;
-    private HashMap<Integer,Integer> orderOfNodes;
+    private HashMap<Integer, Integer> scheduledNodes;
+    private HashMap<Integer, Integer> orderOfNodes;
     private int processorEndTime;
     private int id;
 
@@ -42,13 +41,15 @@ public class Processor {
      * @return finishing time
      */
     public int getCurrentCost() {
-//        if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
-//            return 0;
-//        }
-////        System.out.println("START : " + startTimes.get(startTimes.size() - 1));
-////        System.out.println("WEIGHT: " + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)));
-//        return startTimes.get(startTimes.size() - 1)
-//                + InputFileReader.nodeWeights.get(scheduledNodes.get(scheduledNodes.size() - 1)); // AUTOBOXING?
+        // if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
+        // return 0;
+        // }
+        //// System.out.println("START : " + startTimes.get(startTimes.size() - 1));
+        //// System.out.println("WEIGHT: " +
+        // ifr.getNodeWeights().get(scheduledNodes.get(scheduledNodes.size() - 1)));
+        // return startTimes.get(startTimes.size() - 1)
+        // + ifr.getNodeWeights().get(scheduledNodes.get(scheduledNodes.size() - 1)); //
+        // AUTOBOXING?
         return processorEndTime;
     }
 
@@ -64,12 +65,11 @@ public class Processor {
         // Calculates time using the schedule the node needs to be added to and adds it
         // into the appropriate processor
         int order = scheduledNodes.size();
-        scheduledNodes.put(node,schedule.calculateStartTime(node, processorNumber));
-        processorEndTime = scheduledNodes.get(node) + InputFileReader.nodeWeights.get(node);
-        orderOfNodes.put(order,node);
+        scheduledNodes.put(node, schedule.calculateStartTime(node, processorNumber));
+        processorEndTime = scheduledNodes.get(node) + ifr.getNodeWeights().get(node);
+        orderOfNodes.put(order, node);
 
     }
-
 
     /**
      * Returns set of nodes that have been scheduled
@@ -109,22 +109,23 @@ public class Processor {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        
+
         Processor secondProcessor = (Processor) obj;
         return new EqualsBuilder()
-//                 .appendSuper(super.equals(obj))
-                .append(scheduledNodes, secondProcessor.scheduledNodes)
-                .isEquals() && checkCurrentCost(secondProcessor.getCurrentCost());
+                // .appendSuper(super.equals(obj))
+                .append(scheduledNodes, secondProcessor.scheduledNodes).isEquals()
+                && checkCurrentCost(secondProcessor.getCurrentCost());
     }
 
-
     /**
-     * This method calculates the idle time. If it has more than one node scheduled, any idle times are totalled
-     * and returned. If only one node is inside the processor, the start time is returned as the idle time.
-     * This includes the node to be scheduled.
+     * This method calculates the idle time. If it has more than one node scheduled,
+     * any idle times are totalled and returned. If only one node is inside the
+     * processor, the start time is returned as the idle time. This includes the
+     * node to be scheduled.
+     * 
      * @return
      */
-    public double calculateIdleTime(){
+    public double calculateIdleTime() {
         double idleTime = 0;
 
         // If only one node is scheduled, get start time of the node
@@ -135,16 +136,16 @@ public class Processor {
 
             // Go through each node that is in the processor
             for (Integer i : orderOfNodes.keySet()) {
-                if(i == 0){
+                if (i == 0) {
                     continue;
                 }
                 int startOfCurrentNode = this.getStartTimes().get(orderOfNodes.get(i));
-                int weightOfLastNode = InputFileReader.nodeWeights.get(orderOfNodes.get(i-1));
-                int startOfLastNode = this.getStartTimes().get(orderOfNodes.get(i-1));
+                int weightOfLastNode = ifr.getNodeWeights().get(orderOfNodes.get(i - 1));
+                int startOfLastNode = this.getStartTimes().get(orderOfNodes.get(i - 1));
 
                 // Calculate any idle times and add it to the total idle time
                 if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {
-                    idleTime = idleTime + (double)((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
+                    idleTime = idleTime + (double) ((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
                 }
             }
         }
@@ -157,9 +158,7 @@ public class Processor {
     @Override
     public int hashCode() {
         // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
-        return new HashCodeBuilder(805306457, 402653189)
-                .append(scheduledNodes)
-                .append(getCurrentCost()).toHashCode();
+        return new HashCodeBuilder(805306457, 402653189).append(scheduledNodes).append(getCurrentCost()).toHashCode();
     }
 
     private boolean checkCurrentCost(int currentCost) {

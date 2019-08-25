@@ -14,6 +14,7 @@ public class CommandLineParser {
 	private String inputFileName;
 	private String outputFileName;
 	private int numProcessors;
+	private int numCores;
 	private boolean visualise;
 	private OptionsParser optParser;
 
@@ -79,8 +80,6 @@ public class CommandLineParser {
 		if (options.numCores < 1) {
 			throw new InvalidInputException(
 					"Please enter a valid number of cores (processors) for paralellising the search");
-		} else if (options.numCores > 1) {
-			Log.error("Cores have not yet been implemented. Only 1 core will be used.");
 		}
 
 		this.inputFileName = input[0];
@@ -100,7 +99,11 @@ public class CommandLineParser {
 		}
 
 		this.visualise = options.visualise;
+		this.numCores = options.numCores;
 	}
+
+
+
 
 	/**
 	 * Get the input number of processors
@@ -109,6 +112,14 @@ public class CommandLineParser {
 	 */
 	public int getNumberOfProcessors() {
 		return numProcessors;
+	}
+
+	/**
+	 * Get the number of cores specified by the user
+	 * @return
+	 */
+	public int getNumberOfCores() {
+		return numCores;
 	}
 
 	/**

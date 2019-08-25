@@ -39,6 +39,7 @@ import java.util.*;
 
 
 public class GraphController implements Initializable {
+    private InputFileReader ifr;
 
     @FXML
     ImageView graphImage;
@@ -68,16 +69,15 @@ public class GraphController implements Initializable {
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
-    /**
-     * This gets called when the controller is loaded for the first time
-     * @param location
-     * @param resources
-     */
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("visual");
         populateTile();
         timeElapsed.textProperty().bind(((seconds.divide(1000.00)).asString()));
         CommandLineParser parser = CommandLineParser.getInstance();
+        this.ifr = InputFileReader.getInstance();
         if (parser.wantVisual()) {
             Main.startScheduling();
         }
@@ -95,7 +95,7 @@ public class GraphController implements Initializable {
      */
     private void updateTime(){
         double seconds = this.seconds.get();
-        this.seconds.set(seconds+1);
+        this.seconds.set(seconds + 1);
     }
 
     /**
@@ -111,7 +111,7 @@ public class GraphController implements Initializable {
                 return null;
             }
         };
-        schedule.setOnSucceeded(e -> { //Once tasks finished then it should re enable buttons
+        schedule.setOnSucceeded(e -> { // Once tasks finished then it should re enable buttons
             countProgress.stop();
             populateSchedule();
         });
@@ -227,8 +227,8 @@ public class GraphController implements Initializable {
             for (Integer j : p.getScheduledNodes()) {
                 series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-blue")));
             }
-        i++;
-        chart.getData().add(series);
+            i++;
+            chart.getData().add(series);
         }
 
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());

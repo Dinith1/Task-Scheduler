@@ -6,6 +6,7 @@ import se306.visualisation.backend.ScheduleParser;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.concurrent.Executors;
 
 public class AStarScheduler {
 
@@ -21,7 +22,7 @@ public class AStarScheduler {
      * @return the optimal partial Schedule
      * @throws Exception place holder exception
      */
-    private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception {
+    public PartialSchedule aStarAlgorithm(int numberOfProcessors, int numberOfCores) throws Exception {
         // OPEN <-- S init
         getPartialScheduleInitial(numberOfProcessors);
         while (!open.isEmpty()) {
@@ -34,7 +35,7 @@ public class AStarScheduler {
                 }
 
                 // EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
-                HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.expandNewStates());
+                HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.chooseExpansionAlgorithm(numberOfCores));
                 for (PartialSchedule s : expandedCurrentSchedule) {
                     if(!createdSchedules.contains(s)){
                        // s.setCostFunction(s.calculateCostFunction());
@@ -53,8 +54,14 @@ public class AStarScheduler {
      */
     public void findOptimalSchedule() {
         try {
-            PartialSchedule optimalSchedule = aStarAlgorithm(CommandLineParser.getInstance().getNumberOfProcessors());
+            CommandLineParser clp = CommandLineParser.getInstance();
+            //Creates thread executor
+            PartialSchedule.multiThreadExecutor = Executors.newWorkStealingPool(clp.getNumberOfCores());
+            PartialSchedule optimalSchedule = aStarAlgorithm(clp.getNumberOfProcessors(),clp.getNumberOfCores());
+            //Shuts down the processors
+            PartialSchedule.multiThreadExecutor.shutdown();
             OutputFileGenerator.getInstance().generateFile(optimalSchedule.getProcessorList());
+
             ScheduleParser.getInstance().parseSchedule(optimalSchedule);
         } catch (Exception e) {
             e.getMessage();
