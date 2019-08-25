@@ -8,17 +8,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class OutputFileGenerator {
-
 	private PrintWriter writer;
 	private static OutputFileGenerator outputFileGenerator = null;
 	private List<Line> lineInformation = new ArrayList<>();
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
 
 	private OutputFileGenerator() {
-
 	}
 
 	public static OutputFileGenerator getInstance() {
@@ -30,7 +27,7 @@ public class OutputFileGenerator {
 	 * assigns processors to the nodes to be printed
 	 *
 	 */
-	public void generateFile(HashMap<Integer,Processor> processorList) {
+	public void generateFile(HashMap<Integer, Processor> processorList) {
 		addProcessorsToLines(processorList);
 		printLinesToFile();
 		closeWriter();
@@ -43,7 +40,7 @@ public class OutputFileGenerator {
 	 *
 	 * @param processorList
 	 */
-	private void addProcessorsToLines(HashMap<Integer,Processor> processorList) {
+	private void addProcessorsToLines(HashMap<Integer, Processor> processorList) {
 		for (Integer i : processorList.keySet()) {
 			Processor processor = processorList.get(i);
 			for (int n : processor.getScheduledNodes()) { // AUTOBOXING ================================================
@@ -139,12 +136,14 @@ public class OutputFileGenerator {
 		 * @return The line
 		 */
 		String getStringLine() {
+			InputFileReader ifr = InputFileReader.getInstance();
+
 			if (this.node != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
 				sb.append((this.node));
 				sb.append("\t\t[Weight=");
-				sb.append(InputFileReader.nodeWeights.get(this.node));
+				sb.append(ifr.getNodeWeights().get(this.node));
 				sb.append(",Start=");
 				sb.append(this.nodeStartTime);
 				sb.append(",Processor=");

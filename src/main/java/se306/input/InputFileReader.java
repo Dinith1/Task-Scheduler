@@ -11,35 +11,69 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Singleton class for reading the input file and generating the required
+ * datastructures
+ */
 public class InputFileReader {
-    public static int NUM_NODES;
-    public static int NUM_EDGES;
+    private static InputFileReader inputFileReader = null;
+
+    private int NUM_NODES;
+    private int NUM_EDGES;
 
     // Values stored are node ids
-    public static int[] nodeIds;
+    private int[] nodeIds;
 
     // Map from id to weight of node
-    public static HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> nodeWeights = new HashMap<Integer, Integer>();
 
     // Map from weight of node to list of node ids
-    public static HashMap<Integer, int[]> nodeWeightsReversed = new HashMap<Integer, int[]>();
+    private HashMap<Integer, int[]> nodeWeightsReversed = new HashMap<Integer, int[]>();
 
     // Map from id to node's parents
-    public static HashMap<Integer, int[]> nodeParents = new HashMap<Integer, int[]>();
+    private HashMap<Integer, int[]> nodeParents = new HashMap<Integer, int[]>();
 
     // Map from id to node's children
-    public static HashMap<Integer, int[]> nodeChildren = new HashMap<Integer, int[]>();
+    private HashMap<Integer, int[]> nodeChildren = new HashMap<Integer, int[]>();
 
     // {{from, to, weight}, {f, t, w}, ...} Each from/to is the id of the node
-    public static int[][] listOfEdges;
+    private int[][] listOfEdges;
 
     private OutputFileGenerator outputFileGenerator = OutputFileGenerator.getInstance();
 
-    public InputFileReader() {
+    private InputFileReader() {
         NUM_NODES = GraphParser.totalNodes;
         NUM_EDGES = GraphParser.totalEdges;
         nodeIds = new int[NUM_NODES];
         listOfEdges = new int[NUM_EDGES][3];
+    }
+
+    public static InputFileReader getInstance() {
+        return (inputFileReader == null) ? (inputFileReader = new InputFileReader()) : inputFileReader;
+    }
+
+    public int[] getNodeIds() {
+        return this.nodeIds;
+    }
+
+    public HashMap<Integer, Integer> getNodeWeights() {
+        return this.nodeWeights;
+    }
+
+    public HashMap<Integer, int[]> getNodeWeightsReversed() {
+        return this.nodeWeightsReversed;
+    }
+
+    public HashMap<Integer, int[]> getNodeParents() {
+        return this.nodeParents;
+    }
+
+    public HashMap<Integer, int[]> getNodeChildren() {
+        return this.nodeChildren;
+    }
+
+    public int[][] getListOfEdges() {
+        return this.listOfEdges;
     }
 
     /**
@@ -134,11 +168,10 @@ public class InputFileReader {
         buffRead.close();
     }
 
-
     /**
      * Takes in a line from the file and gets the weight.
      *
-     * @param line
+     * @param line String to parse to find the weight
      * @return The weight
      */
     private int findWeight(String line) {
@@ -150,7 +183,7 @@ public class InputFileReader {
     /**
      * Takes in a line from the file and gets the node name.
      *
-     * @param line
+     * @param line String to parse to find the name
      * @return The name
      */
     private String findName(String line) {
@@ -196,7 +229,7 @@ public class InputFileReader {
     public void pruneIdenticalNodes() {
 
         //Check for independent node graphs
-        if (InputFileReader.listOfEdges.length == 0) {
+        if (listOfEdges.length == 0) {
             return;
         } else {
             // Find all nodes with the same weight
@@ -206,8 +239,6 @@ public class InputFileReader {
                 if (sameWeightNodes.length > 1) {
                     // Check if nodes have the same parents
                     checkNodeParents(sameWeightNodes);
-                } else {
-                    continue;
                 }
             }
         }
@@ -215,9 +246,9 @@ public class InputFileReader {
 
     /**
      * Checks if an array of nodes (which have the same weights) all have a common
-     * parent.
+     * parent
      * 
-     * @param sameWeightNodes Array of nodes to check.
+     * @param sameWeightNodes Array of nodes to check
      */
     private void checkNodeParents(int[] sameWeightNodes) {
         // Map from list of parent nodes to list of node ids
@@ -231,7 +262,7 @@ public class InputFileReader {
         for (Map.Entry<int[], int[]> entry : mapOfNodeParents.entrySet()) {
             int[] sameParentNodes = entry.getValue();
 
-            // Check if there's at least two (same weight) nodes with the same parent
+            // Check if there are at least two (same weight) nodes with the same parent
             if (sameParentNodes.length > 1) {
                 // Check if nodes have the same children
                 checkNodeChildren(sameParentNodes);
@@ -244,7 +275,6 @@ public class InputFileReader {
      * @param parentsMap Key stored in parents hashmap
      */
     private void addNodeToParentMap(int node, HashMap<int[], int[]> parentsMap) {
-
         // Sort parent lists before adding nodes to hash map
         int[] parents = nodeParents.get(node);
 
@@ -304,7 +334,7 @@ public class InputFileReader {
     private void addNodeToChildrenMap(int node, HashMap<int[], int[]> childrenMap) {
 
         // Sort children lists before adding nodes to hash map
-        int[] children = childrenMap.get(node);
+        int[] children = nodeChildren.get(node);
 
         if (children != null) {
             Arrays.sort(children);
@@ -334,14 +364,16 @@ public class InputFileReader {
 
     private int[] getEdges(int[][] listOfEdges, int node, int col) {
         int[] weights = new int[1];
-        int count = 0;
 
         // Iterate through all rows containing edges
         for (int i = 0; i < listOfEdges.length; i++) {
             // If the 'to' node is the same as the specified node, store the weight
             if (listOfEdges[i][col] == node) {
-                weights[count] = listOfEdges[i][2];
-                count++;
+                if (i == 0) {
+                    // Don't increase size for first iteration
+                    weights[weights.length - 1] = listOfEdges[i][2];
+                    continue;
+                }
                 weights = Arrays.copyOf(weights, weights.length + 1);
                 weights[weights.length - 1] = listOfEdges[i][2];
             }
@@ -375,7 +407,7 @@ public class InputFileReader {
     }
 
     /**
-     * @param node                 Value stored in children hashmap
+     * @param node                    Value stored in children hashmap
      * @param incomingEdgesWeightsMap Key stored in children hashmap
      */
     private void addNodeToIncomingEdgesMap(int node, HashMap<int[], int[]> incomingEdgesWeightsMap) {
@@ -389,8 +421,7 @@ public class InputFileReader {
         }
 
         // When hash map is just created (empty), no need to check if any incoming edges
-        // lists
-        // already exist
+        // lists already exist
         if (incomingEdgesWeightsMap.isEmpty()) {
             incomingEdgesWeightsMap.put(weights, new int[] { node });
             return;
@@ -434,7 +465,7 @@ public class InputFileReader {
 
     /**
      * @param node                 Value stored in outgoing edges hashmap
-     * @param nodeOutgoingEdgesMap Key stored in outgoing edges hashmap
+     * @param outgoingEdgesWeightsMap Key stored in outgoing edges hashmap
      */
     private void addNodeToOutgoingEdgeMap(int node, HashMap<int[], int[]> outgoingEdgesWeightsMap) {
 

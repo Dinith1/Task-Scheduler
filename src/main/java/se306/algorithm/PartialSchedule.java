@@ -1,16 +1,22 @@
 package se306.algorithm;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 
 public class PartialSchedule {
+    private InputFileReader ifr = InputFileReader.getInstance();
 
     // User defined available processors placed in a list
-    private HashMap<Integer, Processor> processorList = new HashMap();
+    private HashMap<Integer, Processor> processorList = new HashMap<Integer, Processor>();
     private double costFunction;
     public int numberOfNodesScheduled;
+    static ExecutorService multiThreadExecutor;
+
     // private Set<Integer> freeNodes = new HashSet<>();
 
     PartialSchedule(int processorNumber) {
@@ -24,6 +30,50 @@ public class PartialSchedule {
         }
 
         this.costFunction = ps.costFunction;
+    }
+
+    public HashSet<PartialSchedule> chooseExpansionAlgorithm(int numOfCores) {
+        // If cores is 1 use old method to execute expansion
+        if (numOfCores == 1) {
+            return expandNewStates();
+        }
+        List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
+        // Else create a thread pool that contains numOfCores\
+        for (Integer i : getFreeNodes()) {
+            tasks.add(new Callable<HashSet<PartialSchedule>>() {
+                @Override
+                public HashSet<PartialSchedule> call() throws Exception {
+                    // System.out.println(Thread.currentThread().getId());
+                    return expandNewStatesParallel(i);
+
+                }
+            });
+        }
+        HashSet<PartialSchedule> output = new HashSet<>();
+        try {
+            List<Future<HashSet<PartialSchedule>>> futureTasks = multiThreadExecutor.invokeAll(tasks);
+            for (Future<HashSet<PartialSchedule>> item : futureTasks) {
+                output.addAll(item.get());
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    private HashSet<PartialSchedule> expandNewStatesParallel(Integer node) {
+        HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
+        for (int j = 0; j < processorList.size(); j++) {
+            PartialSchedule newSchedule = new PartialSchedule(this);
+
+            // Add it to each processor and make that many corresponding schedules
+            newSchedule.addToProcessor(j, node);
+            calculateCostFunction(newSchedule, node, processorList.size());
+            // Add the schedule to overall expanded list
+            newExpandedSchedule.add(newSchedule);
+        }
+        return newExpandedSchedule;
     }
 
     public HashSet<PartialSchedule> expandNewStates() {
@@ -55,7 +105,7 @@ public class PartialSchedule {
      * This method iterates through the list of available nodes and finds nodes in
      * which all the parents of that node have already been used into a schedule and
      * updates the list
-     * 
+     *
      * @return freeNodes
      */
 
@@ -63,12 +113,12 @@ public class PartialSchedule {
         Set<Integer> freeNodes = new HashSet<>();
 
         // Loops through all nodes
-        for (int node : InputFileReader.nodeIds) {
+        for (int node : ifr.getNodeIds()) {
             // Check if the node is in usedNodes already
             if (!this.getUsedNodes().contains(node)) {
 
                 // If no parents then add to list
-                if (!InputFileReader.nodeParents.containsKey(node)) {
+                if (!ifr.getNodeParents().containsKey(node)) {
                     freeNodes.add(node); // AUTOBOXING
                 }
 
@@ -76,7 +126,7 @@ public class PartialSchedule {
                 else {
                     boolean allParentsUsed = true; // Should be true even if the node has no parents
 
-                    for (int parent : InputFileReader.nodeParents.get(node)) {
+                    for (int parent : ifr.getNodeParents().get(node)) {
                         if (!this.getUsedNodes().contains(parent)) {
                             allParentsUsed = false;
                             break;
@@ -117,7 +167,7 @@ public class PartialSchedule {
     /**
      * This method calls the calculateAndSetCostFunction method to set an updated
      * cost function for the partial schedule AFTER the new node is trialled
-     * 
+     *
      * @param ps
      * @param nodeToAdd
      * @param numOfProcessors
@@ -126,6 +176,16 @@ public class PartialSchedule {
         CostFunctionCalculator calculator = new CostFunctionCalculator();
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
+
+    // public int getFinishTime() {
+    // int finishTime = 0;
+    // for (Integer i : processorList.keySet()) {
+    // if (processorList.get(i).getCurrentCost() > finishTime) {
+    // finishTime = processorList.get(i).getCurrentCost();
+    // }
+    // }
+    // return finishTime;
+    // }
 
     /**
      * Creates processors and adds it to the list
@@ -145,7 +205,7 @@ public class PartialSchedule {
      * @return true if all nodes used or else false
      */
     boolean isComplete() {
-        for (int node : InputFileReader.nodeIds) {
+        for (int node : ifr.getNodeIds()) {
             if (!getUsedNodes().contains(node)) {
                 return false;
             }
@@ -155,7 +215,7 @@ public class PartialSchedule {
 
     /**
      * This method finds the nodes that already have been scheduled in this schedule
-     * 
+     *
      * @return scheduledNodes
      */
     private Set<Integer> getUsedNodes() {
@@ -227,7 +287,7 @@ public class PartialSchedule {
      *
      * This function finds the BEST start time to schedule the node, not the start
      * times of nodes already scheduled
-     * 
+     *
      * @param node
      * @param processorNumber
      * @return
@@ -235,12 +295,12 @@ public class PartialSchedule {
     public int calculateStartTime(int node, int processorNumber) {
 
         // If no parents
-        if (!InputFileReader.nodeParents.containsKey(node)) {
+        if (!ifr.getNodeParents().containsKey(node)) {
             return processorList.get(processorNumber).getCurrentCost();
         }
 
         // Gets parents of the current node
-        int[] parentNodes = InputFileReader.nodeParents.get(node);
+        int[] parentNodes = ifr.getNodeParents().get(node);
         int maxStartTime = 0;
 
         for (Integer i : processorList.keySet()) {
@@ -259,11 +319,11 @@ public class PartialSchedule {
 
                         // Find end time of the parent node
                         int endTimeOfParent = p.getStartTimes().get(parentID)
-                                + InputFileReader.nodeWeights.get(parentID);
+                                + ifr.getNodeWeights().get(parentID);
 
                         // Gets communication cost of the parent
                         int communicationCost = 0; // NEED TO CHECK THIS ====================================
-                        for (int[] edge : InputFileReader.listOfEdges) {
+                        for (int[] edge : ifr.getListOfEdges()) {
                             if ((edge[0] == parentID) && (edge[1] == node)) {
                                 communicationCost = edge[2];
                                 break;
@@ -278,11 +338,10 @@ public class PartialSchedule {
                             currentStartTime = endTimeOfParent + communicationCost;
                         }
                     }
-
-                }
-                // Finds the most start time as it is dependent on all parents
-                if (maxStartTime < currentStartTime) {
-                    maxStartTime = currentStartTime;
+                    // Finds the most start time as it is dependent on all parents
+                    if (maxStartTime < currentStartTime) {
+                        maxStartTime = currentStartTime;
+                    }
                 }
             }
         }
