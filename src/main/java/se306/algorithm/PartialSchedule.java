@@ -21,12 +21,14 @@ public class PartialSchedule {
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
 
-    // private Set<Integer> freeNodes = new HashSet<>();
-
     PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
 
+    /**
+     * Copy constructor creates a new object with the same attributes
+     * @param ps
+     */
     private PartialSchedule(PartialSchedule ps) {
         for (Integer i : ps.getProcessorList().keySet()) {
             Processor p = ps.getProcessorList().get(i);
@@ -36,27 +38,29 @@ public class PartialSchedule {
         this.costFunction = ps.costFunction;
     }
 
+    /**
+     * Helper function to choose a parallelised algorithm or sequential algorithm
+     * @param numOfCores
+     * @return
+     */
     public HashSet<PartialSchedule> chooseExpansionAlgorithm(int numOfCores) {
         // If cores is 1 use old method to execute expansion
         if (numOfCores == 1) {
             return expandNewStates();
         }
+        // Creates a list of callable objects
         List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
-        // Else create a thread pool that contains numOfCores\
+        // Loop through the number of free nodes and add them to the task list
         for (Integer i : getFreeNodes()) {
-            tasks.add(new Callable<HashSet<PartialSchedule>>() {
-                @Override
-                public HashSet<PartialSchedule> call() throws Exception {
-                    // System.out.println(Thread.currentThread().getId());
-                    return expandNewStatesParallel(i);
-
-                }
-            });
+            tasks.add(() -> expandNewStatesParallel(i));
         }
+        // Initialises output HashSet
         HashSet<PartialSchedule> output = new HashSet<>();
         try {
+            // Invokes all tasks in the lists
             List<Future<HashSet<PartialSchedule>>> futureTasks = multiThreadExecutor.invokeAll(tasks);
             for (Future<HashSet<PartialSchedule>> item : futureTasks) {
+                // Retrieves output
                 output.addAll(item.get());
 
             }
@@ -66,6 +70,12 @@ public class PartialSchedule {
         return output;
     }
 
+    /**
+     * Parallel helper method for expanding new states where it takes a node as input so each expansion can be
+     * run on a different thread
+     * @param node
+     * @return
+     */
     private HashSet<PartialSchedule> expandNewStatesParallel(Integer node) {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         for (int j = 0; j < processorList.size(); j++) {
@@ -80,6 +90,11 @@ public class PartialSchedule {
         return newExpandedSchedule;
     }
 
+    /**
+     * This function expands the new states according to how many free nodes are available to be scheduled
+     * It adds each node that is available onto every processor and creates that new state to be expanded
+     * @return newExpandedSchedule
+     */
     public HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         Set<Integer> nodes = findSchedulableNodes();
@@ -101,6 +116,10 @@ public class PartialSchedule {
         return newExpandedSchedule;
     }
 
+    /**
+     * Retrieves that nodes that are able to be scheduled
+     * @return
+     */
     public Set<Integer> getFreeNodes() {
         return this.findSchedulableNodes();
     }
@@ -112,7 +131,6 @@ public class PartialSchedule {
      *
      * @return freeNodes
      */
-
     private Set<Integer> findSchedulableNodes() {
         Set<Integer> freeNodes = new HashSet<>();
 
@@ -160,6 +178,10 @@ public class PartialSchedule {
         //
     }
 
+    /**
+     * Retrieves the cost function
+     * @return
+     */
     public double getCostFunction() {
         return costFunction;
     }
@@ -229,7 +251,10 @@ public class PartialSchedule {
         return scheduledNodes;
     }
 
-
+    /**
+     * Retrieves max time of a schedule
+     * @return
+     */
     public int getFinishTime() {
         int finishTime = 0;
         for (Processor p : processorList.values()) {

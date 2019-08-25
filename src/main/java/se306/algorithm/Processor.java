@@ -74,8 +74,8 @@ public class Processor {
     /**
      * Returns list of start times where index of the list corresponds to the index
      * of the scheduled nodes list
-     * 
-     * @return
+     *  
+     * @return 
      */
     public HashMap<Integer, Integer> getStartTimes() {
         return scheduledNodes;
