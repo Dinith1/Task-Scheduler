@@ -22,6 +22,11 @@ import javafx.stage.Stage;
 import se306.visualisation.backend.GraphController;
 import se306.visualisation.backend.GraphParser;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
  * Main class to test InputFileReader functionality
  * 
@@ -75,6 +80,8 @@ public class Main extends Application {
 
         try {
             ifr.readInput(isr);
+            ifr.pruneIdenticalNodes();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
