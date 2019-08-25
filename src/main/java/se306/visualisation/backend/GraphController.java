@@ -1,6 +1,5 @@
 package se306.visualisation.backend;
 
-import com.sun.management.OperatingSystemMXBean;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.Animation;
@@ -32,7 +31,6 @@ import se306.input.InputFileReader;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
-import java.lang.management.ThreadMXBean;
 import java.net.URL;
 import java.util.*;
 
@@ -67,8 +65,11 @@ public class GraphController implements Initializable {
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
-
-
+    /**
+     * This gets called when the controller is loaded for the first time
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTile();
@@ -78,11 +79,19 @@ public class GraphController implements Initializable {
             Main.startScheduling();
         }
     }
+
+    /**
+     * Updates time for the timeelapsed value
+     */
     private void updateTime(){
         double seconds = this.seconds.get();
         this.seconds.set(seconds+1);
     }
 
+    /**
+     * Listens for when the start button is pressed by the user
+     * @param event
+     */
     @FXML
     void handleStart(MouseEvent event) {
         Task<Void> schedule = new Task<Void>() {
@@ -103,12 +112,20 @@ public class GraphController implements Initializable {
         startBtn.setDisable(true);
     }
 
+    /**
+     * Starts timer of timeelapsed
+     */
     private void startTimer(){
         countProgress = new Timeline(new KeyFrame(Duration.millis(1),evt-> updateTime()));
         countProgress.setCycleCount((Animation.INDEFINITE));
         seconds.set(STARTTIME);
     }
 
+    /**
+     * Creates the graph that displays the nodes
+     * @param graph
+     * @throws IOException
+     */
     public void createGraph(MutableGraph graph) throws IOException {
 
         File file = new File("temp-graph.png");
@@ -119,6 +136,10 @@ public class GraphController implements Initializable {
         graphImage.setImage(image);
     }
 
+    /**
+     * This is called when the algorithm finalises, it builds the nodes for each processor to be visualised
+     * based on the final output. The schedule graph reflects the output dot file.
+     */
     public void createSchedule() {
         CommandLineParser parser = CommandLineParser.getInstance();
         String[] processors = new String[parser.getNumberOfProcessors()];
@@ -171,21 +192,18 @@ public class GraphController implements Initializable {
         schedulePane.getChildren().add(chart);
     }
 
+    /**
+     * The number of nodes specified in the input dot file
+     * @param s
+     */
     public void setNumberOfNodes(String s) {
         numberOfNodes.setText(s);
     }
 
-
-
+    /**
+     * Starts running the cpu usage and memory usage timelines in a new thread, is continuously changing
+     */
     private void populateTile() {
-//        ChartData smoothChartData1 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData2 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData3 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData4 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData5 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData6 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData7 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
-//        ChartData smoothChartData8 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
