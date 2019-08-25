@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * Retrieved from https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch
- * For visualising the schedules
+ * For visualising the schedules.
  * @param <X>
  * @param <Y>
  */

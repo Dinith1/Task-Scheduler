@@ -204,16 +204,18 @@ public class GraphController implements Initializable {
      * Starts running the cpu usage and memory usage timelines in a new thread, is continuously changing
      */
     private void populateTile() {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
         memoryUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         memoryUsage.setTitle("Memory Usage");
         memoryUsage.isAnimated();
+        memoryUsage.setUnit("MB");
+        memoryUsage.setMaxValue(memoryMXBean.getHeapMemoryUsage().getMax());
 
         List<ChartData> cpuUsageData = new LinkedList<>();
         List<ChartData> memoryUsageData = new LinkedList<>();
-        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override public void run() {

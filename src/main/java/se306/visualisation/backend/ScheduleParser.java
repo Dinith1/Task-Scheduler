@@ -14,7 +14,7 @@ public class ScheduleParser {
 	/**
 	 * Static method to return single instance of singleton class
 	 *
-	 * @return The single CommandLineParser object
+	 * @return The single ScheduleParser object
 	 */
 	public static ScheduleParser getInstance() {
 		return (scheduleParser == null) ? (scheduleParser = new ScheduleParser()) : scheduleParser;

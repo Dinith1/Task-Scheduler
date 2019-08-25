@@ -8,11 +8,18 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This class parses the input file graph and stores relevant data for the graph
+ */
 public class GraphParser {
 
-	public static int totalNodes = 0, totalEdges = 0;
+	public static int totalNodes = 0, totalEdges = 0; //public static so that all other classes only see a single value
 	public static MutableGraph g;
 
+	/**
+	 * Begins parsing the graph and stores the new graph as a field, also calculates the total nodes and edges
+	 *
+	 */
 	public void parseGraph() {
 		try {
 			CommandLineParser parser = CommandLineParser.getInstance();
