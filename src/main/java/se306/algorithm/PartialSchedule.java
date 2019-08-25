@@ -177,16 +177,6 @@ public class PartialSchedule {
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
 
-    // public int getFinishTime() {
-    // int finishTime = 0;
-    // for (Integer i : processorList.keySet()) {
-    // if (processorList.get(i).getCurrentCost() > finishTime) {
-    // finishTime = processorList.get(i).getCurrentCost();
-    // }
-    // }
-    // return finishTime;
-    // }
-
     /**
      * Creates processors and adds it to the list
      *

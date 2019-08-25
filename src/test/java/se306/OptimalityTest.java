@@ -388,7 +388,7 @@
          ps = scheduler.aStarAlgorithm(2,1);
 
 
-         assertEquals(72, ps.getFinishTime());
+         assertEquals(72,ps.getFinishTime());
      }
      @Test
      public void Random_Nodes_10_Density_4_CCR_10_2Proc() throws Exception{

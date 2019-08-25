@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
 import guru.nidi.graphviz.model.MutableGraph;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -73,7 +72,7 @@ public class Main extends Application {
     public static void startScheduling() {
         CommandLineParser parser = CommandLineParser.getInstance();
         InputStreamReader isr;
-        
+
         try {
             isr = new FileReader(parser.getInputFileName());
         } catch (FileNotFoundException e) {
@@ -86,15 +85,9 @@ public class Main extends Application {
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-//        try {
-            System.out.println("Before ifr");
-//            ifr.readInput(isr);
-            System.out.println("Before prune identical children");
-            ifr.pruneIdenticalNodes();
+        Log.info("preprocessing...");
+        ifr.pruneIdenticalNodes();
 
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         AStarScheduler scheduler = new AStarScheduler();
         scheduler.findOptimalSchedule();// Start scheduling
 
