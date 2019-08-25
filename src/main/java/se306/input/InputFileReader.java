@@ -216,7 +216,7 @@ public class InputFileReader {
         // Find all nodes with the same weight
         for (Map.Entry<Integer, int[]> entry : nodeWeightsReversed.entrySet()) {
             int[] sameWeightNodes = entry.getValue();
-            // Check if there's at least two nodes with the same weight
+            // Check if there are at least two nodes with the same weight
             if (sameWeightNodes.length > 1) {
                 // Check if nodes have the same parents
                 checkNodeParents(sameWeightNodes);
@@ -226,9 +226,9 @@ public class InputFileReader {
 
     /**
      * Checks if an array of nodes (which have the same weights) all have a common
-     * parent.
+     * parent
      * 
-     * @param sameWeightNodes Array of nodes to check.
+     * @param sameWeightNodes Array of nodes to check
      */
     private void checkNodeParents(int[] sameWeightNodes) {
         // Map from list of parent nodes to list of node ids
@@ -242,7 +242,7 @@ public class InputFileReader {
         for (Map.Entry<int[], int[]> entry : mapOfNodeParents.entrySet()) {
             int[] sameParentNodes = entry.getValue();
 
-            // Check if there's at least two (same weight) nodes with the same parent
+            // Check if there are at least two (same weight) nodes with the same parent
             if (sameParentNodes.length > 1) {
                 // Check if nodes have the same children
                 checkNodeChildren(sameParentNodes);
@@ -400,8 +400,7 @@ public class InputFileReader {
         }
 
         // When hash map is just created (empty), no need to check if any incoming edges
-        // lists
-        // already exist
+        // lists already exist
         if (incomingEdgesWeightsMap.isEmpty()) {
             incomingEdgesWeightsMap.put(weights, new int[] { node });
             return;
@@ -445,7 +444,7 @@ public class InputFileReader {
 
     /**
      * @param node                 Value stored in outgoing edges hashmap
-     * @param nodeOutgoingEdgesMap Key stored in outgoing edges hashmap
+     * @param outgoingEdgesWeightsMap Key stored in outgoing edges hashmap
      */
     private void addNodeToOutgoingEdgeMap(int node, HashMap<int[], int[]> outgoingEdgesWeightsMap) {
 
