@@ -194,15 +194,21 @@ public class InputFileReader {
      * pruned graph.
      */
     public void pruneIdenticalNodes() {
-        // Find all nodes with the same weight
-        for (Map.Entry<Integer, int[]> entry : nodeWeightsReversed.entrySet()) {
-            int[] sameWeightNodes = entry.getValue();
-            // Check if there's at least two nodes with the same weight
-            if (sameWeightNodes.length > 1) {
-                // Check if nodes have the same parents
-                checkNodeParents(sameWeightNodes);
-            } else {
-                continue;
+
+        //Check for independent node graphs
+        if (InputFileReader.listOfEdges.length == 0) {
+            return;
+        } else {
+            // Find all nodes with the same weight
+            for (Map.Entry<Integer, int[]> entry : nodeWeightsReversed.entrySet()) {
+                int[] sameWeightNodes = entry.getValue();
+                // Check if there's at least two nodes with the same weight
+                if (sameWeightNodes.length > 1) {
+                    // Check if nodes have the same parents
+                    checkNodeParents(sameWeightNodes);
+                } else {
+                    continue;
+                }
             }
         }
     }
@@ -330,19 +336,19 @@ public class InputFileReader {
         int[] weights = new int[1];
         int count = 0;
 
-        for (int j = 0; j < listOfEdges[0].length; j++) {
-            for (int i = 0; i < listOfEdges.length; i++) {
-                // If the 'to' node is the same as the specified node, store the weight
-                if (listOfEdges[i][col] == node) {
-                    weights[count] = listOfEdges[i][2];
-                    count++;
-                    weights = Arrays.copyOf(weights, weights.length + 1);
-                    weights[weights.length - 1] = listOfEdges[i][2];
-                }
+        // Iterate through all rows containing edges
+        for (int i = 0; i < listOfEdges.length; i++) {
+            // If the 'to' node is the same as the specified node, store the weight
+            if (listOfEdges[i][col] == node) {
+                weights[count] = listOfEdges[i][2];
+                count++;
+                weights = Arrays.copyOf(weights, weights.length + 1);
+                weights[weights.length - 1] = listOfEdges[i][2];
             }
         }
         return weights;
     }
+
 
     /**
      * 

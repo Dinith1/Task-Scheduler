@@ -156,4 +156,86 @@ public class OptimalityTest {
 
         assertEquals(227, ps.getFinishTime());
     }
+    @Test
+    public void Fork_Join_Nodes_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Fork_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(499, ps.getFinishTime());
+    }
+    @Test
+    public void Fork_Nodes_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Fork_Nodes_10_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(300, ps.getFinishTime());
+    }
+
+    @Test
+    public void Independent_Nodes_21_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Independent_Nodes_21_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(66, ps.getFinishTime());
+
+
+    }
+
 }
