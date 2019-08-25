@@ -52,6 +52,29 @@ public class InputFileReader {
         return (inputFileReader == null) ? (inputFileReader = new InputFileReader()) : inputFileReader;
     }
 
+    public static InputFileReader getInstance(int numNodes, int numEdges) {
+        return (inputFileReader == null) ? (inputFileReader = new InputFileReader(numNodes, numEdges)) : inputFileReader;
+    }
+
+    /**
+     * Overload constructor for testing purposes
+     * @param numNodes
+     * @param numEdges
+     */
+    public InputFileReader(int numNodes, int numEdges){
+        NUM_NODES = numNodes;
+        NUM_EDGES = numEdges;
+        nodeIds = new int[NUM_NODES];
+        listOfEdges = new int[NUM_EDGES][3];
+    }
+
+    /**
+     * For testing purposes
+     */
+    public void clearInputFileReader() {
+        inputFileReader = null;
+    }
+
     public int[] getNodeIds() {
         return this.nodeIds;
     }
@@ -74,18 +97,6 @@ public class InputFileReader {
 
     public int[][] getListOfEdges() {
         return this.listOfEdges;
-    }
-
-    /**
-     * Overload constructor for testing purposes
-     * @param numNodes
-     * @param numEdges
-     */
-    public InputFileReader(int numNodes, int numEdges){
-        NUM_NODES = numNodes;
-        NUM_EDGES = numEdges;
-        nodeIds = new int[NUM_NODES];
-        listOfEdges = new int[NUM_EDGES][3];
     }
 
 
