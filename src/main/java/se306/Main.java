@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+
 import guru.nidi.graphviz.model.MutableGraph;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -80,7 +81,7 @@ public class Main extends Application {
 
         try {
             ifr.readInput(isr);
-//            ifr.pruneIdenticalNodes();
+            ifr.pruneIdenticalNodes();
 
         } catch (IOException e) {
             e.printStackTrace();

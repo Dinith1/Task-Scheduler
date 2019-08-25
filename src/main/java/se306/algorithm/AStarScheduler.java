@@ -21,7 +21,7 @@ public class AStarScheduler {
      * @return the optimal partial Schedule
      * @throws Exception place holder exception
      */
-    private PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception {
+    public PartialSchedule aStarAlgorithm(int numberOfProcessors) throws Exception {
         // OPEN <-- S init
         getPartialScheduleInitial(numberOfProcessors);
         while (!open.isEmpty()) {

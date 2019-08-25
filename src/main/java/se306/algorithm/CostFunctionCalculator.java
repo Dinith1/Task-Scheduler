@@ -5,7 +5,7 @@ import se306.input.InputFileReader;
 import java.util.HashMap;
 import java.util.Set;
 
-public class CostFunctionCalculator {
+public class CostFunctionCalculator implements CostFunctionInjector {
 
     // Map from node id to bottom level weight
     private HashMap<Integer, Integer> bottomLevels = new HashMap<Integer, Integer>();
@@ -62,7 +62,7 @@ public class CostFunctionCalculator {
      * @param node
      * @return
      */
-    public int getBottomLevelRecursive(int node) {
+    private int getBottomLevelRecursive(int node) {
 
         // If the supplied node has children
         if (InputFileReader.nodeChildren.get(node) instanceof int[]) {
@@ -94,7 +94,7 @@ public class CostFunctionCalculator {
      * @param free
      * @return
      */
-    public double getDRT(PartialSchedule newPs, int node, Set<Integer> free) {
+    private double getDRT(PartialSchedule newPs, int node, Set<Integer> free) {
         double bottomLevel = 0;
         double maxDRT = 0;
         for (Integer freeNode : free) {
@@ -137,7 +137,7 @@ public class CostFunctionCalculator {
      * @param numberOfProcessors
      * @return
      */
-    public double getIdleTime(PartialSchedule ps, int numberOfProcessors) {
+    private double getIdleTime(PartialSchedule ps, int numberOfProcessors) {
         // int totalIdleTime = ps.getIdleTime();
         double totalIdleTime = 0;
 

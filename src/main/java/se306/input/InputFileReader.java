@@ -43,6 +43,20 @@ public class InputFileReader {
     }
 
     /**
+     * Overload constructor for testing purposes
+     * @param numNodes
+     * @param numEdges
+     */
+    public InputFileReader(int numNodes, int numEdges){
+        NUM_NODES = numNodes;
+        NUM_EDGES = numEdges;
+        nodeIds = new int[NUM_NODES];
+        listOfEdges = new int[NUM_EDGES][3];
+    }
+
+
+
+    /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
      * their respective ArrayLists
      *

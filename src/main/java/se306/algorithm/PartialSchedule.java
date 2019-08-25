@@ -173,6 +173,17 @@ public class PartialSchedule {
         return scheduledNodes;
     }
 
+
+    public int getFinishTime() {
+        int finishTime = 0;
+        for (Processor p : processorList.values()) {
+            if (p.getCurrentCost() > finishTime) {
+                finishTime = p.getCurrentCost();
+            }
+        }
+        return finishTime;
+    }
+
     /**
      * Returns list of Processor objects that have the nodes scheduled in order of
      * the processor identifier number
