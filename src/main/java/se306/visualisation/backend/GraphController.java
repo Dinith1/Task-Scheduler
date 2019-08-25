@@ -91,6 +91,12 @@ public class GraphController implements Initializable {
     private void updateTime(){
         double seconds = this.seconds.get();
         this.seconds.set(seconds + 1);
+
+        if (seconds > 100000) {
+            timeElapsed.setStyle("-fx-font-size: 60px;");
+        } else if (seconds > 10000) {
+            timeElapsed.setStyle("-fx-font-size: 70px;");
+        }
     }
 
     /**

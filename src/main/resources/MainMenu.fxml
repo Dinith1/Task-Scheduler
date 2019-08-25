@@ -22,7 +22,7 @@
                            <VBox.margin>
                               <Insets bottom="30.0" left="32.0" right="25.0" top="30.0" />
                            </VBox.margin></ImageView>
-                        <HBox maxHeight="1.7976931348623157E308" maxWidth="595.0" prefHeight="192.0" prefWidth="595.0" spacing="30.0" stylesheets="@stylesheet.css">
+                        <HBox maxHeight="1.7976931348623157E308" maxWidth="595.0" prefHeight="192.0" prefWidth="784.0" spacing="30.0" stylesheets="@stylesheet.css">
                            <children>
                               <Pane id="module" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="-Infinity" prefHeight="192.0" prefWidth="250.0">
                                  <children>
@@ -30,19 +30,19 @@
                                        <padding>
                                           <Insets top="20.0" />
                                        </padding></Label>
-                                    <Label id="numNodes" fx:id="numberOfNodes" alignment="CENTER" layoutX="-11.0" layoutY="21.0" prefHeight="163.0" prefWidth="268.0" stylesheets="@stylesheet.css" text="0" textFill="WHITE" />
+                                    <Label id="numNodes" fx:id="numberOfNodes" alignment="CENTER" layoutX="1.0" layoutY="21.0" prefHeight="163.0" prefWidth="250.0" stylesheets="@stylesheet.css" text="0" textFill="WHITE" />
                                  </children>
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
                               </Pane>
-                              <Pane id="module" prefHeight="192.0" prefWidth="250.0" stylesheets="@stylesheet.css">
+                              <Pane id="module" prefHeight="192.0" prefWidth="263.0" stylesheets="@stylesheet.css">
                                  <children>
                                     <Label alignment="CENTER" layoutX="23.0" layoutY="-3.0" prefHeight="38.0" prefWidth="199.0" styleClass="title" stylesheets="@stylesheet.css" text="Time Elapsed(s):">
                                        <padding>
                                           <Insets top="20.0" />
                                        </padding></Label>
-                                    <Label id="timeElapsed" fx:id="timeElapsed" alignment="CENTER" layoutX="-10.0" layoutY="25.0" prefHeight="148.0" prefWidth="273.0" text="0.0" textFill="WHITE" />
+                                    <Label id="timeElapsed" fx:id="timeElapsed" alignment="CENTER" layoutX="-2.0" layoutY="25.0" prefHeight="148.0" prefWidth="247.0" text="0.0" textFill="WHITE" />
                                  </children>
                                  <HBox.margin>
                                     <Insets left="26.0" />
