@@ -18,6 +18,7 @@ public class IdenticalNodes {
         return (identicalNodes == null) ? (identicalNodes = new IdenticalNodes()) : identicalNodes;
     }
 
+
     /**
      * 
      * @param nodes

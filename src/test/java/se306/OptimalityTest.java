@@ -7,6 +7,8 @@ import se306.algorithm.AStarScheduler;
 import se306.algorithm.PartialSchedule;
 import se306.input.InputFileReader;
 import se306.logging.Log;
+import se306.util.HashMapGenerator;
+import se306.util.IdenticalNodes;
 
 import java.io.*;
 import java.util.regex.Matcher;
@@ -18,16 +20,13 @@ public class OptimalityTest {
 
     PartialSchedule ps;
     InputFileReader ifr;
+    HashMapGenerator hmg;
+    IdenticalNodes in;
 
     @Before
     public void initialise() {
         ps = null;
-        // InputFileReader.nodeWeights.clear();
-        // InputFileReader.nodeParents.clear();
-        // InputFileReader.nodeWeightsReversed.clear();
-        // InputFileReader.nodeIds = null;
-        // InputFileReader.listOfEdges = null;
-        // InputFileReader.nodeChildren = null;
+
     }
 
     @After
