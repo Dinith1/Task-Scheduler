@@ -82,6 +82,7 @@ public class GraphController implements Initializable {
             Main.startScheduling();
         }
         initializeSchedule();
+        setNumberOfNodes("" + InputFileReader.NUM_NODES);
         try {
             createGraph();
         } catch (IOException e) {
