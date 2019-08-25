@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkImages;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
@@ -143,7 +144,20 @@ public class GraphController implements Initializable {
             Edge e = graph.addEdge("" + i, "" + InputFileReader.listOfEdges[i][0], "" + InputFileReader.listOfEdges[i][1]);
             e.setAttribute("ui.label", InputFileReader.listOfEdges[i][2]);
         }
-        graph.display();
+
+        FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
+
+        pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
+
+        try {
+            pic.setAutofit(true);
+            pic.writeAll(graph, "sample.png");
+            File file = new File("sample.png");
+            Image image = new Image(file.toURI().toString());
+            graphImage.setImage(image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
