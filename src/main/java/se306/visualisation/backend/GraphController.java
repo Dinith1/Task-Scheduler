@@ -146,28 +146,31 @@ public class GraphController implements Initializable {
         }
 
         String myStyle = "node {"
-                + "size: 20px;"
-                + "fill-color: #777;"
-                + "text-mode: hidden;"
+                + "size: 50px;"
+                + "fill-color: #33abf0;"
+//                + "text-mode: hidden;"
                 + "z-index: 0;"
-                + "text-size: 30px;"
+                + "text-size: 40px;"
+                + "text-color: #ffffff;"
                 + "}"
 
                 + "edge {"
                 + "shape: line;"
-                + "fill-color: #222;"
-                + "arrow-size: 10px, 10px;"
-                + "text-size: 20px;"
+                + "fill-color: #ffffff;"
+                + "size: 3px;"
+                + "arrow-size: 20px, 100px;"
+                + "text-size: 40px;"
+                + "text-color: #33abf0;"
                 + "}"
 
                 + "graph {"
+                + "fill-color: rgba(76, 175, 80, 0);"
                 + "text-size: 30px;"
                 + "}";
         graph.setAttribute("ui.stylesheet", myStyle);
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
-        graph.display();
         try {
             pic.setAutofit(true);
             pic.writeAll(graph, "sample.png");
