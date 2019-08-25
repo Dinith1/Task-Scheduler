@@ -12,8 +12,8 @@
     -fx-font-family: 'Verdana', Arial, sans-serif;
     -fx-font-size: 15px;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #1ed8f0;
-    -fx-border-radius: 5px;
+    /*-fx-border-color: #33abf0;
+    -fx-border-radius: 5px;*/
 }
 
 #startBtn {
@@ -21,14 +21,40 @@
     -fx-font-size: 15px;
     -fx-text-fill: #FFFFFF;
     -fx-color: #2E2C2F;
-    -fx-border-color: #1ed8f0;
+    -fx-border-color: #33abf0;
     -fx-border-radius: 5px;
+    -fx-border-width: 5px;
+    -fx-background-color: #33abf0;
 }
 
 #startBtn:hover {
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
-    -fx-text-fill: #2E2C2F;
-    -fx-color: #1ed8f0;
-    -fx-border-color: #2E2C2f;
+    -fx-color: #33abf0;
+    -fx-border-color: #33abf0;
+}
+
+.button:hover{
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+}
+
+#numNodes {
+	-fx-margin: 10 0 10 20; 
+	-fx-font-size: 80;
+}
+
+#timeElapsed {
+	-fx-margin: 40 0 10 50;
+	-fx-font-size: 80;
+}
+
+#module {
+	-fx-background-color: #282828;
+	-fx-background-radius: 10;
 }
