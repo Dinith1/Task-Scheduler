@@ -1,6 +1,7 @@
 package se306.input;
 
 import se306.output.OutputFileGenerator;
+import se306.util.HashMapGenerator;
 import se306.visualisation.backend.GraphParser;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -88,8 +89,6 @@ public class InputFileReader {
         listOfEdges = new int[NUM_EDGES][3];
     }
 
-
-
     /**
      * Takes in a dot file, and parses it into Nodes and Edges, which are added into
      * their respective ArrayLists
@@ -134,8 +133,9 @@ public class InputFileReader {
                 int weight = findWeight(line);
                 nodeWeights.put(nodeInt, weight);
 
-                // Create buckets of nodes with the same weight
-                addIdToWeightMap(nodeInt, weight);
+                // Use hashmap util to instantiate buckets of nodes with the same weight
+
+                HashMapGenerator.addNodeToWeightMap(nodeInt, weight, nodeWeightsReversed);
 
                 outputFileGenerator.readLine(nodeInt);
 
@@ -193,25 +193,6 @@ public class InputFileReader {
     }
 
     /**
-     * Adds nodes to a hashmap, where the key is the weight, and the value is an
-     * array of all the node (IDs) with that weight.
-     * 
-     * @param id     ID of the node
-     * @param weight Weight of the node
-     */
-    private void addIdToWeightMap(int id, int weight) {
-        if (nodeWeightsReversed.containsKey(weight)) {
-            // A node with the same weight already exists, so add to existing node array
-            int[] nodeList = nodeWeightsReversed.get(weight);
-            int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-            newNodeList[newNodeList.length - 1] = id;
-            nodeWeightsReversed.put(weight, newNodeList);
-            return;
-        }
-
-        // A node with the same weight does not exist, So add first node
-        nodeWeightsReversed.put(weight, new int[] { id });
-    }
 
     /**
      * Checks if the task graph contains a task that is identical in every aspect
@@ -256,7 +237,7 @@ public class InputFileReader {
 
         // Find all (same weight) nodes with a parent in common
         for (int node : sameWeightNodes) {
-            addNodeToParentMap(node, mapOfNodeParents);
+            HashMapGenerator.addNodeToParentMap(node, mapOfNodeParents, nodeParents);
         }
 
         for (Map.Entry<int[], int[]> entry : mapOfNodeParents.entrySet()) {
@@ -271,40 +252,6 @@ public class InputFileReader {
     }
 
     /**
-     * @param node       Value stored in parents hashmap
-     * @param parentsMap Key stored in parents hashmap
-     */
-    private void addNodeToParentMap(int node, HashMap<int[], int[]> parentsMap) {
-        // Sort parent lists before adding nodes to hash map
-        int[] parents = nodeParents.get(node);
-
-        if (parents != null) {
-            Arrays.sort(parents);
-        }
-
-        // When hash map is just created (empty), no need to check if any parent lists
-        // already exist
-        if (parentsMap.isEmpty()) {
-            parentsMap.put(nodeParents.get(node), new int[] { node });
-            return;
-        }
-
-        // Find a matching parent array
-        for (Map.Entry<int[], int[]> entry : parentsMap.entrySet()) {
-            int[] existingParents = entry.getKey();
-            if ((parents != null && Arrays.equals(parents, existingParents))
-                    || ((parents == null) && (parents == existingParents))) {
-                // A node with the same parents already exists, so add to existing node array
-                int[] nodeList = entry.getValue();
-                int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-                newNodeList[newNodeList.length - 1] = node;
-                parentsMap.put(existingParents, newNodeList);
-                return;
-            }
-        }
-    }
-
-    /**
      * @param sameParentNodes
      */
     private void checkNodeChildren(int[] sameParentNodes) {
@@ -313,7 +260,7 @@ public class InputFileReader {
 
         // Find all same weight nodes with the same children
         for (int node : sameParentNodes) {
-            addNodeToChildrenMap(node, mapOfNodeChildren);
+            HashMapGenerator.addNodeToChildrenMap(node, mapOfNodeChildren, nodeChildren);
         }
 
         for (Map.Entry<int[], int[]> entry : mapOfNodeChildren.entrySet()) {
@@ -328,61 +275,6 @@ public class InputFileReader {
     }
 
     /**
-     * @param node        Value stored in children hashmap
-     * @param childrenMap Key stored in children hashmap
-     */
-    private void addNodeToChildrenMap(int node, HashMap<int[], int[]> childrenMap) {
-
-        // Sort children lists before adding nodes to hash map
-        int[] children = nodeChildren.get(node);
-
-        if (children != null) {
-            Arrays.sort(children);
-        }
-
-        // When hash map is just created (empty), no need to check if any children lists
-        // already exist
-        if (childrenMap.isEmpty()) {
-            childrenMap.put(nodeChildren.get(node), new int[] { node });
-            return;
-        }
-
-        // Find a matching child array
-        for (Map.Entry<int[], int[]> entry : childrenMap.entrySet()) {
-            int[] existingChildren = entry.getKey();
-            if (((children != null) && Arrays.equals(children, existingChildren))
-                    || ((children == null) && (children == existingChildren))) {
-                // A node with the same children already exists, so add to existing node array
-                int[] nodeList = entry.getValue();
-                int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-                newNodeList[newNodeList.length - 1] = node;
-                childrenMap.put(existingChildren, newNodeList);
-                return;
-            }
-        }
-    }
-
-    private int[] getEdges(int[][] listOfEdges, int node, int col) {
-        int[] weights = new int[1];
-
-        // Iterate through all rows containing edges
-        for (int i = 0; i < listOfEdges.length; i++) {
-            // If the 'to' node is the same as the specified node, store the weight
-            if (listOfEdges[i][col] == node) {
-                if (i == 0) {
-                    // Don't increase size for first iteration
-                    weights[weights.length - 1] = listOfEdges[i][2];
-                    continue;
-                }
-                weights = Arrays.copyOf(weights, weights.length + 1);
-                weights[weights.length - 1] = listOfEdges[i][2];
-            }
-        }
-        return weights;
-    }
-
-
-    /**
      * 
      * @param sameChildrenNodes
      */
@@ -392,7 +284,7 @@ public class InputFileReader {
 
         // Find all same weight nodes with the same children
         for (int node : sameChildrenNodes) {
-            addNodeToIncomingEdgesMap(node, mapOfNodeIncomingEdges);
+            HashMapGenerator.addNodeToIncomingEdgesMap(node, mapOfNodeIncomingEdges, listOfEdges);
         }
 
         for (Map.Entry<int[], int[]> entry : mapOfNodeIncomingEdges.entrySet()) {
@@ -406,49 +298,13 @@ public class InputFileReader {
         }
     }
 
-    /**
-     * @param node                    Value stored in children hashmap
-     * @param incomingEdgesWeightsMap Key stored in children hashmap
-     */
-    private void addNodeToIncomingEdgesMap(int node, HashMap<int[], int[]> incomingEdgesWeightsMap) {
-
-        // Find the weights of all incoming edges for the node
-        int[] weights = getEdges(listOfEdges, node, 1);
-
-        // Sort edge lists before adding nodes to hash map
-        if (weights != null) {
-            Arrays.sort(weights);
-        }
-
-        // When hash map is just created (empty), no need to check if any incoming edges
-        // lists already exist
-        if (incomingEdgesWeightsMap.isEmpty()) {
-            incomingEdgesWeightsMap.put(weights, new int[] { node });
-            return;
-        }
-
-        // Find a matching child array
-        for (Map.Entry<int[], int[]> entry : incomingEdgesWeightsMap.entrySet()) {
-            int[] existingWeights = entry.getKey();
-            if (((weights != null) && Arrays.equals(weights, existingWeights))
-                    || ((weights == null) && (weights == existingWeights))) {
-                // A node with the same children already exists, so add to existing node array
-                int[] nodeList = entry.getValue();
-                int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-                newNodeList[newNodeList.length - 1] = node;
-                incomingEdgesWeightsMap.put(existingWeights, newNodeList);
-                return;
-            }
-        }
-    }
-
     private void checkNodeOutgoingEdges(int[] sameIncomingNodes) {
         // Map from parent node to list of children node ids
         HashMap<int[], int[]> mapOfNodeOutgoingEdges = new HashMap<>();
 
         // Find all nodes with the same incoming edges
         for (int i : sameIncomingNodes) {
-            addNodeToOutgoingEdgeMap(i, mapOfNodeOutgoingEdges);
+            HashMapGenerator.addNodeToOutgoingEdgeMap(i, mapOfNodeOutgoingEdges, listOfEdges);
         }
 
         for (Map.Entry<int[], int[]> entry : mapOfNodeOutgoingEdges.entrySet()) {
@@ -459,42 +315,6 @@ public class InputFileReader {
                 // If this point is reached, the nodes are identical
                 // Chain the identical nodes
                 chainIdenticalNodes(identicalNodes);
-            }
-        }
-    }
-
-    /**
-     * @param node                 Value stored in outgoing edges hashmap
-     * @param outgoingEdgesWeightsMap Key stored in outgoing edges hashmap
-     */
-    private void addNodeToOutgoingEdgeMap(int node, HashMap<int[], int[]> outgoingEdgesWeightsMap) {
-
-        // Sort edge lists before adding nodes to hash map
-        int[] weights = getEdges(listOfEdges, node, 0);
-
-        if (weights != null) {
-            Arrays.sort(weights);
-        }
-
-        // When hash map is just created (empty), no need to check if any outgoing edge
-        // lists
-        // already exist
-        if (outgoingEdgesWeightsMap.isEmpty()) {
-            outgoingEdgesWeightsMap.put(weights, new int[] { node });
-            return;
-        }
-
-        // Find a matching child array
-        for (Map.Entry<int[], int[]> entry : outgoingEdgesWeightsMap.entrySet()) {
-            int[] existingWeights = entry.getKey();
-            if (((weights != null) && Arrays.equals(weights, existingWeights))
-                    || ((weights == null) && (weights == existingWeights))) {
-                // A node with the same children already exists, so add to existing node array
-                int[] nodeList = entry.getValue();
-                int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-                newNodeList[newNodeList.length - 1] = node;
-                outgoingEdgesWeightsMap.put(existingWeights, newNodeList);
-                return;
             }
         }
     }
