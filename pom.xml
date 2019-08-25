@@ -84,10 +84,13 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
         </dependency>
+        <!--sigar-->
         <dependency>
             <groupId>com.github.votoanthuan</groupId>
             <artifactId>sigar</artifactId>
             <version>1.6.4</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/sigar.jar</systemPath>
         </dependency>
     </dependencies>
 

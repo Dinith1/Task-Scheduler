@@ -23,7 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import org.hyperic.sigar.Cpu;
+import org.hyperic.sigar.*;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
@@ -63,6 +63,7 @@ public class GraphController implements Initializable {
     private Tile cpuUsage, memoryUsage;
 
     Timeline countProgress = new Timeline();
+    private static Sigar sigar = new Sigar();
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
@@ -199,7 +200,6 @@ public class GraphController implements Initializable {
      */
     private void populateTile() {
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-        Cpu cpu = new Cpu();
 
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
@@ -212,12 +212,21 @@ public class GraphController implements Initializable {
 
         List<ChartData> cpuUsageData = new LinkedList<>();
         List<ChartData> memoryUsageData = new LinkedList<>();
+        final double[] currentCpuUsage = new double[1];
+        final double[] currentMemoryUsage = new double[1];
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override public void run() {
-                long currentMemoryUsage = memoryMXBean.getHeapMemoryUsage().getUsed() / 1000000;
-                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
-                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", cpu.getUser(), Tile.BLUE));
+                try {
+                    CpuPerc perc = sigar.getCpuPerc();
+                    currentCpuUsage[0] = perc.getCombined();
+                    currentMemoryUsage[0] = sigar.getMem().getUsedPercent();
+
+                } catch (SigarException e) {
+                    e.printStackTrace();
+                }
+                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage[0], Tile.BLUE));
+                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", currentCpuUsage[0], Tile.BLUE));
                 if (cpuUsageData.size() > 20) {
                     ((LinkedList<ChartData>) cpuUsageData).removeLast();
                     ((LinkedList<ChartData>) memoryUsageData).removeLast();
