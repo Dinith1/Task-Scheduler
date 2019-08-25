@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 
 public class PartialSchedule {
+    private InputFileReader ifr = InputFileReader.getInstance();
 
     // User defined available processors placed in a list
     private HashMap<Integer, Processor> processorList = new HashMap<Integer, Processor>();
@@ -112,12 +113,12 @@ public class PartialSchedule {
         Set<Integer> freeNodes = new HashSet<>();
 
         // Loops through all nodes
-        for (int node : InputFileReader.nodeIds) {
+        for (int node : ifr.getNodeIds()) {
             // Check if the node is in usedNodes already
             if (!this.getUsedNodes().contains(node)) {
 
                 // If no parents then add to list
-                if (!InputFileReader.nodeParents.containsKey(node)) {
+                if (!ifr.getNodeParents().containsKey(node)) {
                     freeNodes.add(node); // AUTOBOXING
                 }
 
@@ -125,7 +126,7 @@ public class PartialSchedule {
                 else {
                     boolean allParentsUsed = true; // Should be true even if the node has no parents
 
-                    for (int parent : InputFileReader.nodeParents.get(node)) {
+                    for (int parent : ifr.getNodeParents().get(node)) {
                         if (!this.getUsedNodes().contains(parent)) {
                             allParentsUsed = false;
                             break;
@@ -204,7 +205,7 @@ public class PartialSchedule {
      * @return true if all nodes used or else false
      */
     boolean isComplete() {
-        for (int node : InputFileReader.nodeIds) {
+        for (int node : ifr.getNodeIds()) {
             if (!getUsedNodes().contains(node)) {
                 return false;
             }
@@ -283,12 +284,12 @@ public class PartialSchedule {
     public int calculateStartTime(int node, int processorNumber) {
 
         // If no parents
-        if (!InputFileReader.nodeParents.containsKey(node)) {
+        if (!ifr.getNodeParents().containsKey(node)) {
             return processorList.get(processorNumber).getCurrentCost();
         }
 
         // Gets parents of the current node
-        int[] parentNodes = InputFileReader.nodeParents.get(node);
+        int[] parentNodes = ifr.getNodeParents().get(node);
         int maxStartTime = 0;
 
         for (Integer i : processorList.keySet()) {
@@ -307,11 +308,11 @@ public class PartialSchedule {
 
                         // Find end time of the parent node
                         int endTimeOfParent = p.getStartTimes().get(parentID)
-                                + InputFileReader.nodeWeights.get(parentID);
+                                + ifr.getNodeWeights().get(parentID);
 
                         // Gets communication cost of the parent
                         int communicationCost = 0; // NEED TO CHECK THIS ====================================
-                        for (int[] edge : InputFileReader.listOfEdges) {
+                        for (int[] edge : ifr.getListOfEdges()) {
                             if ((edge[0] == parentID) && (edge[1] == node)) {
                                 communicationCost = edge[2];
                                 break;

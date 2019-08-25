@@ -66,6 +66,7 @@ public class Main extends Application {
     public static void startScheduling() {
         CommandLineParser parser = CommandLineParser.getInstance();
         InputStreamReader isr;
+        
         try {
             isr = new FileReader(parser.getInputFileName());
         } catch (FileNotFoundException e) {
@@ -73,13 +74,15 @@ public class Main extends Application {
             return;
         }
 
-        InputFileReader ifr = new InputFileReader();
+        InputFileReader ifr = InputFileReader.getInstance();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
         try {
+            System.out.println("Before ifr");
             ifr.readInput(isr);
+            System.out.println("Before prune identical children");
             ifr.pruneIdenticalNodes();
 
         } catch (IOException e) {

@@ -6,13 +6,15 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class CostFunctionCalculator {
+    InputFileReader ifr;
 
     // Map from node id to bottom level weight
     private HashMap<Integer, Integer> bottomLevels = new HashMap<Integer, Integer>();
 
     public CostFunctionCalculator() {
+        ifr = InputFileReader.getInstance();
         // Initialize map with all zeros
-        for (int node : InputFileReader.nodeIds) {
+        for (int node : this.ifr.getNodeIds()) {
             bottomLevels.put(node, 0);
         }
     }
@@ -65,10 +67,10 @@ public class CostFunctionCalculator {
     public int getBottomLevelRecursive(int node) {
 
         // If the supplied node has children
-        if (InputFileReader.nodeChildren.get(node) instanceof int[]) {
+        if (ifr.getNodeChildren().get(node) instanceof int[]) {
             int upperBound = 0;
             // Want to get those children
-            int[] arrayOfChildren = InputFileReader.nodeChildren.get(node);
+            int[] arrayOfChildren = ifr.getNodeChildren().get(node);
             int current = 0;
             // Iterate through each child
             for (int i : arrayOfChildren) {
@@ -78,10 +80,10 @@ public class CostFunctionCalculator {
                     upperBound = current;
                 }
             }
-            this.bottomLevels.put(node, current + InputFileReader.nodeWeights.get(node));
-            return upperBound + InputFileReader.nodeWeights.get(node);
+            this.bottomLevels.put(node, current + ifr.getNodeWeights().get(node));
+            return upperBound + ifr.getNodeWeights().get(node);
         } else {
-            return InputFileReader.nodeWeights.get(node);
+            return ifr.getNodeWeights().get(node);
         }
     }
 
@@ -148,8 +150,8 @@ public class CostFunctionCalculator {
 
         // Calculate the total weight of the graph
         double totalWeight = 0;
-        for (int i : InputFileReader.nodeIds) {
-            totalWeight += InputFileReader.nodeWeights.get(i);
+        for (int i : ifr.getNodeIds()) {
+            totalWeight += ifr.getNodeWeights().get(i);
         }
 
         // Calculate the cost function of Idle Time
