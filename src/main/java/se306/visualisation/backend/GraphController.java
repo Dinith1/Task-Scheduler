@@ -145,10 +145,29 @@ public class GraphController implements Initializable {
             e.setAttribute("ui.label", InputFileReader.listOfEdges[i][2]);
         }
 
+        String myStyle = "node {"
+                + "size: 20px;"
+                + "fill-color: #777;"
+                + "text-mode: hidden;"
+                + "z-index: 0;"
+                + "text-size: 30px;"
+                + "}"
+
+                + "edge {"
+                + "shape: line;"
+                + "fill-color: #222;"
+                + "arrow-size: 10px, 10px;"
+                + "text-size: 20px;"
+                + "}"
+
+                + "graph {"
+                + "text-size: 30px;"
+                + "}";
+        graph.setAttribute("ui.stylesheet", myStyle);
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
-
+        graph.display();
         try {
             pic.setAutofit(true);
             pic.writeAll(graph, "sample.png");
