@@ -61,7 +61,7 @@ public class InputFileReader {
      * @param numNodes
      * @param numEdges
      */
-    public InputFileReader(int numNodes, int numEdges){
+    private InputFileReader(int numNodes, int numEdges){
         NUM_NODES = numNodes;
         NUM_EDGES = numEdges;
         nodeIds = new int[NUM_NODES];

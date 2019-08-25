@@ -78,7 +78,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("Nodes_7_OutTree.dot");
+         File file = new File("./src/test/resources/Nodes_7_OutTree.dot");
 
 
          isr = new FileReader(file);
@@ -94,7 +94,6 @@
 
          AStarScheduler scheduler = new AStarScheduler();
          ps = scheduler.aStarAlgorithm(4,1);
-         System.out.println("hi");
          assertEquals(22, ps.getFinishTime());
      }
      @Test
@@ -102,7 +101,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("Nodes_7_OutTree.dot");
+         File file = new File("./src/test/resources/Nodes_7_OutTree.dot");
 
 
          isr = new FileReader(file);
@@ -128,7 +127,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("Nodes_11_OutTree.dot");
+         File file = new File("./src/test/resources/Nodes_11_OutTree.dot");
 
 
          isr = new FileReader(file);
@@ -154,7 +153,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Fork_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Fork_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -180,7 +179,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Fork_Nodes_10_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Fork_Nodes_10_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -207,7 +206,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Independent_Nodes_21_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Independent_Nodes_21_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -233,7 +232,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Pipeline_Nodes_21_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Pipeline_Nodes_21_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -260,7 +259,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -287,7 +286,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_InTree-Balanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_InTree-Balanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -315,7 +314,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_InTree-Unbalanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_InTree-Unbalanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -342,7 +341,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_OutTree-Balanced-MaxBf-3_Nodes_21_CCR_1.05_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_OutTree-Balanced-MaxBf-3_Nodes_21_CCR_1.05_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -370,7 +369,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_OutTree-Unbalanced-MaxBf-3_Nodes_21_CCR_0.99_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_OutTree-Unbalanced-MaxBf-3_Nodes_21_CCR_0.99_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -396,7 +395,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Random_Nodes_10_Density_4.50_CCR_10.00_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Random_Nodes_10_Density_4.50_CCR_10.00_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -423,7 +422,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_SeriesParallel-MaxBf-5_Nodes_10_CCR_9.97_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_SeriesParallel-MaxBf-5_Nodes_10_CCR_9.97_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
@@ -450,7 +449,7 @@
          int[] costArray;
 
          InputStreamReader isr;
-         File file = new File("2p_Stencil_Nodes_21_CCR_10.03_WeightType_Random.dot");
+         File file = new File("./src/test/resources/2p_Stencil_Nodes_21_CCR_10.03_WeightType_Random.dot");
 
 
          isr = new FileReader(file);
