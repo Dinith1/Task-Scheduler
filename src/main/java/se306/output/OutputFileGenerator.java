@@ -2,27 +2,32 @@ package se306.output;
 
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
-import se306.input.Edge;
-import se306.input.Node;
+import se306.input.InputFileReader;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OutputFileGenerator {
-
 	private PrintWriter writer;
+	private static OutputFileGenerator outputFileGenerator = null;
 	private List<Line> lineInformation = new ArrayList<>();
 	public final String OUTPUT_FILE_NAME = CommandLineParser.getInstance().getOutputFileName();
+
+	private OutputFileGenerator() {
+	}
+
+	public static OutputFileGenerator getInstance() {
+		return (outputFileGenerator == null) ? (outputFileGenerator = new OutputFileGenerator()) : outputFileGenerator;
+	}
 
 	/**
 	 * Steps to generate the file after gathering data from inputs. This method
 	 * assigns processors to the nodes to be printed
 	 *
 	 */
-	public void generateFile(List<Processor> processorList) {
+	public void generateFile(HashMap<Integer, Processor> processorList) {
 		addProcessorsToLines(processorList);
 		printLinesToFile();
 		closeWriter();
@@ -35,22 +40,16 @@ public class OutputFileGenerator {
 	 *
 	 * @param processorList
 	 */
-	private void addProcessorsToLines(List<Processor> processorList) {
-		for (Processor processor : processorList) {
-			Iterator<Map.Entry<Node, Integer>> it = processor.getStartTimes().entrySet().iterator();
-
-			while (it.hasNext()) {
-				Map.Entry<Node, Integer> pair = (Map.Entry<Node, Integer>) it.next();
-				Node node = (Node) pair.getKey();
-
+	private void addProcessorsToLines(HashMap<Integer, Processor> processorList) {
+		for (Integer i : processorList.keySet()) {
+			Processor processor = processorList.get(i);
+			for (int n : processor.getScheduledNodes()) { // AUTOBOXING ================================================
 				for (Line line : this.lineInformation) {
-					if (node.equals(line.node)) {
+					if (n == line.node) {
 						line.setProcessor(processor);
-						line.setNodeStartTime(processor.getStartTimes().get(node));
+						line.setNodeStartTime(processor.getStartTimes().get(n));
 					}
 				}
-
-				it.remove(); // avoids a ConcurrentModificationException
 			}
 		}
 	}
@@ -85,11 +84,14 @@ public class OutputFileGenerator {
 	 */
 	public void readLine(Object lineInfo) {
 		Line newLine = new Line();
-		if (lineInfo instanceof Node) {
-			newLine.setNode((Node) lineInfo);
-		} else if (lineInfo instanceof Edge) {
-			newLine.setEdge((Edge) lineInfo);
-		} else if (lineInfo instanceof String) {
+
+		if (lineInfo instanceof Integer) { // Node
+			newLine.setNode((Integer) lineInfo);
+
+		} else if (lineInfo instanceof int[]) { // Edge
+			newLine.setEdge((int[]) lineInfo);
+
+		} else if (lineInfo instanceof String) { // Other
 			newLine.recordLine((String) lineInfo);
 		}
 
@@ -100,14 +102,22 @@ public class OutputFileGenerator {
 	 * Stores information of lines
 	 */
 	private class Line {
-		private Node node;
-		private Edge edge;
+		private int node = -1;
+		private int[] edge = { -1, -1, -1 };
 		private Processor processor; // Processor that the node represented in the line
 		private String nonNodeLine; // Directly copy any strings that are not node information
 		private int nodeStartTime; // Start time of node represented in this line
 
-		void setNode(Node node) {
+		void setNode(int node) {
 			this.node = node;
+		}
+
+		void setEdge(int[] edge) {
+			this.edge = edge;
+		}
+
+		void setNodeStartTime(int nodeStartTime) {
+			this.nodeStartTime = nodeStartTime;
 		}
 
 		void setProcessor(Processor processor) {
@@ -118,14 +128,6 @@ public class OutputFileGenerator {
 			this.nonNodeLine = line;
 		}
 
-		void setEdge(Edge edge) {
-			this.edge = edge;
-		}
-
-		void setNodeStartTime(int nodeStartTime) {
-			this.nodeStartTime = nodeStartTime;
-		}
-
 		/**
 		 * Outputs the line if its not a node line (i.e. if it's an edge line or
 		 * redundant data line). Otherwise combine the node data to be formatted to the
@@ -134,28 +136,30 @@ public class OutputFileGenerator {
 		 * @return The line
 		 */
 		String getStringLine() {
-			if (this.node != null) {
+			InputFileReader ifr = InputFileReader.getInstance();
+
+			if (this.node != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(node.getNodeIdentifier());
+				sb.append((this.node));
 				sb.append("\t\t[Weight=");
-				sb.append(node.getNodeWeight());
+				sb.append(ifr.getNodeWeights().get(this.node));
 				sb.append(",Start=");
 				sb.append(this.nodeStartTime);
 				sb.append(",Processor=");
-				sb.append(processor.getProcessorIdentifier());
+				sb.append(processor.getProcessorID());
 				sb.append("];");
 				return sb.toString();
 			}
 
-			if (this.edge != null) {
+			if (this.edge[0] != -1) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\t");
-				sb.append(edge.getNodeStart().getNodeIdentifier());
+				sb.append((this.edge[0]));
 				sb.append(" -> ");
-				sb.append(edge.getNodeEnd().getNodeIdentifier());
+				sb.append((this.edge[1]));
 				sb.append("\t[Weight=");
-				sb.append(edge.getEdgeWeight());
+				sb.append(this.edge[2]);
 				sb.append("];");
 				return sb.toString();
 			}

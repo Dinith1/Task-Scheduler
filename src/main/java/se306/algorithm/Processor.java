@@ -1,118 +1,167 @@
 package se306.algorithm;
 
-import se306.input.Node;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import se306.input.InputFileReader;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 public class Processor {
+    private InputFileReader ifr = InputFileReader.getInstance();
 
-    private int currentCost;
-    private HashMap<Node, Integer> scheduledNodes;
-    private HashMap<Node, Integer> startTimes;
-    private String processorIdentifier;
+    private HashMap<Integer, Integer> scheduledNodes;
+    private HashMap<Integer, Integer> orderOfNodes;
+    private int processorEndTime;
+    private int id;
 
-    public Processor(String processorIdentifier) {
-        scheduledNodes = new HashMap<>();
-        startTimes = new HashMap<>();
-        currentCost = 0;
-        this.processorIdentifier = processorIdentifier;
+    public Processor(int pid) {
+        this.id = pid;
+        this.scheduledNodes = new HashMap<>();
+        this.orderOfNodes = new HashMap<>();
+        this.processorEndTime = 0;
     }
 
     /**
-     * Gets the identifier for the processor
-     * @return Identifier for the processor i.e processor 1, processor 2...
+     * Copy constructor
      */
-    public String getProcessorIdentifier(){
-        return processorIdentifier;
+    public Processor(Processor processor) {
+        this.scheduledNodes = new HashMap<>(processor.scheduledNodes);
+        this.orderOfNodes = new HashMap<>(processor.orderOfNodes);
+        this.id = processor.id;
+        this.processorEndTime = processor.processorEndTime;
+    }
+
+    public int getProcessorID() {
+        return id;
     }
 
     /**
-     * Gets the current cost of the processor; the finishing time/cost of the last scheduled node
-     *
+     * Method returns the finishing time of the current process
+     * 
+     * @return finishing time
      */
     public int getCurrentCost() {
-        return this.currentCost;
+        // if (scheduledNodes.size() == 0 || startTimes.size() == 0) {
+        // return 0;
+        // }
+        //// System.out.println("START : " + startTimes.get(startTimes.size() - 1));
+        //// System.out.println("WEIGHT: " +
+        // ifr.getNodeWeights().get(scheduledNodes.get(scheduledNodes.size() - 1)));
+        // return startTimes.get(startTimes.size() - 1)
+        // + ifr.getNodeWeights().get(scheduledNodes.get(scheduledNodes.size() - 1)); //
+        // AUTOBOXING?
+        return processorEndTime;
     }
 
+    /**
+     * This method handles addition of a new node to the current process as well as
+     * calculates the starting time of the node
+     * 
+     * @param node
+     * @param schedule
+     * @param processorNumber
+     */
+    public void addNode(int node, PartialSchedule schedule, int processorNumber) {
+        // Calculates time using the schedule the node needs to be added to and adds it
+        // into the appropriate processor
+        int order = scheduledNodes.size();
+        scheduledNodes.put(node, schedule.calculateStartTime(node, processorNumber));
+        processorEndTime = scheduledNodes.get(node) + ifr.getNodeWeights().get(node);
+        orderOfNodes.put(order, node);
+
+    }
 
     /**
-     * Gets the current schedule of the processor through a hashmap where the key is the Node itself
-     * and the value is an Integer that represents the finishing time that it has been scheduled in the processor
+     * Returns set of nodes that have been scheduled
+     * 
+     * @return
+     */
+    public Set<Integer> getScheduledNodes() {
+        return scheduledNodes.keySet();
+    }
+
+    /**
+     * Returns list of start times where index of the list corresponds to the index
+     * of the scheduled nodes list
+     * 
+     * @return
+     */
+    public HashMap<Integer, Integer> getStartTimes() {
+        return scheduledNodes;
+    }
+
+    /**
+     * The equal method takes an Object obj as an argument and checks if obj is
+     * equivalent to this Processor. This equivalence comparison is done by
+     * comparing the scheduled nodes' starting and finishing times and the current
+     * cost.
      *
+     * @param obj - the object to compare with this Processor object
      */
-    public HashMap<Node, Integer> getSchedule() {
-        return this.scheduledNodes;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        Processor secondProcessor = (Processor) obj;
+        return new EqualsBuilder()
+                // .appendSuper(super.equals(obj))
+                .append(scheduledNodes, secondProcessor.scheduledNodes).isEquals()
+                && checkCurrentCost(secondProcessor.getCurrentCost());
     }
 
     /**
-     * Gets the current start times of the processor through a hashmap where the key is the Node itself
-     * and the value is an Integer that represents the starting time that it has been scheduled in the processor
-     *
+     * This method calculates the idle time. If it has more than one node scheduled,
+     * any idle times are totalled and returned. If only one node is inside the
+     * processor, the start time is returned as the idle time. This includes the
+     * node to be scheduled.
+     * 
+     * @return
      */
-    public HashMap<Node, Integer> getStartTimes() { return this.startTimes; }
+    public double calculateIdleTime() {
+        double idleTime = 0;
 
+        // If only one node is scheduled, get start time of the node
+        if (this.scheduledNodes.size() == 1) {
+            idleTime = this.scheduledNodes.get(orderOfNodes.get(0));
 
-    /**
-     * Takes a Node parameter as the node to be added to the processor, ensuring that communication costs are
-     * also taken into consideration
-     * @param node - the node to add to the schedule
-     */
-    public void addToSchedule(Node node) {
+        } else {
 
-        // Add node into the hashmap schedule, where the value is calculated by
-        // (weight of the node + current cost of this processor + any communication costs)
-        startTimes.put(node, currentCost + calculateCommunicationCosts(node));
-        scheduledNodes.put(node, node.getNodeWeight() + currentCost + calculateCommunicationCosts(node));
-        node.assignProcessor(this);
+            // Go through each node that is in the processor
+            for (Integer i : orderOfNodes.keySet()) {
+                if (i == 0) {
+                    continue;
+                }
+                int startOfCurrentNode = this.getStartTimes().get(orderOfNodes.get(i));
+                int weightOfLastNode = ifr.getNodeWeights().get(orderOfNodes.get(i - 1));
+                int startOfLastNode = this.getStartTimes().get(orderOfNodes.get(i - 1));
 
-        // Update current cost of the schedule
-        currentCost = node.getNodeWeight() + currentCost + calculateCommunicationCosts(node);
-    }
-
-
-    /**
-     * Takes a Node parameter as the node to use to calculate communication costs, if any.
-     * The processor currently ensures that if there is at least one parent that has not been scheduled in the
-     * current processor, communication costs exist. It also ensures that all parents/dependencies are have
-     * completed their schedule before the child can be scheduled.
-     * @param node - the node to add to calculate communication costs
-     */
-    private int calculateCommunicationCosts(Node node) {
-
-        // Obtain list of parents of the node
-        List<Node> parentNodes = node.getParentNodes();
-
-        // Keep track of the maximum cost of all parents and use as a basis to schedule the child
-        int maxParentCost = 0;
-        Node maxParent = null;
-
-        // Find the parent with the latest schedule in another processor (if any)
-        for (Node parent : parentNodes) {
-            if (!scheduledNodes.containsKey(parent)) {
-
-                // If scheduled in a different processor, obtain the minimum time/cost that the child
-                // node must be scheduled
-                int parentScheduleEnd = parent.getProcessor().getSchedule().get(parent);
-
-                if (maxParentCost < parentScheduleEnd) {
-
-                    maxParentCost = parentScheduleEnd;
-                    maxParent = parent;
+                // Calculate any idle times and add it to the total idle time
+                if ((startOfCurrentNode) != (startOfLastNode + weightOfLastNode)) {
+                    idleTime = idleTime + (double) ((startOfCurrentNode) - (startOfLastNode + weightOfLastNode));
                 }
             }
         }
+        return idleTime;
+    }
 
-        // If there exists a parent that is scheduled in another processor, use a communication cost
-        if (maxParent != null) {
-            int communicationCost = node.getIncomingEdge(maxParent).getEdgeWeight();
+    /**
+     * hashCode() must be overridden whenever equals() is overridden
+     **/
+    @Override
+    public int hashCode() {
+        // Hash table prime numbers from https://planetmath.org/goodhashtableprimes
+        return new HashCodeBuilder(805306457, 402653189).append(scheduledNodes).append(getCurrentCost()).toHashCode();
+    }
 
-            if (maxParentCost > this.currentCost) {
-                // Ensure that the child node is always scheduled after the parent node
-                return (maxParentCost - this.currentCost) + communicationCost;
-
-            } else { return communicationCost; }
-
-        } else { return 0; }
+    private boolean checkCurrentCost(int currentCost) {
+        return (this.getCurrentCost() == currentCost) ? true : false;
     }
 }
