@@ -23,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.hyperic.sigar.Cpu;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
@@ -167,17 +168,10 @@ public class GraphController implements Initializable {
         Collection<Processor> processorList = ScheduleParser.getInstance().getProcessorList();
 
         int i = 0;
-        boolean isBlue = true;
         for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
             for (Integer j : p.getScheduledNodes()) {
-                if (isBlue) {
-                    isBlue = false;
-                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-blue")));
-                } else {
-                    isBlue = true;
-                    series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-red")));
-                }
+                series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-blue")));
             }
         i++;
         chart.getData().add(series);
@@ -205,6 +199,8 @@ public class GraphController implements Initializable {
      */
     private void populateTile() {
         MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        Cpu cpu = new Cpu();
+
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
@@ -221,7 +217,7 @@ public class GraphController implements Initializable {
             @Override public void run() {
                 long currentMemoryUsage = memoryMXBean.getHeapMemoryUsage().getUsed() / 1000000;
                 ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
-                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE));
+                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", cpu.getUser(), Tile.BLUE));
                 if (cpuUsageData.size() > 20) {
                     ((LinkedList<ChartData>) cpuUsageData).removeLast();
                     ((LinkedList<ChartData>) memoryUsageData).removeLast();

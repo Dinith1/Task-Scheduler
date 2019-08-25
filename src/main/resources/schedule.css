@@ -7,4 +7,5 @@
 }
 .status-blue {
     -fx-background-color:rgba(0,0,128,0.7);
+    -fx-border-color:rgba(255, 255, 255, 1);
 }
