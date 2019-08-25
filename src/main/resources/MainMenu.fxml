@@ -78,9 +78,9 @@
                               <Insets bottom="50.0" top="10.0" />
                            </VBox.margin>
                         </HBox>
-                        <Button id="startBtn" fx:id="startBtn" alignment="CENTER" layoutX="20.0" mnemonicParsing="false" onMouseClicked="#handleStart" prefHeight="99.0" prefWidth="370.0" stylesheets="@stylesheet.css" text="START" VBox.vgrow="NEVER">
+                        <Button id="startBtn" fx:id="startBtn" alignment="CENTER" layoutX="100.0" mnemonicParsing="false" onMouseClicked="#handleStart" prefHeight="67.0" prefWidth="231.0" stylesheets="@stylesheet.css" text="START" VBox.vgrow="NEVER">
                            <VBox.margin>
-                              <Insets bottom="30.0" left="100.0" />
+                              <Insets bottom="30.0" left="170.0" />
                            </VBox.margin></Button>
                      </children>
                   </VBox>
