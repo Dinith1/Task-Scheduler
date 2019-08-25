@@ -73,16 +73,11 @@ public class GraphController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("visual");
         populateTile();
         timeElapsed.textProperty().bind(((seconds.divide(1000.00)).asString()));
-        CommandLineParser parser = CommandLineParser.getInstance();
         this.ifr = InputFileReader.getInstance();
-        if (parser.wantVisual()) {
-            Main.startScheduling();
-        }
         initializeSchedule();
-        setNumberOfNodes("" + InputFileReader.NUM_NODES);
+        setNumberOfNodes("" + InputFileReader.getInstance().getNodeIds().length);
         try {
             createGraph();
         } catch (IOException e) {
@@ -104,6 +99,7 @@ public class GraphController implements Initializable {
      */
     @FXML
     void handleStart(MouseEvent event) {
+        startTimer();
         Task<Void> schedule = new Task<Void>() {
             @Override
             public Void call(){
@@ -116,7 +112,6 @@ public class GraphController implements Initializable {
             populateSchedule();
         });
 
-        startTimer();
         new Thread(schedule).start();
         countProgress.play();
         startBtn.setDisable(true);
@@ -137,13 +132,13 @@ public class GraphController implements Initializable {
      */
     public void createGraph() throws IOException {
         Graph graph = new SingleGraph("Nodes Graph");
-        for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
+        for (int i : InputFileReader.getInstance().getNodeIds()) {
             Node node = graph.addNode("" + i);
-            node.addAttribute("ui.label", InputFileReader.nodeWeights.get(i));
+            node.addAttribute("ui.label", i + " [" + InputFileReader.getInstance().getNodeWeights().get(i) + "]");
         }
-        for (int i = 0; i < InputFileReader.NUM_EDGES; i++) {
-            Edge e = graph.addEdge("" + i, "" + InputFileReader.listOfEdges[i][0], "" + InputFileReader.listOfEdges[i][1]);
-            e.setAttribute("ui.label", InputFileReader.listOfEdges[i][2]);
+        for (int i = 0; i < InputFileReader.getInstance().getListOfEdges().length; i++) {
+            Edge e = graph.addEdge("" + i, "" + InputFileReader.getInstance().getListOfEdges()[i][0], "" + ifr.getListOfEdges()[i][1]);
+            e.setAttribute("ui.label", ifr.getListOfEdges()[i][2]);
         }
 
         String myStyle = "node {"
@@ -225,7 +220,7 @@ public class GraphController implements Initializable {
         for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
             for (Integer j : p.getScheduledNodes()) {
-                series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(InputFileReader.nodeWeights.get(j), "status-blue")));
+                series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(ifr.getNodeWeights().get(j), "status-blue")));
             }
             i++;
             chart.getData().add(series);
@@ -237,7 +232,9 @@ public class GraphController implements Initializable {
         schedulePane.setTopAnchor(chart, 0.0);
         schedulePane.setBottomAnchor(chart, 0.0);
 
-        schedulePane.getChildren().add(chart);
+        if (!schedulePane.getChildren().contains(chart)) {
+            schedulePane.getChildren().add(chart);
+        }
     }
 
     /**

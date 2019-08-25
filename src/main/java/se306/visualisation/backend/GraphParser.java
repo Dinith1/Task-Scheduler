@@ -2,7 +2,9 @@ package se306.visualisation.backend;
 
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
+import jdk.internal.util.xml.impl.Input;
 import se306.input.CommandLineParser;
+import se306.input.InputFileReader;
 
 import java.io.*;
 import java.util.regex.Matcher;
@@ -56,8 +58,15 @@ public class GraphParser {
 					totalEdges++;
 				}
 			}
+
+			CommandLineParser parser = CommandLineParser.getInstance();
+			InputStreamReader isr1 = new FileReader(parser.getInputFileName());
+			InputFileReader ifr = InputFileReader.getInstance();
+			ifr.readInput(isr1);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+
+
 	}
 }

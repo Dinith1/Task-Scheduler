@@ -206,7 +206,7 @@ public class InputFileReader {
     /**
      * Adds nodes to a hashmap, where the key is the weight, and the value is an
      * array of all the node (IDs) with that weight.
-     * 
+     *
      * @param id     ID of the node
      * @param weight Weight of the node
      */
@@ -258,7 +258,7 @@ public class InputFileReader {
     /**
      * Checks if an array of nodes (which have the same weights) all have a common
      * parent
-     * 
+     *
      * @param sameWeightNodes Array of nodes to check
      */
     private void checkNodeParents(int[] sameWeightNodes) {
@@ -394,7 +394,7 @@ public class InputFileReader {
 
 
     /**
-     * 
+     *
      * @param sameChildrenNodes
      */
     private void checkNodeIncomingEdges(int[] sameChildrenNodes) {
@@ -549,7 +549,7 @@ public class InputFileReader {
     /**
      * Takes a node, and adds an immediate parent, putting it into the nodeParents
      * HashMap
-     * 
+     *
      * @param child
      * @param parent
      */
@@ -570,7 +570,7 @@ public class InputFileReader {
     /**
      * Takes a node, and adds an immediate child, putting it into the nodeChildren
      * HashMap
-     * 
+     *
      * @param parent
      * @param child
      */

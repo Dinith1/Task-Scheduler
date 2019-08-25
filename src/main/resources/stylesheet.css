@@ -4,9 +4,7 @@
 
 	
 	/* Midnight Black*/
-	-fx-background-color:  
-	-fx-background-color: -webkit-linear-gradient(to right, #414345, #232526);  
--fx-background-color: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ 
+    -fx-background-color: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
 
 
 	/* Blue White gradient */

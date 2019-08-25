@@ -27,6 +27,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Main class to test InputFileReader functionality
@@ -42,6 +46,8 @@ public class Main extends Application {
         // "src/resources/Nodes_9_SeriesParallel.dot"
         // "src/resources/Nodes_10_Random.dot" 
         // "src/resources/Nodes_11_OutTree.dot"
+
+        stopPackagesPrintingInfo();
 
         CommandLineParser parser = CommandLineParser.getInstance();
         try {
@@ -80,15 +86,15 @@ public class Main extends Application {
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-        try {
+//        try {
             System.out.println("Before ifr");
-            ifr.readInput(isr);
+//            ifr.readInput(isr);
             System.out.println("Before prune identical children");
             ifr.pruneIdenticalNodes();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         AStarScheduler scheduler = new AStarScheduler();
         scheduler.findOptimalSchedule();// Start scheduling
 
@@ -111,10 +117,22 @@ public class Main extends Application {
 
         // Passes required data to controllers
         GraphController ctrl = menuLoader.getController();
+
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
         // primaryStage.setMaximized(true);
         primaryStage.show();
+    }
+
+    /**
+     * Stop packages printing unncessaray information.
+     */
+    public static void stopPackagesPrintingInfo() {
+        Logger rootLogger = LogManager.getLogManager().getLogger("");
+        rootLogger.setLevel(Level.WARNING);
+        for (Handler h : rootLogger.getHandlers()) {
+            h.setLevel(Level.WARNING);
+        }
     }
 }
