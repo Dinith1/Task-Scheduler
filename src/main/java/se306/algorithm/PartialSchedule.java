@@ -17,7 +17,6 @@ public class PartialSchedule {
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
 
-
     // private Set<Integer> freeNodes = new HashSet<>();
 
     PartialSchedule(int processorNumber) {
@@ -41,29 +40,36 @@ public class PartialSchedule {
         List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
         // Else create a thread pool that contains numOfCores\
         for (Integer i : getFreeNodes()) {
-            tasks.add(() -> expandNewStatesParallel(i));
+            tasks.add(new Callable<HashSet<PartialSchedule>>() {
+                @Override
+                public HashSet<PartialSchedule> call() throws Exception {
+                    // System.out.println(Thread.currentThread().getId());
+                    return expandNewStatesParallel(i);
+
+                }
+            });
         }
         HashSet<PartialSchedule> output = new HashSet<>();
         try {
             List<Future<HashSet<PartialSchedule>>> futureTasks = multiThreadExecutor.invokeAll(tasks);
-                for (Future<HashSet<PartialSchedule>> item : futureTasks) {
-                    output.addAll(item.get());
+            for (Future<HashSet<PartialSchedule>> item : futureTasks) {
+                output.addAll(item.get());
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return output;
     }
 
-    private HashSet<PartialSchedule> expandNewStatesParallel(Integer node){
+    private HashSet<PartialSchedule> expandNewStatesParallel(Integer node) {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         for (int j = 0; j < processorList.size(); j++) {
             PartialSchedule newSchedule = new PartialSchedule(this);
 
             // Add it to each processor and make that many corresponding schedules
             newSchedule.addToProcessor(j, node);
-                calculateCostFunction(newSchedule, node, processorList.size());
+            calculateCostFunction(newSchedule, node, processorList.size());
             // Add the schedule to overall expanded list
             newExpandedSchedule.add(newSchedule);
         }
@@ -82,7 +88,7 @@ public class PartialSchedule {
 
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
-//                calculateCostFunction(newSchedule, node, processorList.size());
+                calculateCostFunction(newSchedule, node, processorList.size());
                 // Add the schedule to overall expanded list
                 newExpandedSchedule.add(newSchedule);
             }
@@ -171,15 +177,15 @@ public class PartialSchedule {
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
 
-//    public int getFinishTime() {
-//        int finishTime = 0;
-//        for (Integer i : processorList.keySet()) {
-//            if (processorList.get(i).getCurrentCost() > finishTime) {
-//                finishTime = processorList.get(i).getCurrentCost();
-//            }
-//        }
-//        return finishTime;
-//    }
+    // public int getFinishTime() {
+    // int finishTime = 0;
+    // for (Integer i : processorList.keySet()) {
+    // if (processorList.get(i).getCurrentCost() > finishTime) {
+    // finishTime = processorList.get(i).getCurrentCost();
+    // }
+    // }
+    // return finishTime;
+    // }
 
     /**
      * Creates processors and adds it to the list

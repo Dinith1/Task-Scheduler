@@ -56,7 +56,7 @@ public class AStarScheduler {
         try {
             CommandLineParser clp = CommandLineParser.getInstance();
             //Creates thread executor
-            PartialSchedule.multiThreadExecutor = Executors.newFixedThreadPool(clp.getNumberOfCores());
+            PartialSchedule.multiThreadExecutor = Executors.newWorkStealingPool(clp.getNumberOfCores());
             PartialSchedule optimalSchedule = aStarAlgorithm(clp.getNumberOfProcessors(),clp.getNumberOfCores());
             //Shuts down the processors
             PartialSchedule.multiThreadExecutor.shutdown();
