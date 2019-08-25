@@ -46,7 +46,7 @@ public class Main extends Application {
         } catch (InvalidInputException | NumberFormatException e) {
             Log.error(e.getMessage());
             parser.printUsage();
-            return;
+            System.exit(0);
         }
 
         if (parser.wantVisual()) {
