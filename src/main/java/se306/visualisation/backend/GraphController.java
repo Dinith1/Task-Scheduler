@@ -1,14 +1,14 @@
 package se306.visualisation.backend;
 
+import com.sun.management.OperatingSystemMXBean;
 import eu.hansolo.tilesfx.Tile;
-import eu.hansolo.tilesfx.TileBuilder;
 import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -30,6 +30,9 @@ import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.ThreadMXBean;
 import java.net.URL;
 import java.util.*;
 
@@ -168,22 +171,6 @@ public class GraphController implements Initializable {
         schedulePane.getChildren().add(chart);
     }
 
-//    public void startTimeElapsed() {
-//        timerRunning = true;
-//        long startTime = System.nanoTime()/1000000;
-//        timer.scheduleAtFixedRate(new TimerTask() {
-//            public void run() {
-//                if(timerRunning)
-//                {
-//                    long currentTime = System.nanoTime()/1000000 - startTime;
-//                    timeElapsed.setText(currentTime/1000 + ":" + currentTime%1000);
-//                }
-//                else
-//                    timer.cancel();
-//            }
-//        }, 0,1);
-//    }
-
     public void setNumberOfNodes(String s) {
         numberOfNodes.setText(s);
     }
@@ -191,24 +178,40 @@ public class GraphController implements Initializable {
 
 
     private void populateTile() {
-        ChartData smoothChartData1 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData2 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData3 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData4 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData5 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData6 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData7 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
-        ChartData smoothChartData8 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData1 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData2 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData3 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData4 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData5 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData6 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData7 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
+//        ChartData smoothChartData8 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
-        cpuUsage.setValue(40L);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
-        cpuUsage.setChartData(smoothChartData1, smoothChartData2, smoothChartData3, smoothChartData4);
         memoryUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
-        memoryUsage.setValue(60L);
         memoryUsage.setTitle("Memory Usage");
         memoryUsage.isAnimated();
-        memoryUsage.setChartData(smoothChartData5, smoothChartData6, smoothChartData7, smoothChartData8);
+
+        List<ChartData> cpuUsageData = new LinkedList<>();
+        List<ChartData> memoryUsageData = new LinkedList<>();
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override public void run() {
+                long currentMemoryUsage = memoryMXBean.getHeapMemoryUsage().getUsed() / 1000000;
+                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
+                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE));
+                if (cpuUsageData.size() > 20) {
+                    ((LinkedList<ChartData>) cpuUsageData).removeLast();
+                    ((LinkedList<ChartData>) memoryUsageData).removeLast();
+                }
+                Platform.runLater(() -> cpuUsage.setChartData(cpuUsageData));
+                Platform.runLater(() -> memoryUsage.setChartData(memoryUsageData));
+
+            }
+        }, 0L, 200L);
+
 
     }
 
