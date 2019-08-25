@@ -100,13 +100,10 @@ public class Main extends Application {
 
         // Passes required data to controllers
         GraphController ctrl = menuLoader.getController();
-        ctrl.createGraph(GraphParser.g);
-
         Scene menuScene = new Scene(menuPane);
         primaryStage.setScene(menuScene);
         primaryStage.sizeToScene();
         // primaryStage.setMaximized(true);
-        CommandLineParser parser = CommandLineParser.getInstance();
         primaryStage.show();
     }
 }

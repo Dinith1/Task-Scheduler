@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 public class GraphParser {
 
 	public static int totalNodes = 0, totalEdges = 0; //public static so that all other classes only see a single value
-	public static MutableGraph g;
 
 	/**
 	 * Begins parsing the graph and stores the new graph as a field, also calculates the total nodes and edges
@@ -23,12 +22,9 @@ public class GraphParser {
 	public void parseGraph() {
 		try {
 			CommandLineParser parser = CommandLineParser.getInstance();
-			String s = parser.getInputFileName();
 			InputStreamReader isr = new FileReader(parser.getInputFileName());
-			InputStream inputStream = new FileInputStream(s);
 
 			getNumberOfNodesAndEdges(isr);
-			g = Parser.read(inputStream);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

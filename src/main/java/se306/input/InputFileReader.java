@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class InputFileReader {
     public static int NUM_NODES;; // Testing with Nodes_7 (change later to read number of nodes from GraphViz
                                   // graph generator)
-    private static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
+    public static int NUM_EDGES; // Testing with Nodes_7 (change later to read number of edges from GraphViz
                                  // graph generator)
 
     // public static int[] listOfAvailableNodes = new int[NUM_NODES]; // Each int is
