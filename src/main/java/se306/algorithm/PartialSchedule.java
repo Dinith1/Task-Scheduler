@@ -3,7 +3,6 @@ package se306.algorithm;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,7 +11,7 @@ import se306.input.InputFileReader;
 public class PartialSchedule {
 
     // User defined available processors placed in a list
-    private HashMap<Integer, Processor> processorList = new HashMap();
+    private HashMap<Integer, Processor> processorList = new HashMap<Integer, Processor>();
     private double costFunction;
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
