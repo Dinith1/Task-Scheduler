@@ -1,16 +1,20 @@
 package se306.algorithm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 
 /**
- * A partial schedule represents a partial solution to obtaining the optimal schedule, each partial schedule has
- * a list of processes which contain their respective nodes.
+ * A partial schedule represents a partial solution to obtaining the optimal
+ * schedule, each partial schedule has a list of processes which contain their
+ * respective nodes.
  */
 public class PartialSchedule {
     private InputFileReader ifr = InputFileReader.getInstance();
@@ -21,13 +25,13 @@ public class PartialSchedule {
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
 
-
     PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
 
     /**
      * Copy constructor creates a new object with the same attributes
+     * 
      * @param ps
      */
     private PartialSchedule(PartialSchedule ps) {
@@ -41,6 +45,7 @@ public class PartialSchedule {
 
     /**
      * Helper function to choose a parallelised algorithm or sequential algorithm
+     * 
      * @param numOfCores
      * @return
      */
@@ -50,7 +55,7 @@ public class PartialSchedule {
             return expandNewStates();
         }
         // Creates a list of callable objects
-        List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
+        ArrayList<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
         // Loop through the number of free nodes and add them to the task list
         for (Integer i : getFreeNodes()) {
             tasks.add(() -> expandNewStatesParallel(i));
@@ -72,8 +77,9 @@ public class PartialSchedule {
     }
 
     /**
-     * Parallel helper method for expanding new states where it takes a node as input so each expansion can be
-     * run on a different thread
+     * Parallel helper method for expanding new states where it takes a node as
+     * input so each expansion can be run on a different thread
+     * 
      * @param node
      * @return
      */
@@ -92,8 +98,10 @@ public class PartialSchedule {
     }
 
     /**
-     * This function expands the new states according to how many free nodes are available to be scheduled
-     * It adds each node that is available onto every processor and creates that new state to be expanded
+     * This function expands the new states according to how many free nodes are
+     * available to be scheduled It adds each node that is available onto every
+     * processor and creates that new state to be expanded
+     * 
      * @return newExpandedSchedule
      */
     public HashSet<PartialSchedule> expandNewStates() {
@@ -119,6 +127,7 @@ public class PartialSchedule {
 
     /**
      * Retrieves that nodes that are able to be scheduled
+     * 
      * @return
      */
     public Set<Integer> getFreeNodes() {
@@ -181,6 +190,7 @@ public class PartialSchedule {
 
     /**
      * Retrieves the cost function
+     * 
      * @return
      */
     public double getCostFunction() {
@@ -203,7 +213,6 @@ public class PartialSchedule {
         CostFunctionCalculator calculator = new CostFunctionCalculator();
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
-
 
     /**
      * Creates processors and adds it to the list
@@ -254,6 +263,7 @@ public class PartialSchedule {
 
     /**
      * Retrieves max time of a schedule
+     * 
      * @return
      */
     public int getFinishTime() {
@@ -337,8 +347,7 @@ public class PartialSchedule {
                     if (p.getProcessorID() != processorNumber) {
 
                         // Find end time of the parent node
-                        int endTimeOfParent = p.getStartTimes().get(parentID)
-                                + ifr.getNodeWeights().get(parentID);
+                        int endTimeOfParent = p.getStartTimes().get(parentID) + ifr.getNodeWeights().get(parentID);
 
                         // Gets communication cost of the parent
                         int communicationCost = 0; // NEED TO CHECK THIS ====================================

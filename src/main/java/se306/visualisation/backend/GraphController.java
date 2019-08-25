@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import org.graphstream.graph.*;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -25,6 +24,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.stream.file.FileSinkImages;
 import se306.Main;
@@ -36,7 +39,6 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.*;
-
 
 public class GraphController implements Initializable {
     private InputFileReader ifr;
@@ -69,18 +71,17 @@ public class GraphController implements Initializable {
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTile();
-        //binds the time elapsed label to the current time. Current time is updated for each ms
+        // binds the time elapsed label to the current time. Current time is updated for
+        // each ms
         timeElapsed.textProperty().bind(((seconds.divide(1000.00)).asString()));
         this.ifr = InputFileReader.getInstance();
         initializeSchedule();
         setNumberOfNodes("" + InputFileReader.getInstance().getNodeIds().length);
         try {
-            //Creates the graph based on input file only
+            // Creates the graph based on input file only
             createGraph();
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,7 +91,7 @@ public class GraphController implements Initializable {
     /**
      * Updates time for the timeelapsed value
      */
-    private void updateTime(){
+    private void updateTime() {
         double seconds = this.seconds.get();
         this.seconds.set(seconds + 1);
 
@@ -103,6 +104,7 @@ public class GraphController implements Initializable {
 
     /**
      * Listens for when the start button is pressed by the user
+     * 
      * @param event
      */
     @FXML
@@ -110,8 +112,8 @@ public class GraphController implements Initializable {
         startTimer();
         Task<Void> schedule = new Task<Void>() {
             @Override
-            public Void call(){
-                //runs the algorithm
+            public Void call() {
+                // runs the algorithm
                 Main.startScheduling();
                 return null;
             }
@@ -123,61 +125,50 @@ public class GraphController implements Initializable {
 
         new Thread(schedule).start();
         countProgress.play();
-        startBtn.setDisable(true); //the start button is only allowed to be pressed once
+        startBtn.setDisable(true); // the start button is only allowed to be pressed once
     }
 
     /**
      * Starts timer of timeelapsed
      */
-    private void startTimer(){
-        countProgress = new Timeline(new KeyFrame(Duration.millis(1),evt-> updateTime()));
+    private void startTimer() {
+        countProgress = new Timeline(new KeyFrame(Duration.millis(1), evt -> updateTime()));
         countProgress.setCycleCount((Animation.INDEFINITE));
         seconds.set(STARTTIME);
     }
 
     /**
      * Creates the graph that displays the nodes
+     * 
      * @throws IOException
      */
     public void createGraph() throws IOException {
         Graph graph = new SingleGraph("Nodes Graph");
-        //for each node, add the node to the graph and set its label to be its id and weight
+        // for each node, add the node to the graph and set its label to be its id and
+        // weight
         for (int i : InputFileReader.getInstance().getNodeIds()) {
             Node node = graph.addNode("" + i);
             node.addAttribute("ui.label", i + " [" + InputFileReader.getInstance().getNodeWeights().get(i) + "]");
         }
-        //for each edge, add the edge to the graph and set its label to be its weight
+        // for each edge, add the edge to the graph and set its label to be its weight
         for (int i = 0; i < InputFileReader.getInstance().getListOfEdges().length; i++) {
-            Edge e = graph.addEdge("" + i, "" + InputFileReader.getInstance().getListOfEdges()[i][0], "" + ifr.getListOfEdges()[i][1]);
+            Edge e = graph.addEdge("" + i, "" + InputFileReader.getInstance().getListOfEdges()[i][0],
+                    "" + ifr.getListOfEdges()[i][1]);
             e.setAttribute("ui.label", ifr.getListOfEdges()[i][2]);
         }
 
-        //stylises the node/edge graph
-        String myStyle = "node {"
-                + "size: 50px;"
-                + "fill-color: #33abf0;"
-                + "z-index: 0;"
-                + "text-size: 40px;"
-                + "text-color: #ffffff;"
-                + "}"
+        // stylises the node/edge graph
+        String myStyle = "node {" + "size: 50px;" + "fill-color: #33abf0;" + "z-index: 0;" + "text-size: 40px;"
+                + "text-color: #ffffff;" + "}"
 
-                + "edge {"
-                + "shape: line;"
-                + "fill-color: #ffffff;"
-                + "size: 3px;"
-                + "arrow-size: 20px, 100px;"
-                + "text-size: 40px;"
-                + "text-color: #33abf0;"
-                + "}"
+                + "edge {" + "shape: line;" + "fill-color: #ffffff;" + "size: 3px;" + "arrow-size: 20px, 100px;"
+                + "text-size: 40px;" + "text-color: #33abf0;" + "}"
 
-                + "graph {"
-                + "fill-color: rgba(76, 175, 80, 0);"
-                + "text-size: 30px;"
-                + "}";
+                + "graph {" + "fill-color: rgba(76, 175, 80, 0);" + "text-size: 30px;" + "}";
         graph.setAttribute("ui.stylesheet", myStyle);
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 
-        //create a new temporary image, the image is scaled and placed in the GUI
+        // create a new temporary image, the image is scaled and placed in the GUI
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
         try {
             pic.setAutofit(true);
@@ -191,13 +182,14 @@ public class GraphController implements Initializable {
     }
 
     /**
-     * Sets up the schedule visualisation as an empty graph, to be populated by populateSchedule() method
+     * Sets up the schedule visualisation as an empty graph, to be populated by
+     * populateSchedule() method
      */
     public void initializeSchedule() {
         xAxis = new NumberAxis();
         yAxis = new CategoryAxis();
 
-        chart = new SchedulesBar<>(xAxis,yAxis);
+        chart = new SchedulesBar<>(xAxis, yAxis);
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.WHITE);
         xAxis.setMinorTickCount(4);
@@ -213,8 +205,9 @@ public class GraphController implements Initializable {
     }
 
     /**
-     * This is called when the algorithm finalises, it builds the nodes for each processor to be visualised
-     * based on the final output. The schedule graph reflects the output dot file.
+     * This is called when the algorithm finalises, it builds the nodes for each
+     * processor to be visualised based on the final output. The schedule graph
+     * reflects the output dot file.
      */
     public void populateSchedule() {
         CommandLineParser parser = CommandLineParser.getInstance();
@@ -224,23 +217,24 @@ public class GraphController implements Initializable {
         }
 
         yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(processors)));
-        chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 30));
+        chart.setBlockHeight(schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 30));
 
         Collection<Processor> processorList = ScheduleParser.getInstance().getProcessorList();
 
-        //for each process, get all of its nodes and place them in the schedules chart
+        // for each process, get all of its nodes and place them in the schedules chart
         int i = 0;
         for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
             for (Integer j : p.getScheduledNodes()) {
-                series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i], new SchedulesBar.ExtraData(ifr.getNodeWeights().get(j), "status-blue")));
+                series.getData().add(new XYChart.Data(p.getStartTimes().get(j), processors[i],
+                        new SchedulesBar.ExtraData(ifr.getNodeWeights().get(j), "status-blue")));
             }
             i++;
             chart.getData().add(series);
         }
 
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
-        //making sure that the schedules chart fills the entire space of the pane
+        // making sure that the schedules chart fills the entire space of the pane
         schedulePane.setLeftAnchor(chart, 0.0);
         schedulePane.setRightAnchor(chart, 0.0);
         schedulePane.setTopAnchor(chart, 0.0);
@@ -253,6 +247,7 @@ public class GraphController implements Initializable {
 
     /**
      * The number of nodes specified in the input dot file
+     * 
      * @param s
      */
     public void setNumberOfNodes(String s) {
@@ -260,11 +255,12 @@ public class GraphController implements Initializable {
     }
 
     /**
-     * Starts running the cpu usage and memory usage timelines in a new thread, is continuously changing
+     * Starts running the cpu usage and memory usage timelines in a new thread, is
+     * continuously changing
      */
     private void populateTile() {
         OperatingSystemMXBean bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
-            .getOperatingSystemMXBean();
+                .getOperatingSystemMXBean();
 
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
@@ -278,17 +274,22 @@ public class GraphController implements Initializable {
         List<ChartData> cpuUsageData = new LinkedList<>();
         List<ChartData> memoryUsageData = new LinkedList<>();
 
-        //create a new timer that runs repeatedly every 200ms. It calculates the percentage cpu usage
-        //and the percentage memory usage, and adds them to a list for chartData. This chart data
-        //shows 20 values at a time. If the list is longer than 20, then new data replaces old data
+        // create a new timer that runs repeatedly every 200ms. It calculates the
+        // percentage cpu usage
+        // and the percentage memory usage, and adds them to a list for chartData. This
+        // chart data
+        // shows 20 values at a time. If the list is longer than 20, then new data
+        // replaces old data
         Timer t = new Timer();
         t.schedule(new TimerTask() {
-            @Override public void run() {
-                double currentCpuUsage =  bean.getSystemCpuLoad() * 100;
+            @Override
+            public void run() {
+                double currentCpuUsage = bean.getSystemCpuLoad() * 100;
                 long ramTotal = Runtime.getRuntime().totalMemory();
                 long ramUsed = ramTotal - Runtime.getRuntime().freeMemory();
                 double currentMemoryUsage = ((ramUsed * 1.0) / ramTotal) * 100;
-                ((LinkedList<ChartData>) memoryUsageData).addLast(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
+                ((LinkedList<ChartData>) memoryUsageData)
+                        .addLast(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
                 ((LinkedList<ChartData>) cpuUsageData).addLast(new ChartData("Item 1", currentCpuUsage, Tile.BLUE));
                 if (cpuUsageData.size() > 20) {
                     ((LinkedList<ChartData>) cpuUsageData).removeFirst();
@@ -299,7 +300,6 @@ public class GraphController implements Initializable {
 
             }
         }, 0L, 200L);
-
 
     }
 

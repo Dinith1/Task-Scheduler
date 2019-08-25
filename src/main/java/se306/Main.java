@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
 import guru.nidi.graphviz.model.MutableGraph;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,10 +40,10 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
 
-        //Stop random info messages being printed on console
+        // Stop random info messages being printed on console
         stopPackagesPrintingInfo();
 
-        //Parse the command line arguments in
+        // Parse the command line arguments in
         CommandLineParser parser = CommandLineParser.getInstance();
         try {
             parser.parseCommandLineArguments(args);
@@ -57,7 +56,7 @@ public class Main extends Application {
             System.exit(0);
         }
 
-        //Check if visualisation is enabled
+        // Check if visualisation is enabled
         if (parser.wantVisual()) {
             launch(args);
         } else {
@@ -71,7 +70,6 @@ public class Main extends Application {
         CommandLineParser parser = CommandLineParser.getInstance();
         InputStreamReader isr;
 
-
         try {
             isr = new FileReader(parser.getInputFileName());
         } catch (FileNotFoundException e) {
@@ -79,14 +77,13 @@ public class Main extends Application {
             return;
         }
 
-
         InputFileReader ifr = InputFileReader.getInstance();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-            ifr.pruneIdenticalNodes();
-
+        Log.info("preprocessing...");
+        ifr.pruneIdenticalNodes();
 
         AStarScheduler scheduler = new AStarScheduler();
         scheduler.findOptimalSchedule();// Start scheduling

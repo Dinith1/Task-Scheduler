@@ -3,7 +3,6 @@ package se306.algorithm;
 import se306.input.CommandLineParser;
 import se306.output.OutputFileGenerator;
 import se306.visualisation.backend.ScheduleParser;
-
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.concurrent.Executors;
@@ -34,11 +33,11 @@ public class AStarScheduler {
                     return currentSchedule;
                 }
 
-                // EXPAND currentSCHEDULE TO NEW POSSIBLE STATES
-                HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(currentSchedule.chooseExpansionAlgorithm(numberOfCores));
+                // Expand currentSchedule to new possible states
+                HashSet<PartialSchedule> expandedCurrentSchedule = new HashSet<>(
+                        currentSchedule.chooseExpansionAlgorithm(numberOfCores));
                 for (PartialSchedule s : expandedCurrentSchedule) {
-                    if(!createdSchedules.contains(s)){
-                       // s.setCostFunction(s.calculateCostFunction());
+                    if (!createdSchedules.contains(s)) {
                         open.add(s);
                         createdSchedules.add(s);
                     }
@@ -55,10 +54,10 @@ public class AStarScheduler {
     public void findOptimalSchedule() {
         try {
             CommandLineParser clp = CommandLineParser.getInstance();
-            //Creates thread executor
+            // Creates thread executor
             PartialSchedule.multiThreadExecutor = Executors.newWorkStealingPool(clp.getNumberOfCores());
-            PartialSchedule optimalSchedule = aStarAlgorithm(clp.getNumberOfProcessors(),clp.getNumberOfCores());
-            //Shuts down the processors
+            PartialSchedule optimalSchedule = aStarAlgorithm(clp.getNumberOfProcessors(), clp.getNumberOfCores());
+            // Shuts down the processors
             PartialSchedule.multiThreadExecutor.shutdown();
             OutputFileGenerator.getInstance().generateFile(optimalSchedule.getProcessorList());
 
@@ -77,7 +76,7 @@ public class AStarScheduler {
      * @return a partialSchedule which has the lowest cost function to start out
      *         with
      */
-     private void getPartialScheduleInitial(int numberOfProcessors) {
+    private void getPartialScheduleInitial(int numberOfProcessors) {
         // Creates a schedule with the correct number of processors
         PartialSchedule schedule = new PartialSchedule(numberOfProcessors);
         HashSet<PartialSchedule> newScheduleList = schedule.expandNewStates();

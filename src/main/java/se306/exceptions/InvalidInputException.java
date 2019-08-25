@@ -7,14 +7,14 @@ public class InvalidInputException extends Exception {
 
     public InvalidInputException(String msg) {
         super(msg);
-	}
+    }
 
-	/**
+    /**
      * @param parser
      * @return boolean to see if process input was missing or invalid
      */
     public boolean checkProcessInput(CommandLineParser parser) {
         return (parser.getNumberOfProcessors() <= 0);
     }
-    
+
 }
