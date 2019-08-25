@@ -1,11 +1,21 @@
 package se306.algorithm;
 
 import se306.input.InputFileReader;
+
+import java.util.HashMap;
 import java.util.Set;
 
 public class CostFunctionCalculator {
 
-    private double[] bottomLevels = new double[InputFileReader.NUM_NODES];
+    // Map from node id to bottom level weight
+    private HashMap<Integer, Integer> bottomLevels = new HashMap<Integer, Integer>();
+
+    public CostFunctionCalculator() {
+        // Initialize map with all zeros
+        for (int node : InputFileReader.nodeIds) {
+            bottomLevels.put(node, 0);
+        }
+    }
 
     /**
      * This method calculates and assigns the total cost function of a partial
@@ -63,12 +73,12 @@ public class CostFunctionCalculator {
             // Iterate through each child
             for (int i : arrayOfChildren) {
                 current = getBottomLevelRecursive(i);
-                this.bottomLevels[i] = current;
+                this.bottomLevels.put(i, current);
                 if (upperBound < current) {
                     upperBound = current;
                 }
             }
-            this.bottomLevels[node] = current + InputFileReader.nodeWeights.get(node);
+            this.bottomLevels.put(node, current + InputFileReader.nodeWeights.get(node));
             return upperBound + InputFileReader.nodeWeights.get(node);
         } else {
             return InputFileReader.nodeWeights.get(node);
@@ -86,13 +96,13 @@ public class CostFunctionCalculator {
      */
     public double getDRT(PartialSchedule newPs, int node, Set<Integer> free) {
         double bottomLevel;
-        double maxDRT = this.bottomLevels[node] + InputFileReader.nodeWeights.get(node);
+        double maxDRT = this.bottomLevels.get(node) + InputFileReader.nodeWeights.get(node);
         for (Integer freeNode : free) {
 
             double maxStartTime = 0;
 
             // Find the bottom level of the current free node that is being "applied"
-            bottomLevel = this.bottomLevels[freeNode];
+            bottomLevel = this.bottomLevels.get(freeNode);
 
             // Trial every processor
             for (Processor p : newPs.getProcessorList().values()) {
