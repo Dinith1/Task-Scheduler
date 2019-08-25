@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import org.graphstream.graph.*;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -25,7 +24,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.View;
+import org.graphstream.ui.view.Viewer;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
@@ -134,16 +139,20 @@ public class GraphController implements Initializable {
      * @throws IOException
      */
     public void createGraph() throws IOException {
-        Graph graph = new SingleGraph("Nodes Graph");
+        Graph graph = new MultiGraph("Nodes Graph");
         for (int i = 0; i < InputFileReader.NUM_NODES; i++) {
             Node node = graph.addNode("" + i);
-            node.addAttribute("ui.label", InputFileReader.nodeWeights.get(i));
+            node.setAttribute("ui.label", InputFileReader.nodeWeights.get(i));
         }
         for (int i = 0; i < InputFileReader.NUM_EDGES; i++) {
             Edge e = graph.addEdge("" + i, "" + InputFileReader.listOfEdges[i][0], "" + InputFileReader.listOfEdges[i][1]);
             e.setAttribute("ui.label", InputFileReader.listOfEdges[i][2]);
         }
-        graph.display();
+        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+// ...
+        View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
+// ...
+        myJFrame.add(view);
     }
 
     /**
