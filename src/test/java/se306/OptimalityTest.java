@@ -234,8 +234,247 @@ public class OptimalityTest {
 
 
         assertEquals(66, ps.getFinishTime());
+    }
+    @Test
+    public void Pipeline_Nodes_21_2Proc() throws Exception{
+        int[] costArray;
 
+        InputStreamReader isr;
+        File file = new File("2p_Pipeline_Nodes_21_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(904, ps.getFinishTime());
+    }
+
+    @Test
+    public void Join_Nodes_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Join_Nodes_10_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(292, ps.getFinishTime());
+    }
+
+    @Test
+    public void  Intree_Balanced_Nodes_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_InTree-Balanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(222, ps.getFinishTime());
+    }
+
+    @Test
+    public void Intree_Unbalanced_Nodes_10_2Proc() throws Exception{
+
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_InTree-Unbalanced-MaxBf-3_Nodes_10_CCR_0.10_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(344, ps.getFinishTime());
+    }
+
+    @Test
+    public void OutTree_Balanced_Nodes_21_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_OutTree-Balanced-MaxBf-3_Nodes_21_CCR_1.05_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(71, ps.getFinishTime());
 
     }
 
+    @Test
+    public void OutTree_Unbalanced_Nodes_21_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_OutTree-Unbalanced-MaxBf-3_Nodes_21_CCR_0.99_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(72, ps.getFinishTime());
+    }
+    @Test
+    public void Random_Nodes_10_Density_4_CCR_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Random_Nodes_10_Density_4.50_CCR_10.00_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(66, ps.getFinishTime());
+    }
+
+    @Test
+    public void Series_Parallel_10_MAXBF5_CCR_9_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_SeriesParallel-MaxBf-5_Nodes_10_CCR_9.97_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+
+        assertEquals(59, ps.getFinishTime());
+    }
+
+    @Test
+    public void Stencil_Nodes_21_CCR_10_2Proc() throws Exception{
+        int[] costArray;
+
+        InputStreamReader isr;
+        File file = new File("2p_Stencil_Nodes_21_CCR_10.03_WeightType_Random.dot");
+
+
+        isr = new FileReader(file);
+        costArray = getNumberOfNodesAndEdgesTest(isr);
+        InputFileReader ifr = new InputFileReader(costArray[0], costArray[1]);
+
+
+
+        InputStreamReader isr2;
+        isr2 = new FileReader(file);
+        ifr.readInput(isr2);
+        ifr.pruneIdenticalNodes();
+
+
+        AStarScheduler scheduler = new AStarScheduler();
+        ps = scheduler.aStarAlgorithm(2);
+
+        assertEquals(134, ps.getFinishTime());
+    }
 }
