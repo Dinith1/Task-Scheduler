@@ -2,6 +2,9 @@ package se306.algorithm;
 
 import java.util.Comparator;
 
+/**
+ * Comparator to check that the smallest cost function is at the start of the OPEN priority queue
+ */
 public class CostFunctionComparator implements Comparator<PartialSchedule> {
 
     public int compare(PartialSchedule s1, PartialSchedule s2){

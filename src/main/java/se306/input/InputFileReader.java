@@ -69,7 +69,8 @@ public class InputFileReader {
     }
 
     /**
-     * For testing purposes
+     * For testing purposes, clears all the values in the inputFileReader whenever a new test
+     * case is called
      */
     public void clearInputFileReader() {
         inputFileReader = null;

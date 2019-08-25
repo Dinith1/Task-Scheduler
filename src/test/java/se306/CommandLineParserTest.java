@@ -8,6 +8,9 @@ import se306.input.CommandLineParser;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
 
+/**
+ * Tests the CommandLineParser class, and that the correct exceptions are thrown
+ */
 public class CommandLineParserTest {
     CommandLineParser cliArgumentParser;
 
@@ -30,6 +33,10 @@ public class CommandLineParserTest {
         }
     }
 
+    /**
+     * Test that a NumberFormatException is caught when the second argument is not a number
+     * @throws InvalidInputException
+     */
     @Test
     public void parseSecondArgsNotNumber() throws InvalidInputException {
         String[] input = new String[]{"hi.dot", "x"};
@@ -41,6 +48,9 @@ public class CommandLineParserTest {
         }
     }
 
+    /**
+     * Test that a InvalidInputException is caught when no arguments are passed in
+     */
     @Test
     public void parseNoArgs() {
         String[] input = new String[0];
@@ -52,6 +62,9 @@ public class CommandLineParserTest {
         }
     }
 
+    /**
+     * Test that an InvalidInputException is caught when 0 processors have been specified
+     */
     @Test
     public void parseNoProcessors() {
         String[] input = new String[]{"hi.dot", "0"};
@@ -63,6 +76,9 @@ public class CommandLineParserTest {
         }
     }
 
+    /**
+     * Test that an InvalidInputException is caught when 0 cores have been inputted
+     */
     @Test
     public void parseIncorrectCores() {
         String[] input = new String[]{"hi.dot", "2", "-p", "0"};
@@ -74,6 +90,10 @@ public class CommandLineParserTest {
         }
     }
 
+    /**
+     * Test that an InvalidInputException is caught, and the correct error message has been displayed when
+     * a file with no .dot file has been inputted
+     */
     @Test
     public void parseNoDotFile(){
         String[] input = new String[]{"hi", "2", "-p", "2"};

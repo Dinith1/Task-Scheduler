@@ -14,6 +14,9 @@
 
  import static junit.framework.TestCase.assertEquals;
 
+ /**
+  * This test suite tests the optimal finish time for a selection of different graphs
+  */
  public class OptimalityTest {
 
      PartialSchedule ps;

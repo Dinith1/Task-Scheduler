@@ -8,6 +8,10 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
 
+/**
+ * A partial schedule represents a partial solution to obtaining the optimal schedule, each partial schedule has
+ * a list of processes which contain their respective nodes.
+ */
 public class PartialSchedule {
     private InputFileReader ifr = InputFileReader.getInstance();
 
@@ -177,15 +181,6 @@ public class PartialSchedule {
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
 
-    // public int getFinishTime() {
-    // int finishTime = 0;
-    // for (Integer i : processorList.keySet()) {
-    // if (processorList.get(i).getCurrentCost() > finishTime) {
-    // finishTime = processorList.get(i).getCurrentCost();
-    // }
-    // }
-    // return finishTime;
-    // }
 
     /**
      * Creates processors and adds it to the list
@@ -223,6 +218,7 @@ public class PartialSchedule {
         int count = 0;
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
+            
             // For each processor node map turn it into a hashSet of keys
             for (Integer nodes : p.getScheduledNodes()) {
                 scheduledNodes.add(nodes);
@@ -266,10 +262,7 @@ public class PartialSchedule {
         }
         PartialSchedule secondSchedule = (PartialSchedule) obj;
         return (processorList.hashCode() == (secondSchedule.processorList.hashCode()));
-        // // Check for process normalisation
-        // if (!processNormalisation(secondSchedule.getProcessorList())){
-        // return false;
-        // }
+
     }
 
     /**

@@ -12,6 +12,9 @@ import org.junit.After;
 
         import static junit.framework.TestCase.assertEquals;
 
+/**
+ * This test suite tests that the node weights are correctly parsed in
+ */
 public class InputFileReaderTest {
 
     File noHeader;

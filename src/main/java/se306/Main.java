@@ -40,15 +40,11 @@ import java.util.logging.Logger;
 public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
-        // Example cases:
-        // "src/resources/Nodes_7_OutTree.dot"
-        // "src/resources/Nodes_8_Random.dot"
-        // "src/resources/Nodes_9_SeriesParallel.dot"
-        // "src/resources/Nodes_10_Random.dot" 
-        // "src/resources/Nodes_11_OutTree.dot"
 
+        //Stop random info messages being printed on console
         stopPackagesPrintingInfo();
 
+        //Parse the command line arguments in
         CommandLineParser parser = CommandLineParser.getInstance();
         try {
             parser.parseCommandLineArguments(args);
@@ -61,6 +57,7 @@ public class Main extends Application {
             System.exit(0);
         }
 
+        //Check if visualisation is enabled
         if (parser.wantVisual()) {
             launch(args);
         } else {
@@ -73,7 +70,8 @@ public class Main extends Application {
     public static void startScheduling() {
         CommandLineParser parser = CommandLineParser.getInstance();
         InputStreamReader isr;
-        
+
+
         try {
             isr = new FileReader(parser.getInputFileName());
         } catch (FileNotFoundException e) {
@@ -81,20 +79,15 @@ public class Main extends Application {
             return;
         }
 
+
         InputFileReader ifr = InputFileReader.getInstance();
 
         Log.info("-- Starting scheduling --");
         long startTime = System.nanoTime();
 
-//        try {
-            System.out.println("Before ifr");
-//            ifr.readInput(isr);
-            System.out.println("Before prune identical children");
             ifr.pruneIdenticalNodes();
 
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
         AStarScheduler scheduler = new AStarScheduler();
         scheduler.findOptimalSchedule();// Start scheduling
 
@@ -126,7 +119,7 @@ public class Main extends Application {
     }
 
     /**
-     * Stop packages printing unncessaray information.
+     * Stop packages printing unnecessary information.
      */
     public static void stopPackagesPrintingInfo() {
         Logger rootLogger = LogManager.getLogManager().getLogger("");
