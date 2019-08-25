@@ -1,7 +1,7 @@
 # SE306.Project1
 
 ## Run from the Command Line
-1. Move all resources/input files into the same directory as where `scheduler-basic-T4.jar` exists
+1. Move all resources/input files into the same directory as where `scheduler-final-T4.jar` exists
 2. Open up terminal/command line
 3. Run `cd <path to where scheduler-final-T4.jar is located> `
 4. Run `java -jar scheduler-final-T4.jar <INPUT.dot> <P> [OPTIONS]`
