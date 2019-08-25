@@ -1,6 +1,8 @@
 package se306.visualisation.backend;
 
 import eu.hansolo.tilesfx.Tile;
+import eu.hansolo.tilesfx.TileBuilder;
+import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -56,7 +58,7 @@ public class GraphController implements Initializable {
     private Button startBtn;
 
     @FXML
-    private Tile progressTile, memoryUsage;
+    private Tile cpuUsage, memoryUsage;
 
     Timeline countProgress = new Timeline();
     private static final double STARTTIME = 0;
@@ -189,12 +191,25 @@ public class GraphController implements Initializable {
 
 
     private void populateTile() {
-        progressTile.setTitle("Schedule progress");
-        progressTile.setSkinType(Tile.SkinType.CIRCULAR_PROGRESS);
-        progressTile.setValue(new Random().nextDouble() * 100);
+        ChartData smoothChartData1 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData2 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData3 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData4 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData5 = new ChartData("Item 1", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData6 = new ChartData("Item 2", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData7 = new ChartData("Item 3", new Random().nextDouble() * 25, Tile.BLUE);
+        ChartData smoothChartData8 = new ChartData("Item 4", new Random().nextDouble() * 25, Tile.BLUE);
+        cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
+        cpuUsage.setValue(40L);
+        cpuUsage.setTitle("CPU Usage");
+        cpuUsage.isAnimated();
+        cpuUsage.setChartData(smoothChartData1, smoothChartData2, smoothChartData3, smoothChartData4);
+        memoryUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
+        memoryUsage.setValue(60L);
+        memoryUsage.setTitle("Memory Usage");
+        memoryUsage.isAnimated();
+        memoryUsage.setChartData(smoothChartData5, smoothChartData6, smoothChartData7, smoothChartData8);
 
-        memoryUsage.setSkinType(Tile.SkinType.SPARK_LINE);
-        memoryUsage.setValue(new Random().nextDouble() * 100);
     }
 
 }

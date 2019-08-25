@@ -48,15 +48,11 @@
                         </AnchorPane>
                         <HBox prefHeight="250.0" prefWidth="200.0">
                            <children>
-                              <Pane prefHeight="151.0" prefWidth="300.0">
+                              <Tile fx:id="cpuUsage">
                                  <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                                 <children>
-                                    <Tile fx:id="memoryUsage" layoutX="36.0" layoutY="-1.0" />
-                                 </children>
-                              </Pane>
-                              <Tile fx:id="progressTile" />
+                                    <Insets left="20.0" right="20.0" />
+                                 </HBox.margin></Tile>
+                              <Tile fx:id="memoryUsage" />
                            </children>
                            <VBox.margin>
                               <Insets bottom="50.0" top="10.0" />
