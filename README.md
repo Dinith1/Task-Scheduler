@@ -42,7 +42,6 @@ This program takes in an input graph via a .dot file, this directed acyclic grap
 - To get help:
   - `java -jar scheduler-final-T4.jar --help`
   - This will prints information on how to use the JAR file
-  - *DISCLAIMER: -p and -v have NOT been implemented in this current release*
 
 ## Build Maven project
 
