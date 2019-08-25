@@ -1,0 +1,92 @@
+#bg {
+	-fx-background-color: #2E2C2F;
+	-fx-color:  #2E2C2F;
+
+	
+	/* Midnight Black*/
+    -fx-background-color: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+
+
+	/* Blue White gradient */
+	/*-fx-background-color:   #076585; */
+	/*-fx-background-color:   -webkit-linear-gradient(to top, #fff, #076585);   Chrome 10-25, Safari 5.1-6 */
+	/*-fx-background-color:   linear-gradient(to top, #fff, #076585); */
+
+
+
+
+
+
+}
+
+.progress-indicator .percentage {
+    -fx-fill: #ffffff;
+    -fx-font-family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 20px;
+}
+
+.progress-indicator {
+    -fx-progress-color: #1ed8f0;
+}
+
+.title {
+    -fx-font-family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-text-fill: #ffffff;
+    /*-fx-border-color: #33abf0;
+    -fx-border-radius: 5px;*/
+}
+
+#startBtn {
+    family: 'Verdana', Arial, sans-serif;
+    -fx-font-size: 30px;
+    -fx-text-fill: #FFFFFF;
+    -fx-color: #2E2C2F;
+    -fx-border-color: #33abf0;
+    -fx-border-radius: 5px;
+    -fx-border-width: 5px;
+    -fx-background-color: #33abf0;
+}
+
+#startBtn:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-color: #33abf0;
+    -fx-border-color: #33abf0;
+}
+
+.button:hover{
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+}
+
+#numNodes {
+	-fx-margin: 10 0 10 20; 
+	-fx-font-size: 80;
+}
+
+#timeElapsed {
+	-fx-margin: 40 0 10 50;
+	-fx-font-size: 80;
+}
+
+#module {
+	-fx-background-color: #282828;
+	/*-fx-background-color: #34819b;*/
+	/*-fx-background-color: #33abf0;*/
+	/*-fx-background-color: #42afd4;*/
+/*-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);*/
+	-fx-background-radius: 8;
+	-fx-border-width: 3px;
+	/*-fx-border-color: green;*/
+}
+
+.chart-title {
+  -fx-text-fill: #ffffff;
+  -fx-font-size: 1.6em;
+}
