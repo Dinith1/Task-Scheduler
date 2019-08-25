@@ -1,3 +1,26 @@
+#bg {
+	-fx-background-color: #2E2C2F;
+	-fx-color:  #2E2C2F;
+
+	
+	/* Midnight Black*/
+	-fx-background-color:  
+	-fx-background-color: -webkit-linear-gradient(to right, #414345, #232526);  
+-fx-background-color: linear-gradient(to right, #414345, #232526); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ 
+
+
+	/* Blue White gradient */
+	/*-fx-background-color:   #076585; */
+	/*-fx-background-color:   -webkit-linear-gradient(to top, #fff, #076585);   Chrome 10-25, Safari 5.1-6 */
+	/*-fx-background-color:   linear-gradient(to top, #fff, #076585); */
+
+
+
+
+
+
+}
+
 .progress-indicator .percentage {
     -fx-fill: #ffffff;
     -fx-font-family: 'Verdana', Arial, sans-serif;
@@ -18,7 +41,7 @@
 
 #startBtn {
     family: 'Verdana', Arial, sans-serif;
-    -fx-font-size: 15px;
+    -fx-font-size: 30px;
     -fx-text-fill: #FFFFFF;
     -fx-color: #2E2C2F;
     -fx-border-color: #33abf0;
@@ -56,5 +79,16 @@
 
 #module {
 	-fx-background-color: #282828;
-	-fx-background-radius: 10;
+	/*-fx-background-color: #34819b;*/
+	/*-fx-background-color: #33abf0;*/
+	/*-fx-background-color: #42afd4;*/
+/*-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);*/
+	-fx-background-radius: 8;
+	-fx-border-width: 3px;
+	/*-fx-border-color: green;*/
+}
+
+.chart-title {
+  -fx-text-fill: #ffffff;
+  -fx-font-size: 1.6em;
 }

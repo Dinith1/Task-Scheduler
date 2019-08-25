@@ -10,17 +10,17 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
+<Pane id="bg" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se306.visualisation.backend.GraphController">
    <children>
-      <VBox alignment="TOP_CENTER" style="-fx-background-color: #2E2C2F;">
+      <VBox alignment="TOP_CENTER" stylesheets="@stylesheet.css">
          <children>
             <HBox prefHeight="791.0" prefWidth="1200.0">
                <children>
                   <VBox minWidth="-Infinity" prefHeight="551.0" prefWidth="618.0">
                      <children>
-                        <ImageView fx:id="graphImage" fitHeight="490.0" fitWidth="603.0" pickOnBounds="true">
+                        <ImageView fx:id="graphImage" fitHeight="517.0" fitWidth="552.0" pickOnBounds="true">
                            <VBox.margin>
-                              <Insets bottom="80.0" />
+                              <Insets bottom="30.0" left="32.0" right="25.0" top="30.0" />
                            </VBox.margin></ImageView>
                         <HBox maxHeight="1.7976931348623157E308" maxWidth="595.0" prefHeight="192.0" prefWidth="595.0" spacing="30.0" stylesheets="@stylesheet.css">
                            <children>
@@ -45,48 +45,47 @@
                                     <Label id="timeElapsed" fx:id="timeElapsed" alignment="CENTER" layoutX="-10.0" layoutY="25.0" prefHeight="148.0" prefWidth="273.0" text="0.0" textFill="WHITE" />
                                  </children>
                                  <HBox.margin>
-                                    <Insets />
+                                    <Insets left="26.0" />
                                  </HBox.margin>
                               </Pane>
                            </children>
                            <padding>
-                              <Insets left="40.0" right="10.0" />
+                              <Insets left="32.0" right="10.0" />
                            </padding>
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #2E2C2F;">
+                  <VBox prefHeight="800.0" prefWidth="600.0" HBox.hgrow="NEVER">
                      <children>
-                        <AnchorPane fx:id="schedulePane" prefHeight="414.0" prefWidth="579.0">
+                        <AnchorPane fx:id="schedulePane" prefHeight="373.0" prefWidth="582.0">
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets bottom="30.0" right="30.0" top="30.0" />
                            </VBox.margin>
                            <HBox.margin>
                               <Insets left="20.0" right="20.0" top="20.0" />
                            </HBox.margin>
                         </AnchorPane>
-                        <HBox prefHeight="250.0" prefWidth="200.0">
+                        <HBox prefHeight="250.0" prefWidth="200.0" VBox.vgrow="NEVER">
                            <children>
-                              <Tile fx:id="cpuUsage">
+                              <Tile fx:id="cpuUsage" prefWidth="245.0" HBox.hgrow="NEVER">
                                  <HBox.margin>
                                     <Insets left="20.0" right="20.0" />
                                  </HBox.margin>
                               </Tile>
-                              <Tile fx:id="memoryUsage" />
+                              <Tile fx:id="memoryUsage" HBox.hgrow="NEVER" />
                            </children>
                            <VBox.margin>
                               <Insets bottom="50.0" top="10.0" />
                            </VBox.margin>
                         </HBox>
+                        <Button id="startBtn" fx:id="startBtn" alignment="CENTER" layoutX="20.0" mnemonicParsing="false" onMouseClicked="#handleStart" prefHeight="99.0" prefWidth="370.0" stylesheets="@stylesheet.css" text="START" VBox.vgrow="NEVER">
+                           <VBox.margin>
+                              <Insets bottom="30.0" left="100.0" />
+                           </VBox.margin></Button>
                      </children>
                   </VBox>
                </children>
             </HBox>
-            <Button id="startBtn" fx:id="startBtn" mnemonicParsing="false" onMouseClicked="#handleStart" prefWidth="100.0" stylesheets="@stylesheet.css" text="Start">
-               <VBox.margin>
-                  <Insets bottom="20.0" top="20.0" />
-               </VBox.margin>
-            </Button>
          </children>
       </VBox>
    </children>
