@@ -1,5 +1,8 @@
 package se306.visualisation.backend;
 
+import com.jezhumble.javasysmon.JavaSysMon;
+import com.sun.javaws.ui.JavawsSysRun;
+import com.sun.management.OperatingSystemMXBean;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.chart.ChartData;
 import javafx.animation.Animation;
@@ -63,7 +66,6 @@ public class GraphController implements Initializable {
     private Tile cpuUsage, memoryUsage;
 
     Timeline countProgress = new Timeline();
-    private static Sigar sigar = new Sigar();
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
@@ -199,34 +201,28 @@ public class GraphController implements Initializable {
      * Starts running the cpu usage and memory usage timelines in a new thread, is continuously changing
      */
     private void populateTile() {
-        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-
+        OperatingSystemMXBean bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
+            .getOperatingSystemMXBean();
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
+        cpuUsage.setUnit("%");
         memoryUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         memoryUsage.setTitle("Memory Usage");
         memoryUsage.isAnimated();
-        memoryUsage.setUnit("MB");
-        memoryUsage.setMaxValue(memoryMXBean.getHeapMemoryUsage().getMax());
+        memoryUsage.setUnit("%");
 
         List<ChartData> cpuUsageData = new LinkedList<>();
         List<ChartData> memoryUsageData = new LinkedList<>();
-        final double[] currentCpuUsage = new double[1];
-        final double[] currentMemoryUsage = new double[1];
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override public void run() {
-                try {
-                    CpuPerc perc = sigar.getCpuPerc();
-                    currentCpuUsage[0] = perc.getCombined();
-                    currentMemoryUsage[0] = sigar.getMem().getUsedPercent();
-
-                } catch (SigarException e) {
-                    e.printStackTrace();
-                }
-                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage[0], Tile.BLUE));
-                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", currentCpuUsage[0], Tile.BLUE));
+                double currentCpuUsage =  bean.getSystemCpuLoad();
+                long ramTotal = Runtime.getRuntime().totalMemory();
+                long ramUsed = ramTotal - Runtime.getRuntime().freeMemory();
+                double currentMemoryUsage = ((ramUsed * 1.0) / ramTotal) * 100;
+                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
+                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", currentCpuUsage, Tile.BLUE));
                 if (cpuUsageData.size() > 20) {
                     ((LinkedList<ChartData>) cpuUsageData).removeLast();
                     ((LinkedList<ChartData>) memoryUsageData).removeLast();
