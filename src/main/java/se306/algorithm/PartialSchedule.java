@@ -267,10 +267,11 @@ public class PartialSchedule {
                             currentStartTime = endTimeOfParent + communicationCost;
                         }
                     }
-                    // Finds the most start time as it is dependent on all parents
-                    if (maxStartTime < currentStartTime) {
-                        maxStartTime = currentStartTime;
-                    }
+
+                }
+                // Finds the most start time as it is dependent on all parents
+                if (maxStartTime < currentStartTime) {
+                    maxStartTime = currentStartTime;
                 }
             }
         }

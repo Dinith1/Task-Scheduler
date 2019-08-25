@@ -95,29 +95,31 @@ public class CostFunctionCalculator {
      * @return
      */
     public double getDRT(PartialSchedule newPs, int node, Set<Integer> free) {
-        double bottomLevel;
-        double maxDRT = this.bottomLevels.get(node) + InputFileReader.nodeWeights.get(node);
+        double bottomLevel = 0;
+        double maxDRT = 0;
         for (Integer freeNode : free) {
 
-            double maxStartTime = Double.POSITIVE_INFINITY;
+            double minStartTime = Double.POSITIVE_INFINITY;
 
-            // Find the bottom level of the current free node that is being "applied"
-            bottomLevel = this.bottomLevels.get(freeNode);
+
 
             // Trial every processor
             for (Processor p : newPs.getProcessorList().values()) {
                 // Find the earliest start time that the node can be scheduled onto the current
                 // processor
+
                 int dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
                 // Update the maximum T(dr) once, but don't update again
-                if ((maxStartTime > dataReady)) {
-                    maxStartTime = dataReady;
+                if ((minStartTime > dataReady)) {
+                    // Find the bottom level of the current free node that is being "applied"
+                    bottomLevel = this.bottomLevels.get(freeNode);
+                    minStartTime = dataReady;
                 }
             }
 
             // Calculate the cost function DRT
-            double dataReadyCost = bottomLevel + maxStartTime;
+            double dataReadyCost = bottomLevel + minStartTime;
 
             if (dataReadyCost > maxDRT) {
                 maxDRT = dataReadyCost;
