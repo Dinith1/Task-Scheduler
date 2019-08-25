@@ -2,6 +2,7 @@ package se306.input;
 
 import se306.output.OutputFileGenerator;
 import se306.util.HashMapGenerator;
+import se306.util.IdenticalNodes;
 import se306.visualisation.backend.GraphParser;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
 
 /**
  * Singleton class for reading the input file and generating the required
- * datastructures
+ * datastructures.
  */
 public class InputFileReader {
     private static InputFileReader inputFileReader = null;
@@ -79,10 +80,11 @@ public class InputFileReader {
 
     /**
      * Overload constructor for testing purposes
+     * 
      * @param numNodes
      * @param numEdges
      */
-    public InputFileReader(int numNodes, int numEdges){
+    public InputFileReader(int numNodes, int numEdges) {
         NUM_NODES = numNodes;
         NUM_EDGES = numEdges;
         nodeIds = new int[NUM_NODES];
@@ -193,8 +195,6 @@ public class InputFileReader {
     }
 
     /**
-
-    /**
      * Checks if the task graph contains a task that is identical in every aspect
      * including: Same task weight, parents, children, incoming edge weights and
      * outgoing edge weights.
@@ -208,8 +208,8 @@ public class InputFileReader {
      * pruned graph.
      */
     public void pruneIdenticalNodes() {
-
-        //Check for independent node graphs
+        IdenticalNodes identicalNodes = IdenticalNodes.getInstance();
+        // Check for independent node graphs
         if (listOfEdges.length == 0) {
             return;
         } else {
@@ -219,106 +219,18 @@ public class InputFileReader {
                 // Check if there's at least two nodes with the same weight
                 if (sameWeightNodes.length > 1) {
                     // Check if nodes have the same parents
-                    checkNodeParents(sameWeightNodes);
+                    int[] idenNodes = identicalNodes.getIdenticalNodes(sameWeightNodes);
+                    if ((idenNodes != null) && (idenNodes.length > 1)) {
+                        chainIdenticalNodes(idenNodes);
+                    }
                 }
             }
         }
     }
 
     /**
-     * Checks if an array of nodes (which have the same weights) all have a common
-     * parent
-     * 
-     * @param sameWeightNodes Array of nodes to check
+     * @param identicalNodes
      */
-    private void checkNodeParents(int[] sameWeightNodes) {
-        // Map from list of parent nodes to list of node ids
-        HashMap<int[], int[]> mapOfNodeParents = new HashMap<>();
-
-        // Find all (same weight) nodes with a parent in common
-        for (int node : sameWeightNodes) {
-            HashMapGenerator.addNodeToParentMap(node, mapOfNodeParents, nodeParents);
-        }
-
-        for (Map.Entry<int[], int[]> entry : mapOfNodeParents.entrySet()) {
-            int[] sameParentNodes = entry.getValue();
-
-            // Check if there are at least two (same weight) nodes with the same parent
-            if (sameParentNodes.length > 1) {
-                // Check if nodes have the same children
-                checkNodeChildren(sameParentNodes);
-            }
-        }
-    }
-
-    /**
-     * @param sameParentNodes
-     */
-    private void checkNodeChildren(int[] sameParentNodes) {
-        // Map from child node to list of node ids
-        HashMap<int[], int[]> mapOfNodeChildren = new HashMap<>();
-
-        // Find all same weight nodes with the same children
-        for (int node : sameParentNodes) {
-            HashMapGenerator.addNodeToChildrenMap(node, mapOfNodeChildren, nodeChildren);
-        }
-
-        for (Map.Entry<int[], int[]> entry : mapOfNodeChildren.entrySet()) {
-            int[] sameChildrenNodes = entry.getValue();
-
-            // Check if value matches with given value
-            if (sameChildrenNodes.length > 1) {
-                // Check incoming edge weights
-                checkNodeIncomingEdges(sameChildrenNodes);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param sameChildrenNodes
-     */
-    private void checkNodeIncomingEdges(int[] sameChildrenNodes) {
-        // Map from incoming edges to list of node ids
-        HashMap<int[], int[]> mapOfNodeIncomingEdges = new HashMap<>();
-
-        // Find all same weight nodes with the same children
-        for (int node : sameChildrenNodes) {
-            HashMapGenerator.addNodeToIncomingEdgesMap(node, mapOfNodeIncomingEdges, listOfEdges);
-        }
-
-        for (Map.Entry<int[], int[]> entry : mapOfNodeIncomingEdges.entrySet()) {
-            int[] sameIncomingEdgeNodes = entry.getValue();
-
-            // Check if value matches with given value
-            if (sameIncomingEdgeNodes.length > 1) {
-                // Check outgoing edge weights
-                checkNodeOutgoingEdges(sameIncomingEdgeNodes);
-            }
-        }
-    }
-
-    private void checkNodeOutgoingEdges(int[] sameIncomingNodes) {
-        // Map from parent node to list of children node ids
-        HashMap<int[], int[]> mapOfNodeOutgoingEdges = new HashMap<>();
-
-        // Find all nodes with the same incoming edges
-        for (int i : sameIncomingNodes) {
-            HashMapGenerator.addNodeToOutgoingEdgeMap(i, mapOfNodeOutgoingEdges, listOfEdges);
-        }
-
-        for (Map.Entry<int[], int[]> entry : mapOfNodeOutgoingEdges.entrySet()) {
-            int[] identicalNodes = entry.getValue();
-
-            // Check if value matches with given value
-            if (identicalNodes.length > 1) {
-                // If this point is reached, the nodes are identical
-                // Chain the identical nodes
-                chainIdenticalNodes(identicalNodes);
-            }
-        }
-    }
-
     private void chainIdenticalNodes(int[] identicalNodes) {
         // If reached, this means the nodes are identical
         // Set the parents and children of each identical node as each other for the
@@ -357,7 +269,7 @@ public class InputFileReader {
 
     /**
      * Takes a node, and adds an immediate parent, putting it into the nodeParents
-     * HashMap
+     * HashMap.
      * 
      * @param child
      * @param parent
@@ -378,7 +290,7 @@ public class InputFileReader {
 
     /**
      * Takes a node, and adds an immediate child, putting it into the nodeChildren
-     * HashMap
+     * HashMap.
      * 
      * @param parent
      * @param child

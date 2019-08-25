@@ -81,9 +81,7 @@ public class Main extends Application {
         long startTime = System.nanoTime();
 
         try {
-            System.out.println("Before ifr");
             ifr.readInput(isr);
-            System.out.println("Before prune identical children");
             ifr.pruneIdenticalNodes();
 
         } catch (IOException e) {

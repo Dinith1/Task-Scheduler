@@ -13,7 +13,6 @@ public class HashMapGenerator {
 
     public static HashMapGenerator getInstance(){
 		return (hashMapGenerator == null) ? (hashMapGenerator = new HashMapGenerator()) : hashMapGenerator;
-
     }
 
     /* Adds nodes to a hashmap, where the key is the weight, and the value is an
@@ -82,7 +81,6 @@ public class HashMapGenerator {
      * @param nodeChildren  Map from all ids to node's children
      */
     public static void addNodeToChildrenMap(int node, HashMap<int[], int[]> childrenMap, HashMap<Integer, int[]> nodeChildren) {
-
         // Sort children lists before adding nodes to hash map
         int[] children = nodeChildren.get(node);
 
@@ -112,56 +110,17 @@ public class HashMapGenerator {
         }
     }
 
-     /**
-     * Adds the edge weights of a specified node and adds the array of edges to a hashmap, using the array of edges as key, nodes with the same set of edge weights as the value.
-     * 
-     * @param node                    Value stored in children hashmap
-     * @param incomingEdgesWeightsMap   Map of nodes with the same incoming edge weights
-     * @param listOfEdges   {{from, to, weight}, {f, t, w}, ...} Each from/to is the id of the node
-     */
-    public static void addNodeToIncomingEdgesMap(int node, HashMap<int[], int[]> incomingEdgesWeightsMap, int[][] listOfEdges) {
-
-        // Find the weights of all incoming edges for the node
-        int[] weights = getEdgeWeights(listOfEdges, node, 1);
-
-        // Sort edge lists before adding nodes to hash map
-        if (weights != null) {
-            Arrays.sort(weights);
-        }
-
-        // When hash map is just created (empty), no need to check if any incoming edges
-        // lists already exist
-        if (incomingEdgesWeightsMap.isEmpty()) {
-            incomingEdgesWeightsMap.put(weights, new int[] { node });
-            return;
-        }
-
-        // Find a matching child array
-        for (Map.Entry<int[], int[]> entry : incomingEdgesWeightsMap.entrySet()) {
-            int[] existingWeights = entry.getKey();
-            if (((weights != null) && Arrays.equals(weights, existingWeights))
-                    || ((weights == null) && (weights == existingWeights))) {
-                // A node with the same children already exists, so add to existing node array
-                int[] nodeList = entry.getValue();
-                int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
-                newNodeList[newNodeList.length - 1] = node;
-                incomingEdgesWeightsMap.put(existingWeights, newNodeList);
-                return;
-            }
-        }
-    }
-
     /**
      * Adds the edge weights of a specified node and adds the array of edges to a hashmap, using the array of edges as key, nodes with the same set of edge weights as the value.
      * 
-     * @param node                 Value stored in outgoing edges hashmap
-     * @param outgoingEdgesWeightsMap   Map of nodes with the same outgoing edges
+     * @param node                 Value stored in incoming or outgoing edges hashmap
+     * @param edgesWeightMap   Map of nodes with the same incoming or outgoing edges
      * @param listOfEdges   {{from, to, weight}, {f, t, w}, ...} Each from/to is the id of the node
      */
-    public static void addNodeToOutgoingEdgeMap(int node, HashMap<int[], int[]> outgoingEdgesWeightsMap, int[][] listOfEdges) {
+    public static void addNodeToEdgesMap(int node, HashMap<int[], int[]> edgesWeightMap, int[][] listOfEdges, int col) {
 
         // Sort edge lists before adding nodes to hash map
-        int[] weights = getEdgeWeights(listOfEdges, node, 0);
+        int[] weights = getEdgeWeights(listOfEdges, node, col);
 
         if (weights != null) {
             Arrays.sort(weights);
@@ -169,13 +128,13 @@ public class HashMapGenerator {
 
         // When hash map is just created (empty), no need to check if any outgoing edge
         // lists already exist
-        if (outgoingEdgesWeightsMap.isEmpty()) {
-            outgoingEdgesWeightsMap.put(weights, new int[] { node });
+        if (edgesWeightMap.isEmpty()) {
+            edgesWeightMap.put(weights, new int[] { node });
             return;
         }
 
         // Find a matching child array
-        for (Map.Entry<int[], int[]> entry : outgoingEdgesWeightsMap.entrySet()) {
+        for (Map.Entry<int[], int[]> entry : edgesWeightMap.entrySet()) {
             int[] existingWeights = entry.getKey();
             if (((weights != null) && Arrays.equals(weights, existingWeights))
                     || ((weights == null) && (weights == existingWeights))) {
@@ -183,7 +142,7 @@ public class HashMapGenerator {
                 int[] nodeList = entry.getValue();
                 int[] newNodeList = Arrays.copyOf(nodeList, nodeList.length + 1);
                 newNodeList[newNodeList.length - 1] = node;
-                outgoingEdgesWeightsMap.put(existingWeights, newNodeList);
+                edgesWeightMap.put(existingWeights, newNodeList);
                 return;
             }
         }
