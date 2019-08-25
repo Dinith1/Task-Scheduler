@@ -14,6 +14,7 @@ public class CommandLineParser {
 	private String inputFileName;
 	private String outputFileName;
 	private int numProcessors;
+	private int numCores;
 	private boolean visualise;
 	private OptionsParser optParser;
 
@@ -100,6 +101,7 @@ public class CommandLineParser {
 		}
 
 		this.visualise = options.visualise;
+		this.numCores = options.numCores;
 	}
 
 	/**
@@ -109,6 +111,14 @@ public class CommandLineParser {
 	 */
 	public int getNumberOfProcessors() {
 		return numProcessors;
+	}
+
+	/**
+	 * Get the number of cores specified by the user
+	 * @return
+	 */
+	public int getNumberOfCores() {
+		return numCores;
 	}
 
 	/**

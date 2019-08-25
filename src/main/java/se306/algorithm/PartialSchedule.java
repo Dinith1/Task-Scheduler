@@ -1,6 +1,10 @@
 package se306.algorithm;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import se306.input.InputFileReader;
@@ -11,6 +15,9 @@ public class PartialSchedule {
     private HashMap<Integer, Processor> processorList = new HashMap();
     private double costFunction;
     public int numberOfNodesScheduled;
+    static ExecutorService multiThreadExecutor;
+
+
     // private Set<Integer> freeNodes = new HashSet<>();
 
     PartialSchedule(int processorNumber) {
@@ -26,6 +33,43 @@ public class PartialSchedule {
         this.costFunction = ps.costFunction;
     }
 
+    public HashSet<PartialSchedule> chooseExpansionAlgorithm(int numOfCores) {
+        // If cores is 1 use old method to execute expansion
+        if (numOfCores == 1) {
+            return expandNewStates();
+        }
+        List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
+        // Else create a thread pool that contains numOfCores\
+        for (Integer i : getFreeNodes()) {
+            tasks.add(() -> expandNewStatesParallel(i));
+        }
+        HashSet<PartialSchedule> output = new HashSet<>();
+        try {
+            List<Future<HashSet<PartialSchedule>>> futureTasks = multiThreadExecutor.invokeAll(tasks);
+                for (Future<HashSet<PartialSchedule>> item : futureTasks) {
+                    output.addAll(item.get());
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    private HashSet<PartialSchedule> expandNewStatesParallel(Integer node){
+        HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
+        for (int j = 0; j < processorList.size(); j++) {
+            PartialSchedule newSchedule = new PartialSchedule(this);
+
+            // Add it to each processor and make that many corresponding schedules
+            newSchedule.addToProcessor(j, node);
+                calculateCostFunction(newSchedule, node, processorList.size());
+            // Add the schedule to overall expanded list
+            newExpandedSchedule.add(newSchedule);
+        }
+        return newExpandedSchedule;
+    }
+
     public HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         Set<Integer> nodes = findSchedulableNodes();
@@ -38,7 +82,7 @@ public class PartialSchedule {
 
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
-                calculateCostFunction(newSchedule, node, processorList.size());
+//                calculateCostFunction(newSchedule, node, processorList.size());
                 // Add the schedule to overall expanded list
                 newExpandedSchedule.add(newSchedule);
             }
@@ -55,7 +99,7 @@ public class PartialSchedule {
      * This method iterates through the list of available nodes and finds nodes in
      * which all the parents of that node have already been used into a schedule and
      * updates the list
-     * 
+     *
      * @return freeNodes
      */
 
@@ -117,7 +161,7 @@ public class PartialSchedule {
     /**
      * This method calls the calculateAndSetCostFunction method to set an updated
      * cost function for the partial schedule AFTER the new node is trialled
-     * 
+     *
      * @param ps
      * @param nodeToAdd
      * @param numOfProcessors
@@ -126,6 +170,16 @@ public class PartialSchedule {
         CostFunctionCalculator calculator = new CostFunctionCalculator();
         calculator.calculateAndSetCostFunction(ps, nodeToAdd, numOfProcessors);
     }
+
+//    public int getFinishTime() {
+//        int finishTime = 0;
+//        for (Integer i : processorList.keySet()) {
+//            if (processorList.get(i).getCurrentCost() > finishTime) {
+//                finishTime = processorList.get(i).getCurrentCost();
+//            }
+//        }
+//        return finishTime;
+//    }
 
     /**
      * Creates processors and adds it to the list
@@ -155,7 +209,7 @@ public class PartialSchedule {
 
     /**
      * This method finds the nodes that already have been scheduled in this schedule
-     * 
+     *
      * @return scheduledNodes
      */
     private Set<Integer> getUsedNodes() {
@@ -216,7 +270,7 @@ public class PartialSchedule {
      *
      * This function finds the BEST start time to schedule the node, not the start
      * times of nodes already scheduled
-     * 
+     *
      * @param node
      * @param processorNumber
      * @return
@@ -267,11 +321,10 @@ public class PartialSchedule {
                             currentStartTime = endTimeOfParent + communicationCost;
                         }
                     }
-
-                }
-                // Finds the most start time as it is dependent on all parents
-                if (maxStartTime < currentStartTime) {
-                    maxStartTime = currentStartTime;
+                    // Finds the most start time as it is dependent on all parents
+                    if (maxStartTime < currentStartTime) {
+                        maxStartTime = currentStartTime;
+                    }
                 }
             }
         }
