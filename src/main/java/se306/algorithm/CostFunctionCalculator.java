@@ -99,7 +99,7 @@ public class CostFunctionCalculator {
         double maxDRT = this.bottomLevels.get(node) + InputFileReader.nodeWeights.get(node);
         for (Integer freeNode : free) {
 
-            double maxStartTime = 0;
+            double maxStartTime = Double.POSITIVE_INFINITY;
 
             // Find the bottom level of the current free node that is being "applied"
             bottomLevel = this.bottomLevels.get(freeNode);
@@ -110,8 +110,8 @@ public class CostFunctionCalculator {
                 // processor
                 int dataReady = newPs.calculateStartTime(freeNode, p.getProcessorID());
 
-                // Update the maximum T(dr)
-                if ((maxStartTime < dataReady) && maxStartTime == 0) {
+                // Update the maximum T(dr) once, but don't update again
+                if ((maxStartTime > dataReady)) {
                     maxStartTime = dataReady;
                 }
             }
