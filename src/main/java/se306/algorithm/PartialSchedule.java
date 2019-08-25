@@ -16,6 +16,9 @@ public class PartialSchedule {
     private double costFunction;
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
+    private Processor fixedTaskProcessor;
+    private Integer fixedTaskChild;
+    private Integer fixedTaskParent;
 
     // private Set<Integer> freeNodes = new HashSet<>();
 
@@ -28,7 +31,6 @@ public class PartialSchedule {
             Processor p = ps.getProcessorList().get(i);
             this.processorList.put(p.getProcessorID(), new Processor(p));
         }
-
         this.costFunction = ps.costFunction;
     }
 
@@ -38,8 +40,16 @@ public class PartialSchedule {
             return expandNewStates();
         }
         List<Callable<HashSet<PartialSchedule>>> tasks = new ArrayList<>();
+        Collection<Integer> nodes;
+        if(isFixedTaskOrder()){
+            nodes = new ArrayList<>(getFreeNodes());
+            ((ArrayList<Integer>) nodes).sort(fixedTaskSortingComparator);
+        }
+        else {
+            nodes = findSchedulableNodes();
+        }
         // Else create a thread pool that contains numOfCores\
-        for (Integer i : getFreeNodes()) {
+        for (Integer i : nodes) {
             tasks.add(new Callable<HashSet<PartialSchedule>>() {
                 @Override
                 public HashSet<PartialSchedule> call() throws Exception {
@@ -66,7 +76,6 @@ public class PartialSchedule {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
         for (int j = 0; j < processorList.size(); j++) {
             PartialSchedule newSchedule = new PartialSchedule(this);
-
             // Add it to each processor and make that many corresponding schedules
             newSchedule.addToProcessor(j, node);
             calculateCostFunction(newSchedule, node, processorList.size());
@@ -76,16 +85,79 @@ public class PartialSchedule {
         return newExpandedSchedule;
     }
 
+    private Comparator<Integer> fixedTaskSortingComparator = (node1, node2) -> {
+        int node1DRT;
+        int node2DRT;
+        if(ifr.getNodeParents().containsKey(node1)){
+            int parent = ifr.getNodeParents().get(node1)[0];
+            node1DRT = fixedTaskProcessor.getStartTimes().get(parent) + getEdgeWeight(parent, node1);
+        }
+        else{
+            node1DRT = 0;
+        }
+        if(ifr.getNodeParents().containsKey(node2)){
+            int parent = ifr.getNodeParents().get(node2)[0];
+            node2DRT = fixedTaskProcessor.getStartTimes().get(parent) + getEdgeWeight(parent, node2);
+        }
+        else{
+            node2DRT = 0;
+        }
+        if(node1DRT < node2DRT){
+            return -1;
+        }
+        else if(node1DRT > node2DRT){
+            return 1;
+        }
+        else {
+            int node1Out;
+            int node2Out;
+            if (ifr.getNodeChildren().containsKey(node1)) {
+                node1Out = getEdgeWeight(node1, fixedTaskChild);
+            } else {
+                node1Out = 0;
+            }
+            if (ifr.getNodeChildren().containsKey(node2)) {
+                node2Out = getEdgeWeight(node2, fixedTaskChild);
+            } else {
+                node2Out = 0;
+            }
+            if(node1Out>node2Out){
+                return -1;
+            }
+            else{
+                return 1;
+            }
+        }
+
+    };
+
+    private int getEdgeWeight(int from, int to) {
+        for (int[] edge : ifr.getListOfEdges()) {
+            if (edge[0] == from && edge[1] == to) {
+                return edge[2];
+            }
+        }
+
+        // Code should never reach here
+        return -1;
+    }
+
     public HashSet<PartialSchedule> expandNewStates() {
         HashSet<PartialSchedule> newExpandedSchedule = new HashSet<>();
-        Set<Integer> nodes = findSchedulableNodes();
+        Collection<Integer> nodes;
+        if(isFixedTaskOrder()){
+             nodes = new ArrayList<>(getFreeNodes());
+             ((ArrayList<Integer>) nodes).sort(fixedTaskSortingComparator);
+        }
+        else {
+             nodes = findSchedulableNodes();
+        }
 
         // Find how many nodes need to be scheduled for the expansion
         for (Integer node : nodes) {
             // Get each node that needs to be scheduled
             for (int j = 0; j < processorList.size(); j++) {
                 PartialSchedule newSchedule = new PartialSchedule(this);
-
                 // Add it to each processor and make that many corresponding schedules
                 newSchedule.addToProcessor(j, node);
                 calculateCostFunction(newSchedule, node, processorList.size());
@@ -93,8 +165,86 @@ public class PartialSchedule {
                 newExpandedSchedule.add(newSchedule);
             }
         }
-
         return newExpandedSchedule;
+    }
+
+    public boolean isFixedTaskOrder(){
+        return (checkFreeNodesChildLessThanOne() && checkFreeNodesParentLessThanOne()
+                && checkChildIsSame() && checkParentsInSameProcessor());
+    }
+
+    public boolean checkChildIsSame() {
+         fixedTaskChild = null;
+        for (Integer freeNode: getFreeNodes()) {
+            //If the node has a child
+            if (ifr.getNodeChildren().containsKey(freeNode)){
+                // If child to check with hasn't been set
+                if (fixedTaskChild == null) {
+                    // Set the node to compare with all others
+                    fixedTaskChild = ifr.getNodeChildren().get(freeNode)[0];
+                    continue;
+                }
+                else if (ifr.getNodeChildren().get(freeNode)[0] != fixedTaskChild) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkFreeNodesChildLessThanOne(){
+        for(Integer freeNode: getFreeNodes()){
+            // If there are children
+            if(ifr.getNodeChildren().containsKey(freeNode)){
+                // If children bigger than one than fail
+                if(ifr.getNodeChildren().get(freeNode).length > 1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkFreeNodesParentLessThanOne(){
+        for(Integer freeNode: getFreeNodes()) {
+            // If there are parents
+            if (ifr.getNodeParents().containsKey(freeNode)) {
+                // If parent bigger than one than fail
+                if (ifr.getNodeParents().get(freeNode).length > 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean checkParentsInSameProcessor() {
+        fixedTaskProcessor = null;
+        // Every node in free node
+        for (Integer freeNode : getFreeNodes()) {
+            // If the freeNode has a parent
+            if (ifr.getNodeParents().containsKey(freeNode)) {
+                // get the first parent as its only parent (checked before that parent <= 1)
+                int parentNode = ifr.getNodeParents().get(freeNode)[0];
+                for (Processor p : processorList.values()) {
+                    // If current processor has the parent node
+                    if (p.getScheduledNodes().contains(parentNode)) {
+                        // And no processor has been set
+                        if(fixedTaskProcessor == null) {
+                            // Set the processor that we need to check for
+                            fixedTaskProcessor = p;
+                        }
+                        // If parentNode is not in the same processor
+                        else if(!p.equals(fixedTaskProcessor)){
+                            return false;
+                        }
+                        // Break out of looping for processors as already found processor containing
+                        break;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public Set<Integer> getFreeNodes() {
