@@ -1,7 +1,5 @@
 package se306.visualisation.backend;
 
-import com.jezhumble.javasysmon.JavaSysMon;
-import com.sun.javaws.ui.JavawsSysRun;
 import com.sun.management.OperatingSystemMXBean;
 import eu.hansolo.tilesfx.Tile;
 import eu.hansolo.tilesfx.chart.ChartData;
@@ -26,7 +24,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import org.hyperic.sigar.*;
 import se306.Main;
 import se306.algorithm.Processor;
 import se306.input.CommandLineParser;
@@ -34,7 +31,6 @@ import se306.input.InputFileReader;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
 import java.net.URL;
 import java.util.*;
 
@@ -66,6 +62,9 @@ public class GraphController implements Initializable {
     private Tile cpuUsage, memoryUsage;
 
     Timeline countProgress = new Timeline();
+    private SchedulesBar<Number, String> chart;
+    private NumberAxis xAxis;
+    private CategoryAxis yAxis;
     private static final double STARTTIME = 0;
     private final DoubleProperty seconds = new SimpleDoubleProperty(STARTTIME);
 
@@ -82,6 +81,7 @@ public class GraphController implements Initializable {
         if (!parser.wantVisual()) {
             Main.startScheduling();
         }
+        initializeSchedule();
     }
 
     /**
@@ -107,7 +107,7 @@ public class GraphController implements Initializable {
         };
         schedule.setOnSucceeded(e -> { //Once tasks finished then it should re enable buttons
             countProgress.stop();
-            createSchedule();
+            populateSchedule();
         });
 
         startTimer();
@@ -141,20 +141,13 @@ public class GraphController implements Initializable {
     }
 
     /**
-     * This is called when the algorithm finalises, it builds the nodes for each processor to be visualised
-     * based on the final output. The schedule graph reflects the output dot file.
+     * Sets up the schedule visualisation as an empty graph, to be populated by populateSchedule() method
      */
-    public void createSchedule() {
-        CommandLineParser parser = CommandLineParser.getInstance();
-        String[] processors = new String[parser.getNumberOfProcessors()];
-        for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
-            processors[i] = "Processor" + (i);
-        }
+    public void initializeSchedule() {
+        xAxis = new NumberAxis();
+        yAxis = new CategoryAxis();
 
-        final NumberAxis xAxis = new NumberAxis();
-        final CategoryAxis yAxis = new CategoryAxis();
-
-        final SchedulesBar<Number,String> chart = new SchedulesBar<>(xAxis,yAxis);
+        chart = new SchedulesBar<>(xAxis,yAxis);
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.CHOCOLATE);
         xAxis.setMinorTickCount(4);
@@ -162,10 +155,25 @@ public class GraphController implements Initializable {
         yAxis.setLabel("");
         yAxis.setTickLabelFill(Color.CHOCOLATE);
         yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(processors)));
 
         chart.setTitle("Final schedule");
         chart.setLegendVisible(false);
+        schedulePane.setRightAnchor(chart, 0.0);
+        schedulePane.getChildren().add(chart);
+    }
+
+    /**
+     * This is called when the algorithm finalises, it builds the nodes for each processor to be visualised
+     * based on the final output. The schedule graph reflects the output dot file.
+     */
+    public void populateSchedule() {
+        CommandLineParser parser = CommandLineParser.getInstance();
+        String[] processors = new String[parser.getNumberOfProcessors()];
+        for (int i = 0; i < parser.getNumberOfProcessors(); i++) {
+            processors[i] = "Processor" + (i);
+        }
+
+        yAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(processors)));
         chart.setBlockHeight( schedulePane.getPrefHeight() / (parser.getNumberOfProcessors() + 30));
 
         Collection<Processor> processorList = ScheduleParser.getInstance().getProcessorList();
