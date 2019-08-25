@@ -73,10 +73,13 @@ public class InputFileReader {
     }
 
     /**
-     * For testing purposes
+     * For testing purposes, clears the utility classes
      */
     public void clearInputFileReader() {
         inputFileReader = null;
+        HashMapGenerator.clearhHashMapGenerator();
+        IdenticalNodes.clearIdenticalNodes();
+
     }
 
     public int[] getNodeIds() {

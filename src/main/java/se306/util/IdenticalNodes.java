@@ -18,6 +18,12 @@ public class IdenticalNodes {
         return (identicalNodes == null) ? (identicalNodes = new IdenticalNodes()) : identicalNodes;
     }
 
+    /**
+     * For testing purposes
+     */
+    public static void clearIdenticalNodes() {
+        identicalNodes = null;
+    }
 
     /**
      * 
