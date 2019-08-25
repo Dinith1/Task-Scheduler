@@ -1,8 +1,5 @@
 package se306.visualisation.backend;
 
-import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.parse.Parser;
-
 import se306.input.CommandLineParser;
 import se306.input.InputFileReader;
 
@@ -32,6 +29,10 @@ public class GraphParser {
 		}
 	}
 
+	/**
+	 * Gets the total number of nodes and edges. This is to be used by the InputFileReader
+	 * @param isr
+	 */
 	private void getNumberOfNodesAndEdges(InputStreamReader isr) {
 		BufferedReader buffRead = new BufferedReader(isr);
 

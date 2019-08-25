@@ -21,6 +21,7 @@ public class PartialSchedule {
     public int numberOfNodesScheduled;
     static ExecutorService multiThreadExecutor;
 
+
     PartialSchedule(int processorNumber) {
         createProcessors(processorNumber);
     }
@@ -240,7 +241,7 @@ public class PartialSchedule {
         int count = 0;
         for (Integer i : processorList.keySet()) {
             Processor p = processorList.get(i);
-            
+
             // For each processor node map turn it into a hashSet of keys
             for (Integer nodes : p.getScheduledNodes()) {
                 scheduledNodes.add(nodes);

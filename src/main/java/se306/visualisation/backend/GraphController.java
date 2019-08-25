@@ -74,11 +74,13 @@ public class GraphController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTile();
+        //binds the time elapsed label to the current time. Current time is updated for each ms
         timeElapsed.textProperty().bind(((seconds.divide(1000.00)).asString()));
         this.ifr = InputFileReader.getInstance();
         initializeSchedule();
         setNumberOfNodes("" + InputFileReader.getInstance().getNodeIds().length);
         try {
+            //Creates the graph based on input file only
             createGraph();
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,6 +111,7 @@ public class GraphController implements Initializable {
         Task<Void> schedule = new Task<Void>() {
             @Override
             public Void call(){
+                //runs the algorithm
                 Main.startScheduling();
                 return null;
             }
@@ -120,7 +123,7 @@ public class GraphController implements Initializable {
 
         new Thread(schedule).start();
         countProgress.play();
-        startBtn.setDisable(true);
+        startBtn.setDisable(true); //the start button is only allowed to be pressed once
     }
 
     /**
@@ -138,19 +141,21 @@ public class GraphController implements Initializable {
      */
     public void createGraph() throws IOException {
         Graph graph = new SingleGraph("Nodes Graph");
+        //for each node, add the node to the graph and set its label to be its id and weight
         for (int i : InputFileReader.getInstance().getNodeIds()) {
             Node node = graph.addNode("" + i);
             node.addAttribute("ui.label", i + " [" + InputFileReader.getInstance().getNodeWeights().get(i) + "]");
         }
+        //for each edge, add the edge to the graph and set its label to be its weight
         for (int i = 0; i < InputFileReader.getInstance().getListOfEdges().length; i++) {
             Edge e = graph.addEdge("" + i, "" + InputFileReader.getInstance().getListOfEdges()[i][0], "" + ifr.getListOfEdges()[i][1]);
             e.setAttribute("ui.label", ifr.getListOfEdges()[i][2]);
         }
 
+        //stylises the node/edge graph
         String myStyle = "node {"
                 + "size: 50px;"
                 + "fill-color: #33abf0;"
-//                + "text-mode: hidden;"
                 + "z-index: 0;"
                 + "text-size: 40px;"
                 + "text-color: #ffffff;"
@@ -172,6 +177,7 @@ public class GraphController implements Initializable {
         graph.setAttribute("ui.stylesheet", myStyle);
         FileSinkImages pic = new FileSinkImages(FileSinkImages.OutputType.PNG, FileSinkImages.Resolutions.HD1080);
 
+        //create a new temporary image, the image is scaled and placed in the GUI
         pic.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
         try {
             pic.setAutofit(true);
@@ -222,6 +228,7 @@ public class GraphController implements Initializable {
 
         Collection<Processor> processorList = ScheduleParser.getInstance().getProcessorList();
 
+        //for each process, get all of its nodes and place them in the schedules chart
         int i = 0;
         for (Processor p : processorList) {
             XYChart.Series series = new XYChart.Series();
@@ -233,6 +240,7 @@ public class GraphController implements Initializable {
         }
 
         chart.getStylesheets().add(getClass().getResource("/schedule.css").toExternalForm());
+        //making sure that the schedules chart fills the entire space of the pane
         schedulePane.setLeftAnchor(chart, 0.0);
         schedulePane.setRightAnchor(chart, 0.0);
         schedulePane.setTopAnchor(chart, 0.0);
@@ -257,6 +265,7 @@ public class GraphController implements Initializable {
     private void populateTile() {
         OperatingSystemMXBean bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
             .getOperatingSystemMXBean();
+
         cpuUsage.setSkinType(Tile.SkinType.SMOOTH_AREA_CHART);
         cpuUsage.setTitle("CPU Usage");
         cpuUsage.isAnimated();
@@ -268,6 +277,10 @@ public class GraphController implements Initializable {
 
         List<ChartData> cpuUsageData = new LinkedList<>();
         List<ChartData> memoryUsageData = new LinkedList<>();
+
+        //create a new timer that runs repeatedly every 200ms. It calculates the percentage cpu usage
+        //and the percentage memory usage, and adds them to a list for chartData. This chart data
+        //shows 20 values at a time. If the list is longer than 20, then new data replaces old data
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override public void run() {
