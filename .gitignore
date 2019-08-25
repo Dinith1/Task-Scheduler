@@ -13,3 +13,4 @@ Nodes_*
 *.dot
 !src/main/resources/*dot
 src/main/resources/*-output.dot
+project1.iml

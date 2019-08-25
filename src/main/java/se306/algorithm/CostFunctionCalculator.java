@@ -1,7 +1,6 @@
 package se306.algorithm;
 
 import se306.input.InputFileReader;
-
 import java.util.HashMap;
 import java.util.Set;
 
@@ -102,8 +101,6 @@ public class CostFunctionCalculator implements CostFunctionInjector {
         for (Integer freeNode : free) {
 
             double minStartTime = Double.POSITIVE_INFINITY;
-
-
 
             // Trial every processor
             for (Processor p : newPs.getProcessorList().values()) {

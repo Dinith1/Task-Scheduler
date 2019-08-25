@@ -3,7 +3,6 @@ package se306.input;
 import com.google.devtools.common.options.OptionsParser;
 import se306.exceptions.InvalidInputException;
 import se306.logging.Log;
-
 import java.util.Collections;
 
 /**
@@ -23,7 +22,7 @@ public class CommandLineParser {
 	 */
 	private CommandLineParser() {
 		numProcessors = 1;
-		outputFileName = "output.dot";
+		outputFileName = null;
 		optParser = OptionsParser.newOptionsParser(CommandLineArguments.class);
 	}
 
@@ -89,9 +88,10 @@ public class CommandLineParser {
 			throw new InvalidInputException("Please enter a file with the .dot extension");
 		}
 
-		// If the user does not specify an output, then set default to be INPUT-output.dot
-		//else set the output file to be what the user specifies
-		if (options.outputFile.equals("output.dot")) {
+		// If the user does not specify an output, then set default to be
+		// INPUT-output.dot
+		// else set the output file to be what the user specifies
+		if (options.outputFile.equals("")) {
 			String inputFileName = this.inputFileName;
 			this.outputFileName = inputFileName.replace(".dot", "") + "-output.dot";
 		} else {
@@ -101,9 +101,6 @@ public class CommandLineParser {
 		this.visualise = options.visualise;
 		this.numCores = options.numCores;
 	}
-
-
-
 
 	/**
 	 * Get the input number of processors
@@ -116,6 +113,7 @@ public class CommandLineParser {
 
 	/**
 	 * Get the number of cores specified by the user
+	 * 
 	 * @return
 	 */
 	public int getNumberOfCores() {
@@ -142,6 +140,7 @@ public class CommandLineParser {
 
 	/**
 	 * Finds whether the user specified to visualise the algorithm or not.
+	 * 
 	 * @return true if visualisation was specified by the user, false otherwise.
 	 */
 	public boolean wantVisual() {
