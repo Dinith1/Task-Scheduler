@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -22,13 +23,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.fx_viewer.FxDefaultView;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.javafx.FxGraphRenderer;
+import org.graphstream.ui.view.GraphRenderer;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import se306.Main;
@@ -45,7 +54,7 @@ import java.util.*;
 public class GraphController implements Initializable {
 
     @FXML
-    ImageView graphImage;
+    StackPane graphImage;
 
     @FXML
     Label timeElapsed, numberOfNodes;
@@ -148,11 +157,12 @@ public class GraphController implements Initializable {
             Edge e = graph.addEdge("" + i, "" + InputFileReader.listOfEdges[i][0], "" + InputFileReader.listOfEdges[i][1]);
             e.setAttribute("ui.label", InputFileReader.listOfEdges[i][2]);
         }
-        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-// ...
-        View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
-// ...
-        myJFrame.add(view);
+        FxViewer mView = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        mView.enableAutoLayout();
+        FxViewPanel panel = (FxViewPanel) mView.addView(FxViewer.DEFAULT_VIEW_ID, new FxGraphRenderer());
+
+        graphImage = new StackPane();
+        graphImage.getChildren().addAll(panel);
     }
 
     /**
