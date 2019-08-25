@@ -149,11 +149,11 @@ public class GraphController implements Initializable {
 
         chart = new SchedulesBar<>(xAxis,yAxis);
         xAxis.setLabel("");
-        xAxis.setTickLabelFill(Color.CHOCOLATE);
+        xAxis.setTickLabelFill(Color.WHITE);
         xAxis.setMinorTickCount(4);
 
         yAxis.setLabel("");
-        yAxis.setTickLabelFill(Color.CHOCOLATE);
+        yAxis.setTickLabelFill(Color.WHITE);
         yAxis.setTickLabelGap(10);
 
         chart.setTitle("Final schedule");
