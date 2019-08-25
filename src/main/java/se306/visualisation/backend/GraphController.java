@@ -217,15 +217,15 @@ public class GraphController implements Initializable {
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override public void run() {
-                double currentCpuUsage =  bean.getSystemCpuLoad();
+                double currentCpuUsage =  bean.getSystemCpuLoad() * 100;
                 long ramTotal = Runtime.getRuntime().totalMemory();
                 long ramUsed = ramTotal - Runtime.getRuntime().freeMemory();
                 double currentMemoryUsage = ((ramUsed * 1.0) / ramTotal) * 100;
-                ((LinkedList<ChartData>) memoryUsageData).addFirst(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
-                ((LinkedList<ChartData>) cpuUsageData).addFirst(new ChartData("Item 1", currentCpuUsage, Tile.BLUE));
+                ((LinkedList<ChartData>) memoryUsageData).addLast(new ChartData("Item 1", currentMemoryUsage, Tile.BLUE));
+                ((LinkedList<ChartData>) cpuUsageData).addLast(new ChartData("Item 1", currentCpuUsage, Tile.BLUE));
                 if (cpuUsageData.size() > 20) {
-                    ((LinkedList<ChartData>) cpuUsageData).removeLast();
-                    ((LinkedList<ChartData>) memoryUsageData).removeLast();
+                    ((LinkedList<ChartData>) cpuUsageData).removeFirst();
+                    ((LinkedList<ChartData>) memoryUsageData).removeFirst();
                 }
                 Platform.runLater(() -> cpuUsage.setChartData(cpuUsageData));
                 Platform.runLater(() -> memoryUsage.setChartData(memoryUsageData));
