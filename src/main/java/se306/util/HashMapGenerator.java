@@ -15,6 +15,13 @@ public class HashMapGenerator {
 		return (hashMapGenerator == null) ? (hashMapGenerator = new HashMapGenerator()) : hashMapGenerator;
     }
 
+    /**
+     * For testing purposes
+     */
+    public static void clearhHashMapGenerator() {
+        hashMapGenerator = null;
+    }
+
     /* Adds nodes to a hashmap, where the key is the weight, and the value is an
      * array of all the node (IDs) with that weight.
      * 

@@ -19,6 +19,13 @@ public class IdenticalNodes {
     }
 
     /**
+     * For testing purposes
+     */
+    public static void clearIdenticalNodes() {
+        identicalNodes = null;
+    }
+
+    /**
      * 
      * @param nodes
      * @return An int array containing IDs of the identical children. Returns null
