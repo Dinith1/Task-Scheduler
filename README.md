@@ -1,5 +1,7 @@
 # SE306.Project1
 
+![screenshot](https://scontent.fhlz2-1.fna.fbcdn.net/v/t1.15752-9/s2048x2048/69414177_1376289409191842_1931169196389957632_n.png?_nc_cat=109&_nc_oc=AQmVYYVscDKBVnAXSiy8pyG6brtp0P8DHcvv1TuMT2dyQ-1CYTuG36mnLHpiM7N9ZFY&_nc_ht=scontent.fhlz2-1.fna&oh=235f342c057f5ecac2176dee330e0425&oe=5E0E7A6F)
+
 ## Run from the Command Line
 1. Move all resources/input files into the same directory as where `scheduler-final-T4.jar` exists
 2. Open up terminal/command line
